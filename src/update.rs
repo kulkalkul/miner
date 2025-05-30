@@ -239,8 +239,8 @@ pub fn update(game: &mut Game) {
         player.amount_carrying += 1;
     }
 
-    debug(player.trans.collider(), WHITE);
-    debug(minecart.trans.collider(), RED);
+    debug_generic(player.trans.collider(), WHITE);
+    debug_generic(minecart.trans.collider(), RED);
     
     if  minecart.movement == MinecartMovement::Idle &&
         player.trans.collider().intersects(minecart.trans.collider()) &&

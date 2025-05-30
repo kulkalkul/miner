@@ -39,8 +39,8 @@ pub mod prelude {
 
     pub use super::consts::*;
 
-    pub use super::{ debug, debug_point, debug_rect };
     pub use super::{ Game, Config, GameMesh };
+    pub use super::{ debug_generic, debug_point, debug_rect };
 
     pub use crate::asset::{ Assets };
 
@@ -163,7 +163,7 @@ impl From<BoxCollider> for GenericDebug {
     }
 }
 
-pub fn debug(generic: impl Into<GenericDebug>, color: Color) {
+pub fn debug_generic(generic: impl Into<GenericDebug>, color: Color) {
     match generic.into() {
         GenericDebug::DebugPoint(pos) => debug_point(pos, color),
         GenericDebug::DebugRect(rect) => debug_rect(rect, color),
