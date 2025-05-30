@@ -6,9 +6,8 @@ pub struct Player {
     pub sprite: Sprite,
     pub anim: Animation,
     pub bag_mesh: GameMesh,
-    pub carrying: Box<[ItemKind; 24]>,
+    pub carrying: Array<ItemKind, 24>,
     pub last_positions: Box<[Vec2; 24]>,
-    pub amount_carrying: usize,
 }
 
 #[derive(Debug)]
@@ -23,8 +22,7 @@ pub struct Minecart {
     pub trans: Transform,
     pub sprite: Sprite,
     pub anim: Animation,
-    pub carrying: Box<[Item; 48]>,
-    pub amount_carrying: usize,
+    pub carrying: Array<Item, 48>,
     pub cooldown: f32,
     pub movement: MinecartMovement,
 }

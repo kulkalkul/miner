@@ -5,7 +5,6 @@
 #![allow(non_snake_case)]
 #![allow(unused_labels)]
 use std::collections::HashMap;
-use std::fmt::Write;
 use std::sync::{LazyLock, Mutex};
 
 use bumpalo::Bump;
@@ -39,8 +38,8 @@ pub mod prelude {
 
     pub use super::consts::*;
 
-    pub use super::{ Game, Config, GameMesh };
     pub use super::{ debug_generic, debug_point, debug_rect };
+    pub use super::{ Game, Config, GameMesh, Array };
 
     pub use crate::asset::{ Assets };
 
@@ -54,6 +53,7 @@ pub mod prelude {
 
     pub use crate::world::{ World };
     pub use crate::world::consts::*;
+    pub use crate::world::conversions::*;
 
     pub use crate::derived::{ DerivedState };
 
@@ -215,5 +215,52 @@ impl GameMesh {
             indices: Vec::new(),
             texture: None,
         })
+    }
+}
+
+#[derive(Debug)]
+pub struct Array<T, const N: usize> {
+    pub items: Box<[T; N]>,
+    pub length: usize,
+}
+
+impl<T: Clone, const N: usize> Array<T, N> {
+    pub fn new(default_element: T) ->  Self {
+        Self::with_length(default_element, 0)
+    }
+    pub fn with_length(default_element: T, length: usize) -> Self {
+        let items = vec![default_element; N].into_boxed_slice();
+        let slice = Box::leak(items);
+        let slice = slice.as_mut_ptr() as _;
+        let items = unsafe { Box::from_raw(slice) };
+
+        Self {
+            items,
+            length,
+        }
+    }
+    pub fn cap(&self) -> usize {
+        N
+    }
+    pub fn push(&mut self, item: T) -> bool {
+        if self.length < self.items.len() {
+            self.items[self.length] = item;
+            self.length += 1;
+            true
+        } else {
+            false
+        }
+    }
+    pub fn pop(&mut self) -> Option<T> {
+        if self.length > 0 {
+            self.length -= 1;
+            let item = self.items[self.length].clone();
+            Some(item)
+        } else {
+            None
+        }
+    }
+    pub fn clear(&mut self) {
+        self.length = 0;
     }
 }

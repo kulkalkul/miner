@@ -233,10 +233,8 @@ pub fn update(game: &mut Game) {
     }
 
     for item_kind in player_added_to_bags {
-        if player.amount_carrying >= game.player_max_carrying { break; }
-        
-        player.carrying[player.amount_carrying] = item_kind;
-        player.amount_carrying += 1;
+        if player.carrying.length >= game.player_max_carrying { break; }
+        player.carrying.push(item_kind);        
     }
 
     debug_generic(player.trans.collider(), WHITE);
@@ -244,26 +242,24 @@ pub fn update(game: &mut Game) {
     
     if  minecart.movement == MinecartMovement::Idle &&
         player.trans.collider().intersects(minecart.trans.collider()) &&
-        player.amount_carrying > 0
+        player.carrying.length > 0
     {        
         if  minecart.cooldown <= 1.8 &&
-            player.amount_carrying > 0 &&
-            minecart.amount_carrying < minecart.carrying.len()
+            minecart.carrying.length < minecart.carrying.cap()
         {
             minecart.cooldown = 2.0;
-            player.amount_carrying -= 1;
-            let kind = player.carrying[player.amount_carrying];
+            let kind = player.carrying.pop().unwrap();
+            
             let trans = Transform {
                 pos: minecart.trans.pos,
                 size: vec2(0.0, 0.0),
                 offset: vec2(0.0, 0.0),
             };
-            minecart.carrying[minecart.amount_carrying] = Item { trans, kind };
-            minecart.amount_carrying += 1;
+            minecart.carrying.push(Item { trans, kind });
         }
     }
 
-    if minecart.movement == MinecartMovement::Idle && minecart.cooldown <= 0.1 && minecart.amount_carrying > 0 {
+    if minecart.movement == MinecartMovement::Idle && minecart.cooldown <= 0.1 && minecart.carrying.length > 0 {
         minecart.movement = MinecartMovement::Forwards;
     }
 
@@ -273,7 +269,7 @@ pub fn update(game: &mut Game) {
         minecart.trans.pos.x += 100.0 * dt;
         if minecart.trans.pos.x >= MINECART_END.x as f32 * TILE_SIDE as f32 {
             minecart.movement = MinecartMovement::Backwards;
-            minecart.amount_carrying = 0;
+            minecart.carrying.clear();
         }
     }
 

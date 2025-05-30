@@ -17,9 +17,8 @@ pub async fn init(assets: Assets) -> Game {
         },
         sprite: assets.player_idle.derive_sprite(),
         anim: assets.player_idle.derive_anim(),
-        carrying: Box::new([ItemKind::Air; 24]),
+        carrying: Array::with_length(ItemKind::Air, 24),
         last_positions: Box::new([vec2(0.0, 0.0); 24]),
-        amount_carrying: 24,
         bag_mesh: GameMesh::new(),
     };
 
@@ -45,8 +44,7 @@ pub async fn init(assets: Assets) -> Game {
         },
         sprite: assets.minecart_idle.derive_sprite(),
         anim: assets.minecart_idle.derive_anim(),
-        carrying: Box::new([Item::default(); 48]),
-        amount_carrying: 0,
+        carrying: Array::new(Item::default()),
         cooldown: 0.0,
         movement: MinecartMovement::Idle,
     };

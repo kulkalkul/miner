@@ -56,7 +56,7 @@ pub fn render(game: &Game) {
     // draw player :::
     let mut last_position = player.trans.pos + player.trans.offset*sprite_dir;
     let mut half_y = 2.5;
-    for &pos in &player.last_positions[..player.amount_carrying] {
+    for &pos in &player.last_positions[..player.carrying.length] {
         let diff = last_position - pos;
 
         let dir = diff.normalize_or_zero();
