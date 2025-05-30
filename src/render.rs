@@ -18,7 +18,7 @@ pub fn render(game: &Game) {
     
     // draw chunks :::
     for &chunk_pos in visible_chunks {
-        let world_pos = World::chunk_pos_to_world_pos(chunk_pos);
+        let world_pos = chunk_pos_to_world_pos(chunk_pos);
         
         let mut mesh_camera_origin = world_origin;
         mesh_camera_origin.x += player.trans.pos.x - world_pos.x;
@@ -40,11 +40,11 @@ pub fn render(game: &Game) {
     let rail_start_sprite = game.assets.rail_start.derive_sprite();
     let rail_sprite = game.assets.rail.derive_sprite();
     
-    draw_sprite(World::tile_pos_to_world_pos(MINECART_START), &rail_start_sprite);
+    draw_sprite(tile_pos_to_world_pos(MINECART_START), &rail_start_sprite);
 
     for x in MINECART_START.x+1..=MINECART_END.x {
         let tile_pos = ivec2(x, MINECART_START.y);
-        let world_pos = World::tile_pos_to_world_pos(tile_pos);
+        let world_pos = tile_pos_to_world_pos(tile_pos);
         draw_sprite(world_pos, &rail_sprite);
     }
 

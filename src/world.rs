@@ -44,9 +44,121 @@ pub struct World {
     pub recalculate_all_meshes: bool,
 }
 
+#[derive(Clone, Copy)]
 pub struct WorldTiles<'w> {
     pub chunks: &'w Vec<TileChunk>,
 }
+
+impl<'w> WorldTiles<'w> {
+    pub fn at_world_pos(&self, world_pos: Vec2) -> WorldTile<'w> {
+        let tile_pos = world_pos_to_tile_pos(world_pos);
+        self.at_tile_pos(tile_pos)
+    }
+    pub fn at_tile_pos(&self, tile_pos: IVec2) -> WorldTile<'w> {
+        let chunk_pos = tile_pos_to_chunk_pos(tile_pos);
+        let chunk = &self.chunks[chunk_index_at(chunk_pos)];
+        
+        WorldTile {
+            world_tiles: WorldTiles { chunks: self.chunks },
+            pos: tile_pos,
+            kind: chunk.tiles[tile_index_at(tile_pos)],
+        }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct WorldTile<'w> {
+    pub world_tiles: WorldTiles<'w>,
+    pub pos: IVec2,
+    pub kind: Tile,
+}
+
+impl<'w> WorldTile<'w> {
+    pub fn tile_index(&self) -> usize {
+        tile_index_at(self.pos)
+    }
+    pub fn world_pos(&self) -> Vec2 {
+        tile_pos_to_world_pos(self.pos)
+    }
+    pub fn chunk_pos(&self) -> IVec2 {
+        tile_pos_to_chunk_pos(self.pos)
+    }
+
+    pub fn another_tile(&self, tile_pos: IVec2) -> WorldTile<'w> {
+        self.world_tiles.at_tile_pos(tile_pos)
+    }
+    pub fn offset_by(&self, amount: IVec2) -> WorldTile<'w> {
+        self.another_tile(self.pos + amount)
+    }
+    pub fn up(&self, amount: i32) -> WorldTile<'w> {
+        self.another_tile(self.pos + ivec2(0, amount))
+    }
+    pub fn down(&self, amount: i32) -> WorldTile<'w> {
+        self.another_tile(self.pos + ivec2(0, -amount))
+    }
+    pub fn left(&self, amount: i32) -> WorldTile<'w> {
+        self.another_tile(self.pos + ivec2(-amount, 0))
+    }
+    pub fn right(&self, amount: i32) -> WorldTile<'w> {
+        self.another_tile(self.pos + ivec2(amount, 0))
+    }
+}
+
+impl<'w> From<WorldTile<'w>> for IVec2 {
+    fn from(value: WorldTile<'w>) -> Self {
+        value.pos
+    }
+}
+
+pub mod conversions {
+    use super::*;
+
+    // index_at
+    pub fn tile_index_at(tile_pos: IVec2) -> usize {
+        tile_pos.y as usize % CHUNK_SIDE * CHUNK_SIDE + tile_pos.x as usize % CHUNK_SIDE
+    }
+    pub fn local_tile_index_at(local_tile_pos: IVec2) -> usize {
+        local_tile_pos.y as usize * CHUNK_SIDE + local_tile_pos.x as usize
+    }
+    pub fn chunk_index_at(chunk_pos: IVec2) -> usize {
+        chunk_pos.y as usize * WORLD_WIDTH + chunk_pos.x as usize
+    }
+    
+    // chunk_pos ->
+    pub fn chunk_pos_to_world_pos(chunk_pos: IVec2) -> Vec2 {
+        vec2(
+            (chunk_pos.x * CHUNK_SIDE_I32 * TILE_SIDE_I32) as f32,
+            (chunk_pos.y * CHUNK_SIDE_I32 * TILE_SIDE_I32) as f32,
+        )
+    }
+    pub fn chunk_pos_to_tile_pos(chunk_pos: IVec2) -> IVec2 {
+        ivec2(chunk_pos.x * CHUNK_SIDE_I32, chunk_pos.y * CHUNK_SIDE_I32)
+    }
+
+    // tiles_pos ->
+    pub fn tile_pos_to_chunk_pos(tile_pos: IVec2) -> IVec2 {
+        ivec2(tile_pos.x / CHUNK_SIDE_I32, tile_pos.y / CHUNK_SIDE_I32)
+    }
+    pub fn tile_pos_to_world_pos(tile_pos: IVec2) -> Vec2 {
+        vec2((tile_pos.x * TILE_SIDE_I32) as f32, (tile_pos.y * TILE_SIDE_I32) as f32)
+    }
+    
+    // world_pos ->
+    pub fn world_pos_to_chunk_pos(world_pos: Vec2) -> IVec2 {
+        ivec2(
+            world_pos.x as i32 / TILE_SIDE_I32 / CHUNK_SIDE_I32,
+            world_pos.y as i32 / TILE_SIDE_I32 / CHUNK_SIDE_I32,
+        )
+    }
+    pub fn world_pos_to_tile_pos(world_pos: Vec2) -> IVec2 {
+        ivec2(
+            world_pos.x as i32 / TILE_SIDE_I32,
+            world_pos.y as i32 / TILE_SIDE_I32,
+        )
+    }
+}
+
+pub use conversions::*;
 
 pub struct WorldCommands<'b> {
     bump: &'b Bump,
@@ -282,28 +394,28 @@ impl World {
                 self.recalculate_all_meshes = true;
             },
             | WorldCommand::SetTile { x, y, tile } => {
-                let chunk_pos = Self::tile_pos_to_chunk_pos(ivec2(x, y));
-                let tile_index = Self::tile_index_at(ivec2(x, y));
+                let chunk_pos = tile_pos_to_chunk_pos(ivec2(x, y));
+                let tile_index = tile_index_at(ivec2(x, y));
                 
-                let chunk = &mut self.chunks[Self::chunk_index_at(chunk_pos)];
+                let chunk = &mut self.chunks[chunk_index_at(chunk_pos)];
                 chunk.tiles[tile_index] = tile;
                 chunk.dirty = true;
             },
             | WorldCommand::SetTiles { tile_poses, tile } => {
                 let chunks = &mut self.chunks[..];
                 for tile_pos in tile_poses {
-                    let chunk_pos = Self::tile_pos_to_chunk_pos(tile_pos);
-                    let tile_index = Self::tile_index_at(ivec2(tile_pos.x, tile_pos.y));
+                    let chunk_pos = tile_pos_to_chunk_pos(tile_pos);
+                    let tile_index = tile_index_at(ivec2(tile_pos.x, tile_pos.y));
                     
-                    let chunk = &mut chunks[Self::chunk_index_at(chunk_pos)];
+                    let chunk = &mut chunks[chunk_index_at(chunk_pos)];
                     chunk.tiles[tile_index] = tile;
                     chunk.dirty = true;
                 }
             },
             | WorldCommand::SetTilesInChunk { chunk_pos, local_tile_poses, tile } => {
-                let chunk = &mut self.chunks[Self::chunk_index_at(chunk_pos)];
+                let chunk = &mut self.chunks[chunk_index_at(chunk_pos)];
                 for tile_pos in local_tile_poses {
-                    let tile_index = Self::local_tile_index_at(ivec2(tile_pos.x, tile_pos.y));
+                    let tile_index = local_tile_index_at(ivec2(tile_pos.x, tile_pos.y));
                     
                     chunk.tiles[tile_index] = tile;
                     chunk.dirty = true;
@@ -322,14 +434,14 @@ impl World {
                     let end_x = i32::min((chunk_pos.x+1) * CHUNK_SIDE_I32, x+width);
                     let end_y = i32::min((chunk_pos.y+1) * CHUNK_SIDE_I32, y+height);
 
-                    let chunk = &mut chunks[Self::chunk_index_at(chunk_pos)];
+                    let chunk = &mut chunks[chunk_index_at(chunk_pos)];
                     chunk.dirty = true;
                     let tiles = &mut chunk.tiles[..];
 
 
                     for local_y in begin_y..end_y {
                         for local_x in begin_x..end_x {
-                            tiles[Self::tile_index_at(ivec2(local_x, local_y))] = tile;
+                            tiles[tile_index_at(ivec2(local_x, local_y))] = tile;
                         }
                     }
                 }
@@ -337,58 +449,12 @@ impl World {
             }
         }
     }
-
-    pub fn tile_at_world_pos(&self, world_pos: Vec2) -> Tile {
-        let tile_pos = World::world_pos_to_tile_pos(world_pos);
-        self.tile_at_tile_pos(tile_pos)
-    }
-    pub fn tile_at_tile_pos(&self, tile_pos: IVec2) -> Tile {
-        let chunk_pos = World::tile_pos_to_chunk_pos(tile_pos);
-        let chunk = &self.chunks[World::chunk_index_at(chunk_pos)];
-        chunk.tiles[World::tile_index_at(tile_pos)]
-    }
     
-    pub fn chunk_index_at(chunk_pos: IVec2) -> usize {
-        chunk_pos.y as usize * WORLD_WIDTH + chunk_pos.x as usize
-    }
-    pub fn tile_pos_to_chunk_pos(tile_pos: IVec2) -> IVec2 {
-        ivec2(tile_pos.x / CHUNK_SIDE_I32, tile_pos.y / CHUNK_SIDE_I32)
-    }
-    pub fn tile_pos_to_world_pos(tile_pos: IVec2) -> Vec2 {
-        vec2((tile_pos.x * TILE_SIDE_I32) as f32, (tile_pos.y * TILE_SIDE_I32) as f32)
-    }
-    pub fn world_pos_to_chunk_pos(world_pos: Vec2) -> IVec2 {
-        ivec2(
-            world_pos.x as i32 / TILE_SIDE_I32 / CHUNK_SIDE_I32,
-            world_pos.y as i32 / TILE_SIDE_I32 / CHUNK_SIDE_I32,
-        )
-    }
-    pub fn world_pos_to_tile_pos(world_pos: Vec2) -> IVec2 {
-        ivec2(
-            world_pos.x as i32 / TILE_SIDE_I32,
-            world_pos.y as i32 / TILE_SIDE_I32,
-        )
-    }
-    pub fn tile_index_at(tile_pos: IVec2) -> usize {
-        tile_pos.y as usize % CHUNK_SIDE * CHUNK_SIDE + tile_pos.x as usize % CHUNK_SIDE
-    }
-    pub fn local_tile_index_at(local_tile_pos: IVec2) -> usize {
-        local_tile_pos.y as usize * CHUNK_SIDE + local_tile_pos.x as usize
-    }
-    pub fn chunk_pos_to_world_pos(chunk_pos: IVec2) -> Vec2 {
-        vec2(
-            (chunk_pos.x * CHUNK_SIDE_I32 * TILE_SIDE_I32) as f32,
-            (chunk_pos.y * CHUNK_SIDE_I32 * TILE_SIDE_I32) as f32,
-        )
-    }
-    pub fn chunk_pos_to_tile_pos(chunk_pos: IVec2) -> IVec2 {
-        ivec2(chunk_pos.x * CHUNK_SIDE_I32, chunk_pos.y * CHUNK_SIDE_I32)
-    }
     pub fn chunk_at(&self, chunk_pos: IVec2) -> &TileChunk {
-        &self.chunks[Self::chunk_index_at(chunk_pos)]
+        &self.chunks[chunk_index_at(chunk_pos)]
     }
     pub fn mesh_at(&self, chunk_pos: IVec2) -> &GameMesh {
-        &self.meshes[Self::chunk_index_at(chunk_pos)]
+        &self.meshes[chunk_index_at(chunk_pos)]
     }
     pub fn query_chunks_around_chunk_pos(bump: &Bump, origin: IVec2, half_distance: u32) -> Vec<IVec2, &Bump> {
         let half_distance = half_distance as i32;
@@ -429,8 +495,8 @@ impl World {
 
     pub fn query_intersected_tiles_y(bump: &Bump, x: f32, y_range: [f32; 2]) -> Vec<IVec2, &Bump> {
         // Just reusing world_pos_to_tile_pos because lazy
-        let begin_tile = World::world_pos_to_tile_pos(vec2(x, y_range[0]));
-        let end_tile = World::world_pos_to_tile_pos(vec2(x, y_range[1]));
+        let begin_tile = world_pos_to_tile_pos(vec2(x, y_range[0]));
+        let end_tile = world_pos_to_tile_pos(vec2(x, y_range[1]));
 
         let mut tiles = Vec::with_capacity_in((y_range[1] - y_range[0]) as usize, bump);
 
@@ -442,8 +508,8 @@ impl World {
     }
     pub fn query_intersected_tiles_x(bump: &Bump, x_range: [f32; 2], y: f32) -> Vec<IVec2, &Bump> {
         // Just reusing world_pos_to_tile_pos because lazy
-        let begin_tile = World::world_pos_to_tile_pos(vec2(x_range[0], y));
-        let end_tile = World::world_pos_to_tile_pos(vec2(x_range[1], y));
+        let begin_tile = world_pos_to_tile_pos(vec2(x_range[0], y));
+        let end_tile = world_pos_to_tile_pos(vec2(x_range[1], y));
 
         let mut tiles = Vec::with_capacity_in((x_range[1] - x_range[0]) as usize, bump);
 

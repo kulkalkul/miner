@@ -16,6 +16,8 @@ pub fn update(game: &mut Game) {
     let derived = &mut game.derived;
     let action = &mut game.action;
 
+    let tiles = world.tiles();
+
     let player_last_pos = player.trans.pos;
 
     derived.player_anim_finished = player.anim.repeated > 0;
@@ -29,7 +31,7 @@ pub fn update(game: &mut Game) {
         let mut new_pos = player.trans.pos;
         let size = player.trans.size;
         let hsize = size / 2.0;
-        let tile_pos = World::world_pos_to_tile_pos(pos);
+        let tile = tiles.at_world_pos(pos);
 
         if is_key_pressed(KeyCode::Tab) {
             game.dev_mode = !game.dev_mode;
@@ -55,12 +57,11 @@ pub fn update(game: &mut Game) {
             break 'player_movement;
         }
 
-        let tile = world.tile_at_tile_pos(tile_pos);
-        let tile_down = world.tile_at_tile_pos(tile_pos + ivec2(0, -1));
+        let tile_one_down = tile.down(1);
         
         // gravity
-        if !tile.can_climb() {
-            if !tile_down.can_climb() || pos.y - World::tile_pos_to_world_pos(tile_pos).y > 1.0 {
+        if !tile.kind.can_climb() {
+            if !tile_one_down.kind.can_climb() || pos.y - tile.world_pos().y > 1.0 {
                 movement_dir.y = -9.8 * TILE_SIDE as f32 * dt;
             }
         }
@@ -82,22 +83,22 @@ pub fn update(game: &mut Game) {
         );
 
         for tile_pos in bottom_intersection {
-            if world.tile_at_tile_pos(tile_pos).can_walk_through() { continue; };
+            if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
             new_pos.y = player.trans.pos.y;
             derived.player_touching_bottom = true;
         }
         for tile_pos in left_intersection {
-            if world.tile_at_tile_pos(tile_pos).can_walk_through() { continue; };
+            if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
             new_pos.x = player.trans.pos.x;
             derived.player_touching_left = true;
         }
         for tile_pos in right_intersection {
-            if world.tile_at_tile_pos(tile_pos).can_walk_through() { continue; };
+            if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
             new_pos.x = player.trans.pos.x;
             derived.player_touching_right = true;
         }
         for tile_pos in top_intersection {
-            if world.tile_at_tile_pos(tile_pos).can_walk_through() { continue; };
+            if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
             new_pos.y = player.trans.pos.y;
             derived.player_touching_top = true;
         }
@@ -130,7 +131,7 @@ pub fn update(game: &mut Game) {
         player.anim = assets.player_idle.derive_anim();
     }
     
-    let player_tile_pos = World::world_pos_to_tile_pos(player.trans.pos);
+    let player_tile = tiles.at_world_pos(player.trans.pos);
     let mut world_commands = world.commands(&game.bump);
 
     let mut player_added_to_bags = Vec::with_capacity_in(4, &game.bump);
@@ -148,82 +149,74 @@ pub fn update(game: &mut Game) {
         
         if touch_vec == IVec2::ZERO { break 'block_mine; }
 
-        let tile_pos = player_tile_pos + touch_vec;
-        let tile_pos_one_up = tile_pos + ivec2(0, 1);
-        let tile_pos_one_down = tile_pos + ivec2(0, -1);
+        let tile = player_tile.offset_by(touch_vec);
+        let tile_one_up = tile.up(1);
+        let tile_one_down = tile.down(1);
 
-        let tile = world.tile_at_tile_pos(tile_pos);
-        let tile_one_up = world.tile_at_tile_pos(tile_pos_one_up);
-        let tile_one_down = world.tile_at_tile_pos(tile_pos_one_down);
+        if !tile.kind.can_mine() { break 'block_mine; }
 
-        if !tile.can_mine() { break 'block_mine; }
-
-        if touch_vec.x != 0 && tile_one_up.can_climb() { break 'block_mine; }            
+        if touch_vec.x != 0 && tile_one_up.kind.can_climb() { break 'block_mine; }            
 
         let movement_str = 1.0 / f32::max(player_movement.x.abs() as f32 + player_movement.y.abs() as f32, 1.0);
         
-        let durability = game.tile_durability_map.entry(tile_pos).or_insert(0.0);
+        let durability = game.tile_durability_map.entry(tile.pos).or_insert(0.0);
         *durability += dt * 3.0 * movement_str;
         
         player.anim = assets.player_hit.derive_anim();
 
         if *durability > 0.5 {
-            if tile.item_drop() != ItemKind::Air {
-                if player.amount_carrying >= game.player_max_carrying { break 'block_mine; }
-                player_added_to_bags.push(tile.item_drop());
+            if tile.kind.item_drop() != ItemKind::Air {
+                if player.carrying.length >= game.player_max_carrying { break 'block_mine; }
+                player_added_to_bags.push(tile.kind.item_drop());
             }
             if touch_vec.y != 0 {
-                if tile_one_down.is_air() {
-                    world_commands.set_tile(tile_pos, Tile::BackgroundStoneLadder);
+                if tile_one_down.kind.is_air() {
+                    world_commands.set_tile(tile.pos, Tile::BackgroundStoneLadder);
                 } else {
-                    world_commands.set_tile(tile_pos, Tile::BackgroundStoneLadderSupport);
+                    world_commands.set_tile(tile.pos, Tile::BackgroundStoneLadderSupport);
                 }
-                if tile_one_up == Tile::BackgroundStoneLadderSupport {
-                    world_commands.set_tile(tile_pos_one_up, Tile::BackgroundStoneLadder);
+                if tile_one_up.kind == Tile::BackgroundStoneLadderSupport {
+                    world_commands.set_tile(tile_one_up.pos, Tile::BackgroundStoneLadder);
                 }
             } else {
-                world_commands.set_tile(tile_pos, tile.mine_results_tile());
+                world_commands.set_tile(tile.pos, tile.kind.mine_results_tile());
             }
 
             *durability = 0.0;
         }
     }
 
-    
-
     world.apply_commands(world_commands);
     let mut world_commands = world.commands(&game.bump);
+    let tiles = world.tiles();
+    let player_tile = tiles.at_world_pos(player.trans.pos);
 
     'lay_ladder: {
-        let tile_pos = player_tile_pos;
-        let tile_pos_one_up = tile_pos + ivec2(0, 1);
-        let tile_pos_one_down = tile_pos + ivec2(0, -1);
-        let tile_pos_two_down = tile_pos + ivec2(0, -2);
-        let tile = world.tile_at_tile_pos(tile_pos);
-        let tile_one_up = world.tile_at_tile_pos(tile_pos_one_up);
-        let tile_one_down = world.tile_at_tile_pos(tile_pos_one_down);
-        let tile_two_down = world.tile_at_tile_pos(tile_pos_two_down);
+        let tile = player_tile;
+        let tile_one_up = tile.up(1);
+        let tile_one_down = tile.down(1);
+        let tile_two_down = tile.down(2);
 
-        if player_tile_pos.y >= WORLD_SPAWN_I32.y { break 'lay_ladder; }
+        if tile.pos.y >= WORLD_SPAWN_I32.y { break 'lay_ladder; }
 
-        if  player_movement.y > 0 && tile.is_air() && tile_one_up.is_air() &&
-            player.trans.pos.y - World::tile_pos_to_world_pos(tile_pos).y < 1.0
+        if  player_movement.y > 0 && tile.kind.is_air() && tile_one_up.kind.is_air() &&
+            player.trans.pos.y - tile.world_pos().y < 1.0
         {
-            if !tile_one_down.is_air() {
-                world_commands.set_tile(tile_pos, Tile::BackgroundStoneLadderSupport);
-            } else if tile_one_down.can_climb() {
-                world_commands.set_tile(tile_pos, Tile::BackgroundStoneLadder);
+            if !tile_one_down.kind.is_air() {
+                world_commands.set_tile(tile.pos, Tile::BackgroundStoneLadderSupport);
+            } else if tile_one_down.kind.can_climb() {
+                world_commands.set_tile(tile.pos, Tile::BackgroundStoneLadder);
             }
         }
 
-        if  player_movement.y < 0 && tile.can_climb() &&
-            tile_one_down.is_air() && !tile_one_down.can_climb() &&
-            player.trans.pos.y - World::tile_pos_to_world_pos(tile_pos).y < 1.0
+        if  player_movement.y < 0 && tile.kind.can_climb() &&
+            tile_one_down.kind.is_air() && !tile_one_down.kind.can_climb() &&
+            player.trans.pos.y - tile.world_pos().y < 1.0
         {
-            if !tile_two_down.is_air() {
-                world_commands.set_tile(tile_pos_one_down, Tile::BackgroundStoneLadderSupport);
+            if !tile_two_down.kind.is_air() {
+                world_commands.set_tile(tile_one_down.pos, Tile::BackgroundStoneLadderSupport);
             } else {
-                world_commands.set_tile(tile_pos_one_down, Tile::BackgroundStoneLadder);
+                world_commands.set_tile(tile_one_down.pos, Tile::BackgroundStoneLadder);
             }
         }
         
@@ -298,7 +291,7 @@ pub fn update(game: &mut Game) {
     
     // update visible chunks :::
     {
-        let player_chunk = World::world_pos_to_chunk_pos(player.trans.pos);
+        let player_chunk = world_pos_to_chunk_pos(player.trans.pos);
         *visible_chunks = World::query_chunks_around_chunk_pos(&game.bump, player_chunk, 1).to_vec();
     }
     
