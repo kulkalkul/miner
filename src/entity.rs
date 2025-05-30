@@ -78,7 +78,7 @@ impl Transform {
 
 impl BoxCollider {
     pub fn intersects(&self, collidee: BoxCollider) -> bool {
-        self.p1.x <= self.p2.x && self.p2.x >= collidee.p1.x &&
-        self.p1.y <= self.p2.y && self.p2.y >= collidee.p1.y
+        self.p1.x <= collidee.p2.x && self.p2.x >= collidee.p1.x &&
+        self.p1.y <= collidee.p2.y && self.p2.y >= collidee.p1.y
     }
 }
