@@ -31,6 +31,7 @@ pub enum Tile {
     BackgroundStoneLadderSupport,
     
     Stone,
+    StoneDig,
     HardStone,
 
     StoneCopperOre,
@@ -142,6 +143,7 @@ impl Tile {
             Tile::BackgroundStoneLadderSupport => true,
             
             Tile::Stone => false,
+            Tile::StoneDig => false,
             Tile::HardStone => false,
             
             Tile::StoneCopperOre => false,
@@ -181,6 +183,7 @@ impl Tile {
             Tile::BackgroundStoneLadderSupport => false,
             
             Tile::Stone => true,
+            Tile::StoneDig => true,
             Tile::HardStone => false,
             
             Tile::StoneCopperOre => true,
@@ -220,6 +223,7 @@ impl Tile {
             
             
             Tile::Stone => false,
+            Tile::StoneDig => false,
             Tile::HardStone => false,
             
             Tile::StoneCopperOre => false,
@@ -258,6 +262,7 @@ impl Tile {
             Tile::BackgroundStoneLadderSupport => true,
             
             Tile::Stone => false,
+            Tile::StoneDig => false,
             Tile::HardStone => false,
             
             Tile::StoneCopperOre => false,
@@ -297,6 +302,7 @@ impl Tile {
             Tile::BackgroundStoneLadderSupport => Tile::ERR,
             
             Tile::Stone => Tile::BackgroundStone,
+            Tile::StoneDig => Tile::BackgroundStone,
             Tile::HardStone => Tile::ERR,
             
             Tile::StoneCopperOre => Tile::BackgroundStone,
@@ -336,6 +342,7 @@ impl Tile {
             Tile::BackgroundStoneLadderSupport => ItemKind::Air,
             
             Tile::Stone => ItemKind::Air,
+            Tile::StoneDig => ItemKind::Air,
             Tile::HardStone => ItemKind::Air,
 
             Tile::StoneCopperOre => ItemKind::CopperOre,

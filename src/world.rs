@@ -307,7 +307,7 @@ impl World {
                 x: room_x+room_w, y: room_y, width: 1, height: room_h,
             },
             WorldCommand::SetTileArea {
-                tile: Tile::Stone,
+                tile: Tile::StoneDig,
                 x: room_x + room_w/2 - 4, y: room_y-1, width: 8, height: 1,
             },
         ]);
