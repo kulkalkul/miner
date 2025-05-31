@@ -86,6 +86,7 @@ pub struct Game {
     pub config: Config,
     pub world: World,
     pub visible_chunks: Vec<IVec2>,
+    pub money: i32,
 
     pub player: Player,
     pub statue: SimpleEntity,

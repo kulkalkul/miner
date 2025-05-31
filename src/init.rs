@@ -69,6 +69,7 @@ pub async fn init(assets: Assets) -> Game {
         config: config.clone(),
         world,
         visible_chunks: Vec::with_capacity(16),
+        money: 255,
         
         player,
         statue,

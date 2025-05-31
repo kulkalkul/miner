@@ -72,6 +72,21 @@ pub struct BoxCollider {
     pub p2: Vec2,
 }
 
+impl ItemKind {
+    pub fn value(&self) -> i32 {
+        match self {
+            ItemKind::Air => 0,
+            ItemKind::CopperOre => 5,
+            ItemKind::IronOre => 15,
+            ItemKind::GoldOre => 50,
+            ItemKind::RawEmerald => 500,
+            ItemKind::RawRuby => 750,
+            ItemKind::RawSapphire => 1_000,
+        }
+    }
+}
+
+
 impl Transform {
     pub fn collider(&self) -> BoxCollider {
         BoxCollider {
