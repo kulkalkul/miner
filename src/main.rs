@@ -40,7 +40,7 @@ pub mod prelude {
     pub use super::consts::*;
 
     pub use super::{ debug_generic, debug_point, debug_rect };
-    pub use super::{ Game, Config, GameMesh, Array };
+    pub use super::{ Game, InputActions, Config, GameMesh, Array };
 
     pub use crate::asset::{ Assets };
 
@@ -103,6 +103,18 @@ pub struct Game {
     pub derived: DerivedState,
     pub late_derived: LateDerivedState,
     pub action: ActionState,
+    pub input_actions: InputActions,
+}
+
+#[derive(Default)]
+pub struct InputActions {
+    pub move_left: bool,
+    pub move_right: bool,
+    pub move_up: bool,
+    pub move_down: bool,
+    pub interact: bool,
+    pub escape: bool,
+    pub toggle_dev_mode: bool,
 }
 
 fn window_conf() -> Conf {

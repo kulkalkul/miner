@@ -4,6 +4,16 @@ pub fn update(game: &mut Game) {
     game.derived = DerivedState::default();
     game.action.reset();
 
+    game.input_actions = InputActions {
+        move_left: is_key_down(KeyCode::A),
+        move_right: is_key_down(KeyCode::D),
+        move_up: is_key_down(KeyCode::W),
+        move_down: is_key_down(KeyCode::S),
+        interact: is_key_pressed(KeyCode::E),
+        escape: is_key_pressed(KeyCode::Escape),
+        toggle_dev_mode: is_key_pressed(KeyCode::Tab),
+    };
+
     let dt = get_frame_time();
     let assets = &game.assets;
 
@@ -16,6 +26,7 @@ pub fn update(game: &mut Game) {
     let visible_chunks = &mut game.visible_chunks;
     let derived = &mut game.derived;
     let action = &mut game.action;
+    let input_actions = &game.input_actions;
     
     let late_derived = &game.late_derived;
 
@@ -38,20 +49,20 @@ pub fn update(game: &mut Game) {
         let hsize = size / 2.0;
         let tile = tiles.at_world_pos(pos);
 
-        if is_key_pressed(KeyCode::Tab) {
+        if input_actions.toggle_dev_mode {
             game.dev_mode = !game.dev_mode;
         }
 
-        if is_key_down(KeyCode::W) {
+        if input_actions.move_up {
             player_movement.y += 1;
         }
-        if is_key_down(KeyCode::S) {
+        if input_actions.move_down {
             player_movement.y -= 1;
         }
-        if is_key_down(KeyCode::D) {
+        if input_actions.move_right {
             player_movement.x += 1;
         }
-        if is_key_down(KeyCode::A) {
+        if input_actions.move_left {
             player_movement.x -= 1;
         }
 
@@ -109,10 +120,6 @@ pub fn update(game: &mut Game) {
         }
 
         player.trans.pos = new_pos;
-
-        if is_key_pressed(KeyCode::Space) {
-            player.sprite.flip_x = !player.sprite.flip_x;
-        }
         
         if player_movement.x > 0 {
             player.sprite.flip_x = false;
@@ -267,7 +274,7 @@ pub fn update(game: &mut Game) {
     if player.trans.collider().intersects(statue.trans.collider()) {
         derived.ui_show_statue_key = true;
 
-        if is_key_pressed(KeyCode::E) {
+        if input_actions.interact {
             game.ui_show_statue = !game.ui_show_statue;
         }
     }
@@ -322,6 +329,16 @@ pub fn update(game: &mut Game) {
         }
         
     }
+
+    'escape: {
+        if input_actions.escape {
+            if game.ui_show_statue {
+                game.ui_show_statue = false;
+                break 'escape;
+            }
+        }
+    }
+
 
     // apply commands & updates :::
     world.apply_commands(world_commands);
