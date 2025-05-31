@@ -88,6 +88,7 @@ pub struct Game {
     pub visible_chunks: Vec<IVec2>,
 
     pub player: Player,
+    pub statue: SimpleEntity,
     pub crusher: Crusher,
     pub minecart: Minecart,
 

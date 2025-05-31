@@ -4,6 +4,7 @@ use crate::apply_debug_commands;
 use crate::sprite::{ draw_sprite, draw_sprite_offset };
 
 pub fn render(game: &Game) {
+    let statue = &game.statue;
     let player = &game.player;
     let crusher = &game.crusher;
     let visible_chunks = &game.visible_chunks;
@@ -49,6 +50,7 @@ pub fn render(game: &Game) {
     }
 
     draw_sprite(game.minecart.trans.pos, &game.minecart.sprite);
+    draw_sprite(statue.trans.pos, &statue.sprite);
     
 
     let sprite_dir = if player.sprite.flip_x { vec2(-1.0, 1.0) } else { vec2(1.0, 1.0) };

@@ -10,6 +10,7 @@ pub fn update(game: &mut Game) {
     let player = &mut game.player;
     let minecart = &mut game.minecart;
     let crusher = &mut game.crusher;
+    let statue = &mut game.statue;
     
     let world = &mut game.world;
     let visible_chunks = &mut game.visible_chunks;

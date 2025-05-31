@@ -12,6 +12,8 @@ pub struct Assets {
     pub player_walk: SpriteAsset,
     pub player_hit: SpriteAsset,
 
+    pub statue: SpriteAsset,
+
     pub crusher_working: SpriteAsset,
     pub minecart_idle: SpriteAsset,
     pub minecart_moving: SpriteAsset,
@@ -29,6 +31,7 @@ pub struct AssetState {
 
 pub async fn init_assets() -> Assets {
     let player_tex = load_asset_texture("player").await;
+    let statue_tex = load_asset_texture("statue").await;
     let crusher_tex = load_asset_texture("crusher").await;
     let minecart_tex = load_asset_texture("minecart").await;
     let rail_tex = load_asset_texture("rail").await;
@@ -41,6 +44,8 @@ pub async fn init_assets() -> Assets {
         player_idle: load_anim(&mut state, &player_tex, RowCol(0, 0), 2, Size(16, 16), 400.0),
         player_walk: load_anim(&mut state, &player_tex, RowCol(2, 0), 2, Size(16, 16), 150.0),
         player_hit:  load_anim(&mut state, &player_tex, RowCol(4, 0), 1, Size(16, 16), 150.0),
+
+        statue: load_anim(&mut state, &statue_tex, RowCol(0, 0), 1, Size(32, 48), 9999.0),
         
         crusher_working: load_anim(&mut state, &crusher_tex, RowCol(0, 0), 3, Size(256, 128), 200.0),
         minecart_idle: load_anim(&mut state, &minecart_tex, RowCol(0, 0), 1, Size(15, 7), 400.0),

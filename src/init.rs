@@ -26,6 +26,16 @@ pub async fn init(assets: Assets) -> Game {
 
     let player = player;
 
+    let statue = SimpleEntity {
+        trans: Transform {
+            pos: (STATUE * ivec2(CHUNK_SIDE_I32, CHUNK_SIDE_I32)).as_vec2(),
+            size: vec2(32.0, 48.0),
+            offset: vec2(0.0, 0.0),
+        },
+        sprite: assets.statue.derive_sprite(),
+        anim: assets.statue.derive_anim(),
+    };
+
     let crusher = Crusher {
         trans: Transform {
             pos: player.trans.pos,
@@ -61,6 +71,7 @@ pub async fn init(assets: Assets) -> Game {
         visible_chunks: Vec::with_capacity(16),
         
         player,
+        statue,
         crusher,
         minecart,
         tile_durability_map: HashMap::with_capacity(32),

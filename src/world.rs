@@ -29,8 +29,11 @@ pub mod consts {
     pub const WORLD_SPAWN_F32: Vec2 = vec2(WORLD_SPAWN_I32.x as f32, WORLD_SPAWN_I32.y as f32);    
 
     pub const MINE_AREA_WIDTH_I32: i32 = 8;
+        
     pub const ROOM_START_I32: IVec2 = ivec2(WORLD_SPAWN_I32.x - CHUNK_SIDE_I32*2, WORLD_SPAWN_I32.y);
     pub const ROOM_END_I32: IVec2 = ROOM_START_I32.wrapping_add(ivec2(CHUNK_SIDE_I32*4, 8));
+    
+    pub const STATUE: IVec2 = ivec2(WORLD_SPAWN_I32.x-MINE_AREA_WIDTH_I32/2-2, WORLD_SPAWN_I32.y);
 
     pub const MINECART_START: IVec2 = ivec2(WORLD_SPAWN_I32.x+MINE_AREA_WIDTH_I32/2, WORLD_SPAWN_I32.y);
     pub const MINECART_END: IVec2 = ivec2(ROOM_END_I32.x-1, WORLD_SPAWN_I32.y);
