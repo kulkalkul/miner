@@ -16,6 +16,8 @@ pub fn update(game: &mut Game) {
     let visible_chunks = &mut game.visible_chunks;
     let derived = &mut game.derived;
     let action = &mut game.action;
+    
+    let late_derived = &game.late_derived;
 
     let tiles = world.tiles();
 
@@ -28,6 +30,8 @@ pub fn update(game: &mut Game) {
 
     // player movement :::
     'player_movement: {
+        if late_derived.ui_is_active { break 'player_movement; }
+
         let pos = player.trans.pos;
         let mut new_pos = player.trans.pos;
         let size = player.trans.size;
@@ -238,8 +242,8 @@ pub fn update(game: &mut Game) {
         player.carrying.push(item_kind);        
     }
 
-    debug_generic(player.trans.collider(), WHITE);
-    debug_generic(minecart.trans.collider(), RED);
+    // debug_generic(player.trans.collider(), WHITE);
+    // debug_generic(minecart.trans.collider(), RED);
     
     if  minecart.movement == MinecartMovement::Idle &&
         player.trans.collider().intersects(minecart.trans.collider()) &&
@@ -260,8 +264,17 @@ pub fn update(game: &mut Game) {
         }
     }
 
+    if player.trans.collider().intersects(statue.trans.collider()) {
+        derived.ui_show_statue_key = true;
+
+        if is_key_pressed(KeyCode::E) {
+            game.ui_show_statue = !game.ui_show_statue;
+        }
+    }
+
     if minecart.movement == MinecartMovement::Idle && minecart.cooldown <= 0.1 && minecart.carrying.length > 0 {
         minecart.movement = MinecartMovement::Forwards;
+        minecart.anim = assets.minecart_moving.derive_anim();
     }
 
     minecart.cooldown = f32::max(minecart.cooldown-dt, 0.0);
@@ -278,11 +291,12 @@ pub fn update(game: &mut Game) {
         minecart.trans.pos.x -= 100.0 * dt;
         if minecart.trans.pos.x <= MINECART_START.x as f32 * TILE_SIDE as f32 {
             minecart.movement = MinecartMovement::Idle;
+            minecart.anim = assets.minecart_idle.derive_anim();
         }
     }
 
-
     // tick animations :::
+    tick_animation(&mut minecart.sprite, &mut minecart.anim, dt);
     tick_animation(&mut crusher.sprite, &mut crusher.anim, dt);
     tick_animation(&mut player.sprite, &mut player.anim, dt);
     
@@ -312,6 +326,11 @@ pub fn update(game: &mut Game) {
     // apply commands & updates :::
     world.apply_commands(world_commands);
     world.apply_updates(&assets.tile_set);
+    
+    game.late_derived = LateDerivedState::default();
+    let late_derived = &mut game.late_derived;
+
+    late_derived.ui_is_active = game.ui_show_statue;
     
     game.bump.reset();
 }

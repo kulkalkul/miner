@@ -28,9 +28,10 @@ use asset::  { Assets };
 use update:: { update };
 use render:: { render };
 use world::  { World };
-use entity:: { BoxCollider, Crusher, Minecart, Player };
-use derived::{ DerivedState };
+use derived::{ DerivedState, LateDerivedState };
 use action:: { ActionState };
+
+use entity::*;
 
 pub mod prelude {
     pub use bumpalo::{ Bump };
@@ -55,7 +56,7 @@ pub mod prelude {
     pub use crate::world::consts::*;
     pub use crate::world::conversions::*;
 
-    pub use crate::derived::{ DerivedState };
+    pub use crate::derived::{ DerivedState, LateDerivedState };
 
     pub use crate::action::{ ActionState };
     pub use crate::action::actions::*;
@@ -93,11 +94,14 @@ pub struct Game {
     pub crusher: Crusher,
     pub minecart: Minecart,
 
+    pub ui_show_statue: bool,
+
     pub tile_durability_map: HashMap<IVec2, f32>,
 
     pub player_max_carrying: usize,
 
     pub derived: DerivedState,
+    pub late_derived: LateDerivedState,
     pub action: ActionState,
 }
 

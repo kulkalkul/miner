@@ -17,7 +17,7 @@ pub async fn init(assets: Assets) -> Game {
         },
         sprite: assets.player_idle.derive_sprite(),
         anim: assets.player_idle.derive_anim(),
-        carrying: Array::with_length(ItemKind::Air, 24),
+        carrying: Array::with_length(ItemKind::Air, 0),
         last_positions: Box::new([vec2(0.0, 0.0); 24]),
         bag_mesh: GameMesh::new(),
     };
@@ -48,7 +48,7 @@ pub async fn init(assets: Assets) -> Game {
 
     let minecart = Minecart {
         trans: Transform {
-            pos: (MINECART_START * ivec2(CHUNK_SIDE_I32, CHUNK_SIDE_I32)).as_vec2(),
+            pos: (MINECART_START * ivec2(CHUNK_SIDE_I32, CHUNK_SIDE_I32) + ivec2(0, 2)).as_vec2(),
             size: vec2(15.0, 7.0),
             offset: vec2(0.0, 0.0),
         },
@@ -75,11 +75,15 @@ pub async fn init(assets: Assets) -> Game {
         statue,
         crusher,
         minecart,
+
+        ui_show_statue: false,
+        
         tile_durability_map: HashMap::with_capacity(32),
         
         player_max_carrying: 24,
         
         derived: DerivedState::default(),
+        late_derived: LateDerivedState::default(),
         action: ActionState::default(),
     }
 }
