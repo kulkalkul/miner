@@ -11,6 +11,13 @@ pub struct Player {
 }
 
 #[derive(Debug)]
+pub struct SimpleEntity {
+    pub trans: Transform,
+    pub sprite: Sprite,
+    pub anim: Animation,
+}
+
+#[derive(Debug)]
 pub struct Crusher {
     pub trans: Transform,
     pub sprite: Sprite,
