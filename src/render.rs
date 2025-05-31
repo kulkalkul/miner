@@ -5,9 +5,11 @@ use crate::sprite::{ draw_sprite, draw_sprite_offset };
 
 pub fn render(game: &Game) {
     let statue = &game.statue;
+    let minecart = &game.minecart;
     let player = &game.player;
     let crusher = &game.crusher;
     let visible_chunks = &game.visible_chunks;
+    let assets = &game.assets;
     let world = &game.world;
 
     let world_origin = Rect {
@@ -38,8 +40,8 @@ pub fn render(game: &Game) {
     
     // draw_sprite_offset(crusher.trans.pos, crusher.trans.offset, &crusher.sprite);
 
-    let rail_start_sprite = game.assets.rail_start.derive_sprite();
-    let rail_sprite = game.assets.rail.derive_sprite();
+    let rail_start_sprite = assets.rail_start.derive_sprite();
+    let rail_sprite = assets.rail.derive_sprite();
     
     draw_sprite(tile_pos_to_world_pos(MINECART_START), &rail_start_sprite);
 
@@ -49,7 +51,7 @@ pub fn render(game: &Game) {
         draw_sprite(world_pos, &rail_sprite);
     }
 
-    draw_sprite(game.minecart.trans.pos, &game.minecart.sprite);
+    draw_sprite(minecart.trans.pos, &minecart.sprite);
     draw_sprite(statue.trans.pos, &statue.sprite);
     
 
