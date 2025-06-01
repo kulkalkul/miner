@@ -11,6 +11,15 @@ pub struct Player {
 }
 
 #[derive(Debug)]
+pub struct CoinBundle {
+    pub trans: Transform,
+    pub sprite: Sprite,
+    pub amount: i32,
+    pub velocity: Vec2,
+    pub sine_index: usize,
+}
+
+#[derive(Debug)]
 pub struct SimpleEntity {
     pub trans: Transform,
     pub sprite: Sprite,

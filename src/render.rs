@@ -56,6 +56,14 @@ pub fn render(game: &Game) {
 
     draw_sprite(minecart.trans.pos, &minecart.sprite);
     draw_sprite(statue.trans.pos, &statue.sprite);
+
+    for coin in &game.coins {
+        draw_sprite_scaled(
+            coin.trans.pos + vec2(0.0, derived.time_sine_4[coin.sine_index]),
+            vec2(0.25, 0.25),
+            &coin.sprite,
+        );
+    }
     
 
     let sprite_dir = if player.sprite.flip_x { vec2(-1.0, 1.0) } else { vec2(1.0, 1.0) };

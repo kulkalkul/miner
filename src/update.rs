@@ -298,6 +298,26 @@ pub fn update(game: &mut Game) {
         }
     }
 
+    let mut coins_to_remove = Vec::new_in(&game.bump);
+
+    for (i, coin) in &mut game.coins.iter_mut().enumerate().rev() {
+        if player.trans.pos.distance_squared(coin.trans.pos) <= 16.0 {
+            game.money += coin.amount;
+            coins_to_remove.push(i);
+        }
+        if coin.trans.pos.y <= WORLD_SPAWN_F32.y * TILE_SIDE as f32 {
+            coin.trans.pos.y = WORLD_SPAWN_F32.y * TILE_SIDE as f32;
+            coin.velocity = vec2(0.0, 0.0);
+        } else {
+            coin.trans.pos += coin.velocity * dt;
+            coin.velocity.y -= 80.0 * dt;
+        }
+    }
+    for i in coins_to_remove {
+        // INFO: not using swap_remove because draw order changes and it looks glitchy
+        game.coins.remove(i);
+    }
+
     if minecart.movement == MinecartMovement::Idle && minecart.cooldown <= 0.1 && minecart.carrying.length > 0 {
         minecart.movement = MinecartMovement::Forwards;
         minecart.anim = assets.minecart_moving.derive_anim();
@@ -318,6 +338,77 @@ pub fn update(game: &mut Game) {
         if minecart.trans.pos.x <= MINECART_START.x as f32 * TILE_SIDE as f32 {
             minecart.movement = MinecartMovement::Idle;
             minecart.anim = assets.minecart_idle.derive_anim();
+
+            let mut sum = 0;
+            for item in minecart.carrying.slice() {
+                sum += item.kind.value();
+            }
+            minecart.carrying.clear();
+
+            let mut ones = i32::min(sum/1, 30);
+            sum -= ones*1;
+            let mut fives = i32::min(sum/5, 20);
+            sum -= fives*5;
+            let mut fifteens = i32::min(sum/15, 20);
+            sum -= fifteens*15;
+            let mut twentyfives = i32::min(sum/25, 10);
+            sum -= twentyfives*25;
+
+            let hundreds = sum/100;
+            sum -= hundreds*100;
+
+            let remaining_twentyfives = sum/25;
+            sum -= remaining_twentyfives*25;
+            let remaining_fifteens = sum/15;
+            sum -= remaining_fifteens*15;
+            let remaining_fives = sum/5;
+            sum -= remaining_fives*5;
+            let remaining_ones = sum/1;
+            sum -= remaining_ones*1;
+
+            debug_assert!(sum == 0);
+
+            twentyfives += remaining_twentyfives;
+            fifteens += remaining_fifteens;
+            fives += remaining_fives;
+            ones += remaining_ones;
+
+            let trans = Transform {
+                pos: minecart.trans.pos,
+                size: vec2(0.0, 0.0),
+                offset: vec2(0.0, 0.0),
+            };
+
+            let new_bundle = |amount: i32, asset: &SpriteAsset| {
+                let x = rand::gen_range(-80.0, -100.0);
+                let y = rand::gen_range(68.0, 90.0);
+
+                let sine_index = rand::gen_range(0, 16);
+
+                CoinBundle {
+                    trans,
+                    amount,
+                    velocity: vec2(x, y),
+                    sprite: asset.derive_sprite(),
+                    sine_index,
+                }
+            };
+
+            for _ in 0..ones {
+                game.coins.push(new_bundle(1, &assets.coins_1));
+            }
+            for _ in 0..fives {
+                game.coins.push(new_bundle(5, &assets.coins_2));
+            }
+            for _ in 0..fifteens {
+                game.coins.push(new_bundle(15, &assets.coins_3));
+            }
+            for _ in 0..twentyfives {
+                game.coins.push(new_bundle(25, &assets.coins_4));
+            }
+            for _ in 0..hundreds {
+                game.coins.push(new_bundle(100, &assets.coins_5));
+            }
         }
     }
 

@@ -12,6 +12,12 @@ pub struct Assets {
     pub ui_keys: SpriteAsset,
 
     pub coin: SpriteAsset,
+    
+    pub coins_1: SpriteAsset,
+    pub coins_2: SpriteAsset,
+    pub coins_3: SpriteAsset,
+    pub coins_4: SpriteAsset,
+    pub coins_5: SpriteAsset,
 
     pub player_idle: SpriteAsset,
     pub player_walk: SpriteAsset,
@@ -38,6 +44,7 @@ pub async fn init_assets() -> Assets {
     let ui_bg_tex = load_asset_texture("ui_bg").await;
     let ui_keys_tex = load_asset_texture("ui_keys").await;
     let coin_tex = load_asset_texture("coin").await;
+    let coins_tex = load_asset_texture("coins").await;
 
     let player_tex = load_asset_texture("player").await;
     let statue_tex = load_asset_texture("statue").await;
@@ -55,6 +62,12 @@ pub async fn init_assets() -> Assets {
         ui_keys: load_anim(&mut state, &ui_keys_tex, RowCol(0, 0), 1, Size(26, 23), 9999.0),
         
         coin: load_sprite(&mut state, &coin_tex, Offset(0, 0), Size(16, 16)),
+        
+        coins_1: load_anim(&mut state, &coins_tex,RowCol(0, 0), 1, Size(32, 32), 9999.0),
+        coins_2: load_anim(&mut state, &coins_tex,RowCol(1, 0), 1, Size(32, 32), 9999.0),
+        coins_3: load_anim(&mut state, &coins_tex,RowCol(2, 0), 1, Size(32, 32), 9999.0),
+        coins_4: load_anim(&mut state, &coins_tex,RowCol(3, 0), 1, Size(32, 32), 9999.0),
+        coins_5: load_anim(&mut state, &coins_tex,RowCol(4, 0), 1, Size(32, 32), 9999.0),
 
         player_idle: load_anim(&mut state, &player_tex, RowCol(0, 0), 2, Size(16, 16), 400.0),
         player_walk: load_anim(&mut state, &player_tex, RowCol(2, 0), 2, Size(16, 16), 150.0),
