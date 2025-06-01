@@ -373,13 +373,14 @@ pub fn update(game: &mut Game) {
             ones += remaining_ones;
 
             let trans = Transform {
-                pos: minecart.trans.pos,
+                pos: minecart.trans.pos + vec2(0.0, 8.0),
                 size: vec2(0.0, 0.0),
                 offset: vec2(0.0, 0.0),
             };
 
             let new_bundle = |amount: i32, asset: &SpriteAsset| {
-                let x = rand::gen_range(-80.0, -100.0);
+                // INFO: magic values
+                let x = rand::gen_range(-75.0, -100.0);
                 let y = rand::gen_range(68.0, 90.0);
 
                 let sine_index = rand::gen_range(0, 16);

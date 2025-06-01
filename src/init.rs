@@ -48,7 +48,7 @@ pub async fn init(assets: Assets) -> Game {
 
     let minecart = Minecart {
         trans: Transform {
-            pos: (MINECART_START * ivec2(CHUNK_SIDE_I32, CHUNK_SIDE_I32) + ivec2(0, 2)).as_vec2(),
+            pos: (MINECART_START * ivec2(CHUNK_SIDE_I32, CHUNK_SIDE_I32)).as_vec2(),
             size: vec2(15.0, 7.0),
             offset: vec2(0.0, 0.0),
         },
