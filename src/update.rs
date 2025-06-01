@@ -1,9 +1,11 @@
 use crate::prelude::*;
 
 pub fn update(game: &mut Game) {
+    game.window_to_draw_size = vec2(screen_width(), screen_height()) / vec2(GAME_WIDTH_F32, GAME_HEIGHT_F32);
+    game.ui_state.mouse_div = game.window_to_draw_size;
     game.derived = DerivedState::default();
     game.action.reset();
-
+    
     game.input_actions = InputActions {
         move_left: is_key_down(KeyCode::A),
         move_right: is_key_down(KeyCode::D),

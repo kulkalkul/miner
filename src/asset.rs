@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
 
-use crate::sprite::{ load_anim, load_sprite, load_sheet_cell, load_sheet_cells };
+use crate::sprite::{ load_anim, load_sheet_cell, load_sheet_cells, load_sprite, load_three_patch };
 use crate::sprite::{ Offset, Size, RowCol };
 use crate::sprite::{ SpriteAsset };
 
@@ -10,6 +10,7 @@ use crate::tile::{ TileSetAsset };
 pub struct Assets {
     pub ui_bg: SpriteAsset,
     pub ui_keys: SpriteAsset,
+    pub ui_button: [[SpriteAsset; 3]; 2],
 
     pub coin: SpriteAsset,    
     pub coins: Box<[SpriteAsset]>,
@@ -38,6 +39,8 @@ pub struct AssetState {
 pub async fn init_assets() -> Assets {
     let ui_bg_tex = load_asset_texture("ui_bg").await;
     let ui_keys_tex = load_asset_texture("ui_keys").await;
+    let ui_button_tex = load_asset_texture("ui_button").await;
+    
     let coin_tex = load_asset_texture("coin").await;
     let coins_tex = load_asset_texture("coins").await;
 
@@ -53,8 +56,9 @@ pub async fn init_assets() -> Assets {
     let mut state = AssetState { asset_id: 0 };
 
     Assets {
-        ui_bg: load_sprite(&mut state, &ui_bg_tex, Offset(0, 0), Size(200, 141)),
+        ui_bg: load_sprite(&mut state, &ui_bg_tex, Offset(0, 0), Size(190, 133)),
         ui_keys: load_sheet_cell(&mut state, &ui_keys_tex, RowCol(0, 0), Size(26, 23)),
+        ui_button: load_three_patch(&mut state, &ui_button_tex),
         
         coin: load_sprite(&mut state, &coin_tex, Offset(0, 0), Size(16, 16)),
         

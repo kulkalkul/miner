@@ -262,8 +262,9 @@ pub fn draw_sprite_offset(position: Vec2, offset: Vec2, sprite: &Sprite) {
     draw_sprite(position + offset, sprite);
 }
 
-pub fn draw_ui(position: Vec2, sprite: &Sprite) {
+pub fn draw_ui(position: Vec2, scale: Vec2, sprite: &Sprite) {
     draw_texture_ex(&sprite.texture, position.x, position.y, WHITE, DrawTextureParams {
+        dest_size: Some(sprite.texture_frame.size()*scale),
         source: Some(sprite.texture_frame),
         ..Default::default()
     });

@@ -2,9 +2,10 @@ use crate::prelude::*;
 
 use crate::apply_debug_commands;
 use crate::sprite::{ draw_sprite, draw_sprite_scaled, draw_sprite_offset, draw_ui };
+use crate::ui::*;
 
 
-pub fn render(game: &Game) {
+pub fn render(game: &mut Game) {
     let statue = &game.statue;
     let minecart = &game.minecart;
     let player = &game.player;
@@ -102,6 +103,8 @@ pub fn render(game: &Game) {
         let mut ui_camera_origin = world_origin;
         ui_camera_origin.x += ui_camera_origin.w/2.0;
         ui_camera_origin.y += ui_camera_origin.h/2.0;
+        ui_camera_origin.w *= 2.0;
+        ui_camera_origin.h *= 2.0;
         
         let mut camera = Camera2D::from_display_rect(ui_camera_origin);
         camera.zoom.y *= -1.0;
@@ -110,28 +113,74 @@ pub fn render(game: &Game) {
 
     let corner_padding = vec2(2.0, 2.0);
     let padding = vec2(1.0, 1.0);
-    let mut cursor = vec2(GAME_WIDTH_F32, 0.0);
+    let mut cursor = vec2(UI_WIDTH_F32, 0.0);
 
     {
-        cursor.x -= assets.coin.texture.size().x + corner_padding.x;
+        cursor.x -= (assets.coin.texture.size()).x*2.0 + corner_padding.x;
         cursor.y += corner_padding.y;
-        draw_ui(cursor, &assets.coin.derive_sprite());
+        draw_ui(cursor, vec2(2.0, 2.0), &assets.coin.derive_sprite());
 
         let text_size = measure_text(&game.money.to_string(), None, 16, 1.0);
         
-        cursor.y += assets.coin.texture.size().y - 4.0;
-        cursor.x -= text_size.width;
-        draw_text(&game.money.to_string(), cursor.x, cursor.y, 16.0, WHITE);
+        cursor.y += assets.coin.texture.size().y*2.0 - 8.0;
+        cursor.x -= text_size.width*2.0;
+        draw_text(&game.money.to_string(), cursor.x, cursor.y, 32.0, WHITE);
     }
-
     
-    {
-        let bg_offset = vec2(GAME_WIDTH_F32, GAME_HEIGHT_F32) - assets.ui_bg.texture.size();
-        if game.ui_show_statue {
-            draw_sprite(vec2(bg_offset.x/2.0, bg_offset.y/2.0), &assets.ui_bg.derive_sprite());
-        }
-    }
+    // INFO: Don't forget some textures are scaled 2x
+    'show_statue: {
+        if !game.ui_show_statue { break 'show_statue; }
 
+        let prev_mouse_div = game.ui_state.mouse_div;
+        game.ui_state.mouse_div /= 2.0;
+        
+        let bg_size = assets.ui_bg.texture.size()*2.0;
+        let bg_offset = vec2(UI_WIDTH_F32, UI_HEIGHT_F32) - bg_size;
+
+        let bg_padding = vec2(20.0, 30.0);
+        let button_spacing = vec2(8.0, 4.0);
+
+        let mut cursor = vec2(bg_offset.x/2.0, bg_offset.y/2.0);
+        draw_ui(cursor, vec2(2.0, 2.0), &assets.ui_bg.derive_sprite());
+
+        cursor += bg_padding;
+    
+        let button_width = (bg_size.x - bg_padding.x*2.0)/2.0 - button_spacing.x;
+        let button_height = assets.ui_button[0][0].frames[0].h;
+        let mut lcursor = cursor;
+        let mut rcursor = cursor;
+
+        rcursor.x += button_spacing.x + button_width;
+
+        if ui_button(&mut game.ui_state, "Upgrade", lcursor, button_width, &assets.ui_button) {
+            println!("hop");
+        }
+        if ui_button(&mut game.ui_state, "Upgrade", rcursor, button_width, &assets.ui_button) {
+            println!("hop");
+        }
+        lcursor.y += button_spacing.y + button_height;
+        rcursor.y += button_spacing.y + button_height;
+        if ui_button(&mut game.ui_state, "Upgrade", lcursor, button_width, &assets.ui_button) {
+            println!("hop");
+        }
+        if ui_button(&mut game.ui_state, "Upgrade", rcursor, button_width, &assets.ui_button) {
+            println!("hop");
+        }
+        lcursor.y += button_spacing.y + button_height;
+        rcursor.y += button_spacing.y + button_height;
+        if ui_button(&mut game.ui_state, "Upgrade", lcursor, button_width, &assets.ui_button) {
+            println!("hop");
+        }
+        if ui_button(&mut game.ui_state, "Upgrade", rcursor, button_width, &assets.ui_button) {
+            println!("hop");
+        }
+        game.ui_state.mouse_div = prev_mouse_div;
+    }
+    
+    // HACK: This shouldn't be inside render, but whatever
+    if is_mouse_button_released(MouseButton::Left) {
+        game.ui_state.last_clicked_button_hash = None;
+    }
 
     // debug
     apply_debug_commands();

@@ -64,6 +64,11 @@ pub async fn init(assets: Assets) -> Game {
 
     Game {
         total_time: 0.0,
+        window_to_draw_size: vec2(1.0, 1.0),
+        ui_state: UIState {
+            mouse_div: vec2(1.0, 1.0),
+            last_clicked_button_hash: None,
+        },
         dev_mode: false,
         bump,
         assets,

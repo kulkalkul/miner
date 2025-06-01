@@ -21,10 +21,12 @@ mod world;
 mod entity;
 mod derived;
 mod action;
+mod ui;
 
 use init::   { init };
 use asset::  { init_assets };
 use asset::  { Assets };
+use ui::     { UIState };
 use update:: { update };
 use render:: { render };
 use world::  { World };
@@ -56,6 +58,8 @@ pub mod prelude {
     pub use crate::world::consts::*;
     pub use crate::world::conversions::*;
 
+    pub use crate::ui::{ UIState };
+
     pub use crate::derived::{ DerivedState, LateDerivedState };
 
     pub use crate::action::{ ActionState };
@@ -71,6 +75,15 @@ mod consts {
 
     pub const GAME_WIDTH_F32: f32 = GAME_WIDTH as f32;
     pub const GAME_HEIGHT_F32: f32 = GAME_HEIGHT as f32;
+
+    pub const UI_WIDTH: usize = GAME_WIDTH * 2;
+    pub const UI_HEIGHT: usize = GAME_HEIGHT * 2;
+
+    pub const UI_WIDTH_I32: i32 = UI_WIDTH as i32;
+    pub const UI_HEIGHT_I32: i32 = UI_HEIGHT as i32;
+
+    pub const UI_WIDTH_F32: f32 = UI_WIDTH as f32;
+    pub const UI_HEIGHT_F32: f32 = UI_HEIGHT as f32;
 }
 
 use consts::*;
@@ -82,6 +95,8 @@ pub struct Config {
 
 pub struct Game {
     pub total_time: f32,
+    pub window_to_draw_size: Vec2,
+    pub ui_state: UIState,
     pub dev_mode: bool,
     pub bump: Bump,
     pub assets: Assets,
@@ -144,7 +159,7 @@ async fn main() {
 
     loop {
         update(&mut game);
-        render(&game);
+        render(&mut game);
         next_frame().await;
     }
 }
