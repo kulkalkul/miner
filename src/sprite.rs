@@ -134,6 +134,26 @@ pub fn load_sheet_cells(
 }
 
 
+// first 3 are unpressed, last 3 are pressed
+pub fn load_three_patch(asset_state: &mut AssetState, texture: &Texture2D) -> [[SpriteAsset; 3]; 2] {
+    let size = (texture.size() - vec2(2.0 * 6.0, 0.0)) / vec2(6.0, 1.0);
+    let size = Size(size.x as i32, size.y as i32);
+
+    [
+        [
+            load_sheet_cell(asset_state, texture, RowCol(0, 0), size),
+            load_sheet_cell(asset_state, texture, RowCol(1, 0), size),
+            load_sheet_cell(asset_state, texture, RowCol(2, 0), size),
+        ],
+        [
+            load_sheet_cell(asset_state, texture, RowCol(3, 0), size),
+            load_sheet_cell(asset_state, texture, RowCol(4, 0), size),
+            load_sheet_cell(asset_state, texture, RowCol(5, 0), size),
+        ]
+    ]
+}
+
+
 pub fn load_anim(
     asset_state: &mut AssetState,
     texture: &Texture2D,
@@ -247,4 +267,23 @@ pub fn draw_ui(position: Vec2, sprite: &Sprite) {
         source: Some(sprite.texture_frame),
         ..Default::default()
     });
+}
+
+pub fn draw_ui_three_patch(position: Vec2, width: f32, sprites: &[SpriteAsset; 3]) {
+    // HACK: Well...
+    let texture = &sprites[0].texture;
+    let side_width = &sprites[0].frames[0].w;
+    let mut cursor = position;
+
+    let mut sprites = sprites.each_ref().map(|sprite| (sprite, sprite.frames[0].size().x));
+    sprites[1].1 = width - side_width*2.0;
+
+    for (sprite, size) in sprites {
+        draw_texture_ex(texture, cursor.x, cursor.y, WHITE, DrawTextureParams {
+            source: Some(sprite.frames[0]),
+            dest_size: Some(vec2(size, sprite.frames[0].h)),
+            ..Default::default()
+        });
+        cursor += vec2(size, 0.0);
+    }
 }
