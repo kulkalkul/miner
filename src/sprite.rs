@@ -57,6 +57,7 @@ impl SpriteAsset {
     pub fn derive_sprite(&self) -> Sprite {
         Sprite {
             asset_id: self.asset_id,
+            // TODO: use weak
             texture: Texture2D::clone(&self.texture),
             texture_frame: self.frames[0],
             flip_x: false,
@@ -65,6 +66,7 @@ impl SpriteAsset {
     pub fn derive_anim(&self) -> Animation {
         Animation {
             asset_id: self.asset_id,
+            // TODO: use something else than arc, probs index
             frames: Arc::clone(&self.frames),
             index: self.frames.len(),
             frame_timer: self.frame_timer,
