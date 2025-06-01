@@ -204,7 +204,7 @@ pub fn draw_sprite(position: Vec2, sprite: &Sprite) {
 
 pub fn draw_sprite_scaled(position: Vec2, scale: Vec2, sprite: &Sprite) {    
     draw_texture_ex(&sprite.texture, position.x, position.y, WHITE, DrawTextureParams {
-        dest_size: Some(sprite.texture.size()*scale),
+        dest_size: Some(sprite.texture_frame.size()*scale),
         source: Some(sprite.texture_frame),
         flip_x: sprite.flip_x,
         flip_y: true, // because I enjoy y+
