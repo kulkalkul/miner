@@ -63,6 +63,7 @@ pub async fn init(assets: Assets) -> Game {
     let world = World::new(&assets.tile_set, &bump);
 
     Game {
+        total_time: 0.0,
         dev_mode: false,
         bump,
         assets,

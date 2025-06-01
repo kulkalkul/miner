@@ -2,6 +2,10 @@ use macroquad::prelude::*;
 
 #[derive(Default)]
 pub struct DerivedState {
+    pub time_sine_1: [f32; 16],
+    pub time_sine_2: [f32; 16],
+    pub time_sine_3: [f32; 16],
+    pub time_sine_4: [f32; 16],
     pub player_anim_finished: bool,
     pub player_moving: bool,
     pub player_touching_right: bool,

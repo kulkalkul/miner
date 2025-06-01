@@ -81,6 +81,7 @@ pub struct Config {
 }
 
 pub struct Game {
+    pub total_time: f32,
     pub dev_mode: bool,
     pub bump: Bump,
     pub assets: Assets,

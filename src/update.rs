@@ -33,7 +33,26 @@ pub fn update(game: &mut Game) {
     let tiles = world.tiles();
 
     let player_last_pos = player.trans.pos;
+    
+    game.total_time += dt;
+    
 
+    {
+        let epsilon = std::f32::consts::TAU / 16.0;
+        for (i, sine) in derived.time_sine_1.iter_mut().enumerate() {
+            *sine = f32::sin((game.total_time * 1.0 + epsilon * i as f32) % std::f32::consts::TAU);
+        }
+        for (i, sine) in derived.time_sine_2.iter_mut().enumerate() {
+            *sine = f32::sin((game.total_time * 2.0 + epsilon * i as f32) % std::f32::consts::TAU);
+        }
+        for (i, sine) in derived.time_sine_3.iter_mut().enumerate() {
+            *sine = f32::sin((game.total_time * 3.0 + epsilon * i as f32) % std::f32::consts::TAU);
+        }
+        for (i, sine) in derived.time_sine_4.iter_mut().enumerate() {
+            *sine = f32::sin((game.total_time * 4.0 + epsilon * i as f32) % std::f32::consts::TAU);
+        }
+    }
+    
     derived.player_anim_finished = player.anim.repeated > 0;
 
     // actions :::
