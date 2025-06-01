@@ -329,7 +329,6 @@ pub fn update(game: &mut Game) {
         minecart.trans.pos.x += 100.0 * dt;
         if minecart.trans.pos.x >= MINECART_END.x as f32 * TILE_SIDE as f32 {
             minecart.movement = MinecartMovement::Backwards;
-            minecart.carrying.clear();
         }
     }
 
