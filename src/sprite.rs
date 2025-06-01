@@ -30,9 +30,9 @@ pub struct SpriteAsset {
     pub frame_timer: f32,
 }
 
-pub struct Offset(pub i32, pub i32);
-pub struct RowCol(pub i32, pub i32);
-pub struct Size(pub i32, pub i32);
+#[derive(Copy, Clone)] pub struct Offset(pub i32, pub i32);
+#[derive(Copy, Clone)] pub struct RowCol(pub i32, pub i32);
+#[derive(Copy, Clone)] pub struct Size(pub i32, pub i32);
 
 impl Sprite {
     pub fn local_offset_with_flip(&self, offset: Vec2) -> Vec2 {
@@ -107,6 +107,32 @@ pub fn load_sprite(
         frame_timer: f32::INFINITY,
     }
 }
+
+pub fn load_sheet_cell(
+    asset_state: &mut AssetState,
+    texture: &Texture2D,
+    row_col: RowCol,
+    size: Size,
+) -> SpriteAsset {
+    load_anim(asset_state, texture, row_col, 1, size, f32::INFINITY)
+}
+
+pub fn load_sheet_cells(
+    asset_state: &mut AssetState,
+    texture: &Texture2D,
+    row_col: RowCol,
+    cell_count: u32,
+    size: Size,
+) -> Box<[SpriteAsset]> {
+    let mut cells = Vec::with_capacity(cell_count as usize);
+
+    for _ in 0..cell_count {
+        cells.push(load_anim(asset_state, texture, row_col, 1, size, f32::INFINITY));
+    }
+
+    cells.into_boxed_slice()
+}
+
 
 pub fn load_anim(
     asset_state: &mut AssetState,

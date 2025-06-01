@@ -395,19 +395,19 @@ pub fn update(game: &mut Game) {
             };
 
             for _ in 0..ones {
-                game.coins.push(new_bundle(1, &assets.coins_1));
+                game.coins.push(new_bundle(1, &assets.coins[0]));
             }
             for _ in 0..fives {
-                game.coins.push(new_bundle(5, &assets.coins_2));
+                game.coins.push(new_bundle(5, &assets.coins[1]));
             }
             for _ in 0..fifteens {
-                game.coins.push(new_bundle(15, &assets.coins_3));
+                game.coins.push(new_bundle(15, &assets.coins[2]));
             }
             for _ in 0..twentyfives {
-                game.coins.push(new_bundle(25, &assets.coins_4));
+                game.coins.push(new_bundle(25, &assets.coins[3]));
             }
             for _ in 0..hundreds {
-                game.coins.push(new_bundle(100, &assets.coins_5));
+                game.coins.push(new_bundle(100, &assets.coins[4]));
             }
         }
     }
