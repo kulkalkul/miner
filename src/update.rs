@@ -150,6 +150,8 @@ pub fn update(game: &mut Game) {
             derived.player_moving = true;
         }
     }
+    
+    derived.player_hit_str = 1.0 / f32::max(player_movement.x.abs() as f32 + player_movement.y.abs() as f32, 1.0);
 
     // player animations :::
     if player.anim.is( &assets.player_idle ) && derived.player_moving {
@@ -187,11 +189,9 @@ pub fn update(game: &mut Game) {
         if !tile.kind.can_mine() { break 'block_mine; }
 
         if touch_vec.x != 0 && tile_one_up.kind.can_climb() { break 'block_mine; }            
-
-        let movement_str = 1.0 / f32::max(player_movement.x.abs() as f32 + player_movement.y.abs() as f32, 1.0);
         
         let durability = game.tile_durability_map.entry(tile.pos).or_insert(0.0);
-        *durability += dt * 3.0 * movement_str;
+        *durability += dt * 3.0 * derived.player_hit_str;
         
         player.anim = assets.player_hit.derive_anim();
 

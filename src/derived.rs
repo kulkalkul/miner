@@ -12,6 +12,7 @@ pub struct DerivedState {
     pub player_touching_left: bool,
     pub player_touching_top: bool,
     pub player_touching_bottom: bool,
+    pub player_hit_str: f32,
 
     pub ui_show_statue_key: bool,
 }
