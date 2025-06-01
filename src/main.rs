@@ -281,4 +281,7 @@ impl<T: Clone, const N: usize> Array<T, N> {
     pub fn clear(&mut self) {
         self.length = 0;
     }
+    pub fn slice(&self) -> &[T] {
+        &self.items[..self.length]
+    }
 }
