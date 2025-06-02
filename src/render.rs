@@ -41,6 +41,13 @@ pub fn render(game: &mut Game) {
     camera_origin.x += player.trans.pos.x;
     camera_origin.y += player.trans.pos.y;
     set_camera(&Camera2D::from_display_rect(camera_origin));
+    let tiles = world.tiles();
+    for (&tile_pos, &durability) in &game.tile_durability_map {
+        let tile = tiles.at_tile_pos(tile_pos);
+        let index = usize::clamp(((durability/tile.kind.durability())*4.0) as usize, 0, 3);
+        draw_sprite(tile.world_pos(), &assets.cracking[index].derive_sprite());
+    }
+    let _ = tiles;
     
     // draw_sprite_offset(crusher.trans.pos, crusher.trans.offset, &crusher.sprite);
 

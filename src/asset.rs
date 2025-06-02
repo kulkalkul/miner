@@ -12,6 +12,7 @@ pub struct Assets {
     pub ui_keys: SpriteAsset,
     pub ui_button: [[SpriteAsset; 3]; 2],
 
+    pub cracking: Box<[SpriteAsset]>,
     pub coin: SpriteAsset,    
     pub coins: Box<[SpriteAsset]>,
 
@@ -40,6 +41,7 @@ pub async fn init_assets() -> Assets {
     let ui_bg_tex = load_asset_texture("ui_bg").await;
     let ui_keys_tex = load_asset_texture("ui_keys").await;
     let ui_button_tex = load_asset_texture("ui_button").await;
+    let cracking_tex = load_asset_texture("cracking").await;
     
     let coin_tex = load_asset_texture("coin").await;
     let coins_tex = load_asset_texture("coins").await;
@@ -60,6 +62,7 @@ pub async fn init_assets() -> Assets {
         ui_keys: load_sheet_cell(&mut state, &ui_keys_tex, RowCol(0, 0), Size(26, 23)),
         ui_button: load_three_patch(&mut state, &ui_button_tex),
         
+        cracking: load_sheet_cells(&mut state, &cracking_tex, RowCol(0, 0), 4, Size(16, 16)),
         coin: load_sprite(&mut state, &coin_tex, Offset(0, 0), Size(16, 16)),
         
         coins: load_sheet_cells(&mut state, &coins_tex, RowCol(0, 0), 5, Size(32, 32)),
