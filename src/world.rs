@@ -321,9 +321,9 @@ impl World {
         struct Min(usize);
         struct Max(usize);
 
-        let mut tiles_map = BTreeMap::new();
+        let mut ores_map = BTreeMap::new();
 
-        let tiles = [
+        let ores = [
             ( 0, Tile::StoneCopperOre, Min(8) , Max(12)  ),
             ( 0, Tile::StoneIronOre  , Min(0) , Max(3)  ),
             ( 0, Tile::StoneGoldOre  , Min(0) , Max(1)  ),
@@ -345,25 +345,25 @@ impl World {
             ( 0, Tile::StoneSapphire , Min(0) , Max(1)  ),
         ];
 
-        let mut tiles_i = 0;
+        let mut ores_i = 0;
         let mut last_generated_y = WORLD_HEIGHT_I32 - WORLD_SPAWN_I32.y / CHUNK_SIDE_I32;
         
         for chunk_y in 0..WORLD_HEIGHT_I32 {
-            while tiles_i < tiles.len() {
-                let (delta_y, tile, Min(min), Max(max)) = tiles[tiles_i];
+            while ores_i < ores.len() {
+                let (delta_y, tile, Min(min), Max(max)) = ores[ores_i];
                 
                 if last_generated_y + delta_y > chunk_y { break; }
                 last_generated_y += delta_y;
 
-                tiles_i += 1;
+                ores_i += 1;
 
-                tiles_map.insert(tile, (Min(min), Max(max)));
+                ores_map.insert(tile, (Min(min), Max(max)));
             }
             
             for chunk_x in 0..WORLD_WIDTH_I32 {
                 let chunk_pos = ivec2(chunk_x, WORLD_HEIGHT_I32-chunk_y-1);
 
-                for (&tile, &(Min(min), Max(max))) in tiles_map.iter() {
+                for (&tile, &(Min(min), Max(max))) in ores_map.iter() {
                     let gen_count = rand::gen_range(min, max + 1);
                     let mut local_tile_poses = Vec::with_capacity_in(gen_count, bump);
                     for _ in 0..gen_count {
@@ -375,6 +375,64 @@ impl World {
                 }
 
             }
+        }
+
+        struct Width(usize);
+
+        let hard_stone_pass = [
+            (4, Min(8), Max(24) , Width(3)),
+            (6, Min(10), Max(48), Width(4)),
+            (8, Min(12), Max(64), Width(6)),
+        ];
+
+        for (chunk_y, Min(min), Max(max), Width(width)) in hard_stone_pass {
+            let mut tile_y = (WORLD_HEIGHT_I32 - chunk_y) * CHUNK_SIDE_I32 + 8;
+            let mut guide_points = Vec::with_capacity_in(WORLD_WIDTH * CHUNK_SIDE, bump);
+            
+            for tile_x in 0..WORLD_WIDTH_I32 * CHUNK_SIDE_I32 {
+                const MAX: i32 = 5;
+                let direction_rand = rand::gen_range(0, MAX);
+
+                let direction = if direction_rand < 1 {
+                    -1
+                } else if direction_rand >= MAX-1 {
+                    1
+                } else {
+                    0
+                };
+
+                tile_y += direction;
+
+                // INFO: Ensures any layer is not interfering with spawn chunks
+                if tile_y <= (WORLD_HEIGHT_I32 - 3) * CHUNK_SIDE_I32 {
+                    tile_y += -direction*2;
+                }
+                
+                guide_points.push(ivec2(tile_x, tile_y));
+            }
+
+            let guide_points = &guide_points[..WORLD_WIDTH*CHUNK_SIDE];
+
+            let mut i = 0;
+            while i < WORLD_WIDTH*CHUNK_SIDE {
+                let stride = rand::gen_range(min, max);
+                let space = rand::gen_range(1, 6);
+
+                let random_x = rand::gen_range(-8, 9);
+                let random_y = rand::gen_range(-4, 5);
+
+                let offset = ivec2(random_x, random_y);
+
+                for stride_i in i..usize::min(i+stride, WORLD_WIDTH*CHUNK_SIDE) {
+                    let guide_point = guide_points[stride_i];
+                    let width = rand::gen_range(width-1, width+1) as i32;
+                    for width_i in 0..width {
+                        commands.set_tile(offset+guide_point+ivec2(0, width_i), Tile::HardStone);
+                    }
+                }
+                i += stride + space;
+            }
+
         }
 
         commands.push_commands(&[ WorldCommand::RecalculateAllMeshes ]);
