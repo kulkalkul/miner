@@ -126,8 +126,8 @@ pub fn load_sheet_cells(
 ) -> Box<[SpriteAsset]> {
     let mut cells = Vec::with_capacity(cell_count as usize);
 
-    for _ in 0..cell_count {
-        cells.push(load_anim(asset_state, texture, row_col, 1, size, f32::INFINITY));
+    for x in 0..cell_count {
+        cells.push(load_anim(asset_state, texture, RowCol(x as i32, row_col.1), 1, size, f32::INFINITY));
     }
 
     cells.into_boxed_slice()
