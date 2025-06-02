@@ -197,7 +197,7 @@ pub fn update(game: &mut Game) {
         
         player.anim = assets.player_hit.derive_anim();
 
-        if *durability > 0.5 {
+        if *durability > tile.kind.durability() {
             if tile.kind.item_drop() != ItemKind::Air {
                 if player.carrying.length >= game.player_max_carrying { break 'block_mine; }
                 player_added_to_bags.push(tile.kind.item_drop());

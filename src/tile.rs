@@ -184,7 +184,7 @@ impl Tile {
             
             Tile::Stone => true,
             Tile::StoneDig => true,
-            Tile::HardStone => false,
+            Tile::HardStone => true,
             
             Tile::StoneCopperOre => true,
             Tile::StoneIronOre => true,
@@ -303,7 +303,7 @@ impl Tile {
             
             Tile::Stone => Tile::BackgroundStone,
             Tile::StoneDig => Tile::BackgroundStone,
-            Tile::HardStone => Tile::ERR,
+            Tile::HardStone => Tile::BackgroundStone,
             
             Tile::StoneCopperOre => Tile::BackgroundStone,
             Tile::StoneIronOre => Tile::BackgroundStone,
@@ -364,6 +364,46 @@ impl Tile {
             Tile::StoneBoundaryTopRightInverse => ItemKind::Air,
             Tile::StoneBoundaryBottomRightInverse => ItemKind::Air,
             Tile::StoneBoundaryBottomLeftInverse => ItemKind::Air,
+        }
+    }
+
+    pub fn durability(&self) -> f32 {
+        match self {
+            Tile::Empty => f32::INFINITY,
+            
+            Tile::ERR => f32::INFINITY,
+            Tile::UP => f32::INFINITY,
+            Tile::DOWN => f32::INFINITY,
+            Tile::GREEN => f32::INFINITY,
+            Tile::RED => f32::INFINITY,
+            
+            Tile::BackgroundStone => f32::INFINITY,
+            Tile::BackgroundStoneLadder => f32::INFINITY,
+            Tile::BackgroundStoneLadderSupport => f32::INFINITY,
+            
+            Tile::Stone => 1.2,
+            Tile::StoneDig => 0.5,
+            Tile::HardStone => 15.0,
+
+            Tile::StoneCopperOre => 1.4,
+            Tile::StoneIronOre => 1.8,
+            Tile::StoneGoldOre => 2.5,
+            Tile::StoneEmerald => 3.5,
+            Tile::StoneRuby => 3.5,
+            Tile::StoneSapphire => 3.5,
+            
+            Tile::StoneBoundaryBottomRight => f32::INFINITY,
+            Tile::StoneBoundaryBottom => f32::INFINITY,
+            Tile::StoneBoundaryBottomLeft => f32::INFINITY,
+            Tile::StoneBoundaryLeft => f32::INFINITY,
+            Tile::StoneBoundaryTopLeft => f32::INFINITY,
+            Tile::StoneBoundaryTop => f32::INFINITY,
+            Tile::StoneBoundaryTopRight => f32::INFINITY,
+            Tile::StoneBoundaryRight => f32::INFINITY,
+            Tile::StoneBoundaryTopLeftInverse => f32::INFINITY,
+            Tile::StoneBoundaryTopRightInverse => f32::INFINITY,
+            Tile::StoneBoundaryBottomRightInverse => f32::INFINITY,
+            Tile::StoneBoundaryBottomLeftInverse => f32::INFINITY,
         }
     }
 }
