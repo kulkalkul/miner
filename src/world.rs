@@ -35,8 +35,11 @@ pub mod consts {
     
     pub const STATUE: IVec2 = ivec2(WORLD_SPAWN_I32.x-MINE_AREA_WIDTH_I32/2-2, WORLD_SPAWN_I32.y);
 
-    pub const MINECART_START: IVec2 = ivec2(WORLD_SPAWN_I32.x+MINE_AREA_WIDTH_I32/2, WORLD_SPAWN_I32.y);
-    pub const MINECART_END: IVec2 = ivec2(ROOM_END_I32.x-1, WORLD_SPAWN_I32.y);
+    pub const RAIL_START: IVec2 = ivec2(WORLD_SPAWN_I32.x+MINE_AREA_WIDTH_I32/2, WORLD_SPAWN_I32.y);
+    pub const RAIL_END: IVec2 = ivec2(ROOM_END_I32.x-1, WORLD_SPAWN_I32.y);
+    
+    pub const MINECART_START: Vec2 = vec2(RAIL_START.x as f32*TILE_SIDE_F32 + 3.0, RAIL_START.y as f32*TILE_SIDE_F32);
+    pub const MINECART_END: Vec2 = vec2(RAIL_END.x as f32*TILE_SIDE_F32, RAIL_END.y as f32*TILE_SIDE_F32);
 }
 
 use consts::*;

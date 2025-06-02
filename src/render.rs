@@ -47,10 +47,11 @@ pub fn render(game: &mut Game) {
     let rail_start_sprite = assets.rail_start.derive_sprite();
     let rail_sprite = assets.rail.derive_sprite();
     
-    draw_sprite(tile_pos_to_world_pos(MINECART_START), &rail_start_sprite);
+    draw_sprite(tile_pos_to_world_pos(RAIL_START), &rail_start_sprite);
 
-    for x in MINECART_START.x+1..=MINECART_END.x {
-        let tile_pos = ivec2(x, MINECART_START.y);
+    // draw rail :::
+    for x in RAIL_START.x+1..=RAIL_END.x {
+        let tile_pos = ivec2(x, RAIL_START.y);
         let world_pos = tile_pos_to_world_pos(tile_pos);
         draw_sprite(world_pos, &rail_sprite);
     }

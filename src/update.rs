@@ -328,15 +328,16 @@ pub fn update(game: &mut Game) {
     minecart.cooldown = f32::max(minecart.cooldown-dt, 0.0);
 
     if minecart.movement == MinecartMovement::Forwards {
-        minecart.trans.pos.x += 100.0 * dt;
-        if minecart.trans.pos.x >= MINECART_END.x as f32 * TILE_SIDE as f32 {
+        minecart.trans.pos.x += 150.0 * dt;
+        if minecart.trans.pos.x >= MINECART_END.x {
             minecart.movement = MinecartMovement::Backwards;
         }
     }
 
     if minecart.movement == MinecartMovement::Backwards {
-        minecart.trans.pos.x -= 100.0 * dt;
-        if minecart.trans.pos.x <= MINECART_START.x as f32 * TILE_SIDE as f32 {
+        minecart.trans.pos.x -= 150.0 * dt;
+        if minecart.trans.pos.x <= MINECART_START.x {
+            minecart.trans.pos.x = MINECART_START.x;
             minecart.movement = MinecartMovement::Idle;
             minecart.anim = assets.minecart_idle.derive_anim();
 
