@@ -234,6 +234,10 @@ pub fn render(game: &mut Game) {
     if is_mouse_button_released(MouseButton::Left) {
         game.ui_state.last_clicked_button_hash = None;
     }
+    
+    {    
+        set_camera(&Camera2D::from_display_rect(camera_origin));
+    }
 
     // debug
     apply_debug_commands();
