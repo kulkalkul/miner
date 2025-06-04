@@ -70,8 +70,8 @@ pub mod prelude {
 }
 
 mod consts {
-    pub const GAME_WIDTH: usize = 320;
-    pub const GAME_HEIGHT: usize = 240;
+    pub const GAME_WIDTH: usize = 160;
+    pub const GAME_HEIGHT: usize = 120;
 
     pub const GAME_WIDTH_I32: i32 = GAME_WIDTH as i32;
     pub const GAME_HEIGHT_I32: i32 = GAME_HEIGHT as i32;
@@ -79,8 +79,8 @@ mod consts {
     pub const GAME_WIDTH_F32: f32 = GAME_WIDTH as f32;
     pub const GAME_HEIGHT_F32: f32 = GAME_HEIGHT as f32;
 
-    pub const UI_WIDTH: usize = GAME_WIDTH * 2;
-    pub const UI_HEIGHT: usize = GAME_HEIGHT * 2;
+    pub const UI_WIDTH: usize = GAME_WIDTH * 4;
+    pub const UI_HEIGHT: usize = GAME_HEIGHT * 4;
 
     pub const UI_WIDTH_I32: i32 = UI_WIDTH as i32;
     pub const UI_HEIGHT_I32: i32 = UI_HEIGHT as i32;

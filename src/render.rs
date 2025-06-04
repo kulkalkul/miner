@@ -112,8 +112,8 @@ pub fn render(game: &mut Game) {
         let mut ui_camera_origin = world_origin;
         ui_camera_origin.x += ui_camera_origin.w/2.0;
         ui_camera_origin.y += ui_camera_origin.h/2.0;
-        ui_camera_origin.w *= 2.0;
-        ui_camera_origin.h *= 2.0;
+        ui_camera_origin.w *= 4.0;
+        ui_camera_origin.h *= 4.0;
         
         let mut camera = Camera2D::from_display_rect(ui_camera_origin);
         camera.zoom.y *= -1.0;
@@ -141,7 +141,7 @@ pub fn render(game: &mut Game) {
         if !game.ui_show_statue { break 'show_statue; }
 
         let prev_mouse_div = game.ui_state.mouse_div;
-        game.ui_state.mouse_div /= 2.0;
+        game.ui_state.mouse_div /= 4.0;
         
         let bg_size = assets.ui_bg.texture.size()*2.0;
         let bg_offset = vec2(UI_WIDTH_F32, UI_HEIGHT_F32) - bg_size;
