@@ -164,15 +164,22 @@ pub fn render(game: &mut Game) {
         let coin_size = assets.coin.texture.size();
 
         let mut ui_seq_upgrade_button = |position: Vec2, mut state: SeqUpgrade| {
-            let mut disabled = false;
+            let mut disabled = state.reached_count;
             let mut pressing = false;
-            disabled |= state.reached_count;
+            let unlocked = state.unlocked;
 
             let can_afford = game.money >= state.cost;
+
+            let mut name = state.name;
+
+            if !unlocked {
+                name = "???";
+                disabled = true;
+            }
             
             if ui_button(
                 &mut game.ui_state,
-                state.name,
+                name,
                 position,
                 button_width,
                 disabled,

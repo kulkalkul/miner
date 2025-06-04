@@ -29,7 +29,7 @@ pub fn update(game: &mut Game) {
     let derived = &mut game.derived;
     let action = &mut game.action;
     let input_actions = &game.input_actions;
-    let upgrades = &game.upgrades;
+    let upgrades = &mut game.upgrades;
     
     let late_derived = &game.late_derived;
 
@@ -37,6 +37,23 @@ pub fn update(game: &mut Game) {
 
     let player_last_pos = player.trans.pos;
 
+
+    // upgrades :::
+
+    upgrades.mining.derived_unlocked = true;
+    upgrades.ladder.derived_unlocked = true;
+    upgrades.bag.derived_unlocked = true;
+    upgrades.climb_momentum.derived_unlocked = true;
+
+    upgrades.dwarfcopter.derived_unlocked =
+        upgrades.mining.reached(MiningUpgradeKind::AlloyPickaxe) &&
+        upgrades.ladder.reached(LadderUpgradeKind::FastClimb) &&
+        upgrades.bag.reached(BagUpgradeKind::Sack) &&
+        upgrades.climb_momentum.reached(ClimbMomentumUpgradeKind::ClimbMomentum);
+
+    upgrades.dwarfcopter_boost.derived_unlocked = upgrades.dwarfcopter.derived_unlocked;
+    upgrades.dwarfcopter_fuel.derived_unlocked = upgrades.dwarfcopter.derived_unlocked;
+    upgrades.dwarfcopter_storage.derived_unlocked = upgrades.dwarfcopter.derived_unlocked;
 
     derived.player_mining_speed = match upgrades.mining.kind {
         MiningUpgradeKind::DefaultPickaxe => 1.0,

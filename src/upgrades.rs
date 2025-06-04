@@ -30,6 +30,7 @@ macro_rules! create_seq {
         #[derive(Copy, Clone, Default)]
         pub struct $container {
             pub kind: $kind,
+            pub derived_unlocked: bool,
         }
         
         #[repr(u8)]
@@ -54,6 +55,7 @@ macro_rules! create_seq {
                     cost,
                     upgrade: Box::new(|| self.kind.upgrade()),
                     count,
+                    unlocked: self.derived_unlocked,
                     reached_count: tier == count-1,
                 }
             }
