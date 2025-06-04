@@ -58,7 +58,7 @@ pub async fn init_assets() -> Assets {
     let mut state = AssetState { asset_id: 0 };
 
     Assets {
-        ui_bg: load_sprite(&mut state, &ui_bg_tex, Offset(0, 0), Size(190, 133)),
+        ui_bg: load_sprite(&mut state, &ui_bg_tex, Offset(0, 0), Size(270, 190)),
         ui_keys: load_sheet_cell(&mut state, &ui_keys_tex, RowCol(0, 0), Size(26, 23)),
         ui_button: load_three_patch(&mut state, &ui_button_tex),
         
