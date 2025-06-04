@@ -392,6 +392,9 @@ impl World {
         for (chunk_y, Min(min), Max(max), Width(width)) in hard_stone_pass {
             let mut tile_y = (WORLD_HEIGHT_I32 - chunk_y) * CHUNK_SIDE_I32 + 8;
             let mut guide_points = Vec::with_capacity_in(WORLD_WIDTH * CHUNK_SIDE, bump);
+
+            let chunk_tile_begin_y = chunk_pos_to_tile_pos(ivec2(0, chunk_y)).y;
+            let chunk_tile_end_y = chunk_pos_to_tile_pos(ivec2(0, chunk_y+1)).y - 1;
             
             for tile_x in 0..WORLD_WIDTH_I32 * CHUNK_SIDE_I32 {
                 const MAX: i32 = 5;
@@ -407,8 +410,8 @@ impl World {
 
                 tile_y += direction;
 
-                // INFO: Ensures any layer is not interfering with spawn chunks
-                if tile_y <= (WORLD_HEIGHT_I32 - 3) * CHUNK_SIDE_I32 {
+                // INFO: Ensures any layer is not outside of its own chunk
+                if tile_y <= chunk_tile_begin_y || tile_y >= chunk_tile_end_y {
                     tile_y += -direction*2;
                 }
                 
