@@ -18,6 +18,9 @@ pub struct DerivedState {
     pub player_bag_carry_capacity: usize,
     pub player_climb_momentum_max: f32,
     pub player_hit_str: f32,
+    pub player_has_dwarfcopter: bool,
+    pub player_can_place_ladder: bool,
+    pub player_can_use_dwarfcopter: bool,
 
     pub ui_show_statue_key: bool,
 }

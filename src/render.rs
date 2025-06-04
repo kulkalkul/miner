@@ -204,19 +204,21 @@ pub fn render(game: &mut Game) {
 
         ui_seq_upgrade_button(lcursor, upgrades.mining.to_seq());
         ui_seq_upgrade_button(rcursor, upgrades.ladder.to_seq());
+        
         lcursor.y += button_spacing.y + button_height;
         rcursor.y += button_spacing.y + button_height;
         ui_seq_upgrade_button(lcursor, upgrades.bag.to_seq());
         ui_seq_upgrade_button(rcursor, upgrades.climb_momentum.to_seq());
-
-        // if ui_seq_upgrade_button(rcursor, upgrades.mining.to_seq()) {
-        // }
-        // lcursor.y += button_spacing.y + button_height;
-        // rcursor.y += button_spacing.y + button_height;
-        // if ui_seq_upgrade_button(lcursor, upgrades.mining.to_seq()) {
-        // }
-        // if ui_seq_upgrade_button(rcursor, upgrades.mining.to_seq()) {
-        // }
+        
+        lcursor.y += button_spacing.y + button_height;
+        rcursor.y += button_spacing.y + button_height;
+        ui_seq_upgrade_button(lcursor, upgrades.dwarfcopter.to_seq());
+        ui_seq_upgrade_button(rcursor, upgrades.dwarfcopter_fuel.to_seq());
+        
+        lcursor.y += button_spacing.y + button_height;
+        rcursor.y += button_spacing.y + button_height;
+        ui_seq_upgrade_button(lcursor, upgrades.dwarfcopter_boost.to_seq());
+        ui_seq_upgrade_button(rcursor, upgrades.dwarfcopter_storage.to_seq());
 
         game.ui_state.mouse_div = prev_mouse_div;
     }

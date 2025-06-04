@@ -67,10 +67,13 @@ pub fn update(game: &mut Game) {
         ClimbMomentumUpgradeKind::ClimbMomentum => 1.5,
     };
 
-    derived.player_climb_momentum_max = match upgrades.climb_momentum {
-        ClimbMomentumUpgrade::NoClimbMomentum => 0.0,
-        ClimbMomentumUpgrade::ClimbMomentum => 1.5,
+    derived.player_has_dwarfcopter = match upgrades.dwarfcopter.kind {
+        DwarfcopterUpgradeKind::NoDwarfcopter => false,
+        DwarfcopterUpgradeKind::Dwarfcopter4280Pro => true,
     };
+
+    derived.player_can_place_ladder = !derived.player_has_dwarfcopter;
+    derived.player_can_use_dwarfcopter = derived.player_has_dwarfcopter;
     
     game.total_time += dt;
     
@@ -125,7 +128,14 @@ pub fn update(game: &mut Game) {
         }
 
         player_movement_f32 = player_movement.as_vec2();
-        let mut movement_dir = player_movement_f32 * dt * 50.0;
+
+        #[allow(unused_assignments)]
+        let mut movement_dir = Vec2::ZERO;
+        if derived.player_can_use_dwarfcopter {
+            movement_dir = player_movement_f32 * dt * 100.0;
+        } else {
+            movement_dir = player_movement_f32 * dt * 50.0;
+        }
 
         if game.dev_mode {
             player.trans.pos += movement_dir * 10.0;
@@ -135,7 +145,9 @@ pub fn update(game: &mut Game) {
         let tile_one_down = tile.down(1);
         
         // gravity
-        if !tile.kind.can_climb() {
+        if derived.player_can_use_dwarfcopter {
+            movement_dir.y += -1.2 * TILE_SIDE as f32  * dt;
+        } else if !tile.kind.can_climb() {
             if !tile_one_down.kind.can_climb() || pos.y - tile.world_pos().y > 1.0 {
                 movement_dir.y = -9.8 * TILE_SIDE as f32 * dt;
             }
@@ -286,6 +298,8 @@ pub fn update(game: &mut Game) {
     let player_tile = tiles.at_world_pos(player.trans.pos);
 
     'lay_ladder: {
+        if !derived.player_can_place_ladder { break 'lay_ladder; }
+
         let tile = player_tile;
         let tile_one_up = tile.up(1);
         let tile_one_down = tile.down(1);

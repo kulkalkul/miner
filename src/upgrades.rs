@@ -5,6 +5,11 @@ pub struct Upgrades {
     pub ladder: LadderUpgrade,
     pub bag: BagUpgrade,
     pub climb_momentum: ClimbMomentumUpgrade,
+    
+    pub dwarfcopter: DwarfcopterUpgrade,
+    pub dwarfcopter_boost: DwarfcopterBoostUpgrade,
+    pub dwarfcopter_fuel: DwarfcopterFuelUpgrade,
+    pub dwarfcopter_storage: DwarfcopterStorageUpgrade,
 }
 
 pub struct SeqUpgrade<'a> {
@@ -106,4 +111,24 @@ create_seq! {struct BagUpgrade; enum BagUpgradeKind {
 create_seq! {struct ClimbMomentumUpgrade; enum ClimbMomentumUpgradeKind {
     NoClimbMomentum => ("No Climb Momentum", 0),
     ClimbMomentum => ("Climb Momentum", 1000),
+}}
+create_seq! {struct DwarfcopterUpgrade; enum DwarfcopterUpgradeKind {
+    NoDwarfcopter => ("No Dwarfcopter", 0),
+    Dwarfcopter4280Pro => ("Dwarfcopter 4280 Pro", 2500),
+}}
+create_seq! {struct DwarfcopterBoostUpgrade; enum DwarfcopterBoostUpgradeKind {
+    NoDwarfcopterBoost => ("No Boost", 0),
+    DwarfcopterSmallBoost => ("Small Boost", 6000),
+}}
+create_seq! {struct DwarfcopterFuelUpgrade; enum DwarfcopterFuelUpgradeKind {
+    DefaultDwarfcopterFuel => ("Default Fuel", 0),
+    DwarfcopterQuickTanks => ("Quick Tanks", 3500),
+    DwarfcopterDoubleTanks => ("Long Double Tanks", 6000),
+    DwarfcopterLongHaulTanks => ("Long Haul Tanks", 12000),
+}}
+create_seq! {struct DwarfcopterStorageUpgrade; enum DwarfcopterStorageUpgradeKind {
+    DefaultDwarfcopterStorage => ("Default Storage", 0),
+    DefaultDwarfcopterXLStorage => ("XL Storage", 4000),
+    DefaultDwarfcopterXXLStorage => ("XXL Storage", 7000),
+    DefaultDwarfcopterXXXLStorage => ("XXXL Storage", 13000),
 }}

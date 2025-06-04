@@ -10,6 +10,7 @@ pub struct Player {
     pub last_positions: Box<[Vec2; 24]>,
     pub mining_fatigue: f32,
     pub climb_momentum: f32,
+    pub dwarfcopter_velocity: Vec2,
 }
 
 #[derive(Debug)]
