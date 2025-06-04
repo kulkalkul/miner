@@ -134,9 +134,9 @@ pub fn load_sheet_cells(
 }
 
 
-// first 3 are unpressed, last 3 are pressed
-pub fn load_three_patch(asset_state: &mut AssetState, texture: &Texture2D) -> [[SpriteAsset; 3]; 2] {
-    let size = (texture.size() - vec2(2.0 * 6.0, 0.0)) / vec2(6.0, 1.0);
+// first 3 are unpressed, mid 3 are pressed, last 3 are disabled
+pub fn load_three_patch(asset_state: &mut AssetState, texture: &Texture2D) -> [[SpriteAsset; 3]; 3] {
+    let size = (texture.size() - vec2(2.0 * 9.0, 0.0)) / vec2(9.0, 1.0);
     let size = Size(size.x as i32, size.y as i32);
 
     [
@@ -149,6 +149,11 @@ pub fn load_three_patch(asset_state: &mut AssetState, texture: &Texture2D) -> [[
             load_sheet_cell(asset_state, texture, RowCol(3, 0), size),
             load_sheet_cell(asset_state, texture, RowCol(4, 0), size),
             load_sheet_cell(asset_state, texture, RowCol(5, 0), size),
+        ],
+        [
+            load_sheet_cell(asset_state, texture, RowCol(6, 0), size),
+            load_sheet_cell(asset_state, texture, RowCol(7, 0), size),
+            load_sheet_cell(asset_state, texture, RowCol(8, 0), size),
         ]
     ]
 }

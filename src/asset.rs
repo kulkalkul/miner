@@ -10,7 +10,7 @@ use crate::tile::{ TileSetAsset };
 pub struct Assets {
     pub ui_bg: SpriteAsset,
     pub ui_keys: SpriteAsset,
-    pub ui_button: [[SpriteAsset; 3]; 2],
+    pub ui_button: [[SpriteAsset; 3]; 3],
 
     pub cracking: Box<[SpriteAsset]>,
     pub coin: SpriteAsset,    
