@@ -378,9 +378,15 @@ impl World {
         struct Width(usize);
 
         let hard_stone_pass = [
-            (4, Min(8), Max(24) , Width(3)),
-            (6, Min(10), Max(48), Width(4)),
-            (8, Min(12), Max(64), Width(6)),
+            (4 , Min(8 ), Max(24), Width(3 )),
+            (5 , Min(8 ), Max(24), Width(3 )),
+            (6 , Min(10), Max(48), Width(4 )),
+            (7 , Min(10), Max(48), Width(4 )),
+            (8 , Min(12), Max(80), Width(6 )),
+            (10, Min(48), Max(80), Width(10)),
+            (12, Min(48), Max(80), Width(10)),
+            (14, Min(48), Max(80), Width(10)),
+            (16, Min(48), Max(80), Width(10)),
         ];
 
         for (chunk_y, Min(min), Max(max), Width(width)) in hard_stone_pass {
