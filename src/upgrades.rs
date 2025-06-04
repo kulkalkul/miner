@@ -13,23 +13,51 @@ pub struct SeqUpgrade<'a> {
     pub cost: i32,
     pub upgrade: Box<dyn FnMut() + 'a>,
     pub count: u8,
+    pub unlocked: bool,
     pub reached_count: bool,
 }
 
 macro_rules! create_seq {
-    {enum $type:ident {
+    {struct $container:ident; enum $kind:ident {
         $first_variant:ident => ($first_name:literal, $first_cost:literal),
         $($variant:ident => ($name:literal, $cost: literal),)*
     }} => {
+        #[derive(Copy, Clone, Default)]
+        pub struct $container {
+            pub kind: $kind,
+        }
+        
         #[repr(u8)]
         #[derive(Copy, Clone, Default)]
-        pub enum $type {
+        pub enum $kind {
             #[default]
             $first_variant,
             $($variant,)*
         }
 
-        impl $type {
+        impl $container {
+            pub fn to_seq<'a>(&'a mut self) -> SeqUpgrade<'a> {
+                let tier = self.kind as u8;
+                let next_tier = $kind::from_u8_if_available(tier);
+                let count = std::mem::variant_count::<$kind>() as u8;
+                let name = next_tier.name();
+                let cost = next_tier.cost();
+        
+                SeqUpgrade {
+                    name,
+                    tier,
+                    cost,
+                    upgrade: Box::new(|| self.kind.upgrade()),
+                    count,
+                    reached_count: tier == count-1,
+                }
+            }
+            pub fn reached(&self, tier: $kind) -> bool {
+                tier as u8 <= self.kind as u8
+            }
+        }
+
+        impl $kind {
             fn from_u8_if_available(cur: u8) -> Self {
                 unsafe {
                     // WARN: This line is inside unsafe because it affects the result. This ensures next
@@ -54,44 +82,28 @@ macro_rules! create_seq {
                     $(Self::$variant => $cost,)*
                 }
             }
-            pub fn to_seq<'a>(&'a mut self) -> SeqUpgrade<'a> {
-                let tier = *self as u8;
-                let next_tier = Self::from_u8_if_available(tier);
-                let count = std::mem::variant_count::<Self>() as u8;
-                let name = next_tier.name();
-                let cost = next_tier.cost();
-        
-                SeqUpgrade {
-                    name,
-                    tier,
-                    cost,
-                    upgrade: Box::new(|| self.upgrade()),
-                    count,
-                    reached_count: tier == count-1,
-                }
-            }
         }
     };
 }
 
-create_seq! {enum MiningUpgrade {
+create_seq! {struct MiningUpgrade; enum MiningUpgradeKind {
     DefaultPickaxe => ("Default Pickaxe", 0),
     IronPickaxe => ("Iron Pickaxe", 100),
     HardenedPickaxe => ("Hardened Pickaxe", 500),
     AlloyPickaxe => ("Alloy Pickaxe", 1000),
 }}
-create_seq! {enum LadderUpgrade {
+create_seq! {struct LadderUpgrade; enum LadderUpgradeKind {
     DefaultClimb => ("Default Climb", 0),
     FastClimb => ("Fast Climb", 250),
 }}
-create_seq! {enum BagUpgrade {
+create_seq! {struct BagUpgrade; enum BagUpgradeKind {
     DefaultBag => ("Default Bag", 0),
     SmallPouch => ("Small Pouch", 150),
     BiggerPouch => ("Bigger Pouch", 250),
     Backpack => ("Backpack", 750),
     Sack => ("Sack", 1500),
 }}
-create_seq! {enum ClimbMomentumUpgrade {
+create_seq! {struct ClimbMomentumUpgrade; enum ClimbMomentumUpgradeKind {
     NoClimbMomentum => ("No Climb Momentum", 0),
     ClimbMomentum => ("Climb Momentum", 1000),
 }}

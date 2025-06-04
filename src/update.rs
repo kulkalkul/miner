@@ -38,28 +38,33 @@ pub fn update(game: &mut Game) {
     let player_last_pos = player.trans.pos;
 
 
-    derived.player_mining_speed = match upgrades.mining {
-        MiningUpgrade::DefaultPickaxe => 1.0,
-        MiningUpgrade::IronPickaxe => 1.5,
-        MiningUpgrade::HardenedPickaxe => 2.0,
-        MiningUpgrade::AlloyPickaxe => 3.0,
+    derived.player_mining_speed = match upgrades.mining.kind {
+        MiningUpgradeKind::DefaultPickaxe => 1.0,
+        MiningUpgradeKind::IronPickaxe => 1.5,
+        MiningUpgradeKind::HardenedPickaxe => 2.0,
+        MiningUpgradeKind::AlloyPickaxe => 3.0,
     };
     
-    derived.player_ladder_speed = match upgrades.ladder {
-        LadderUpgrade::DefaultClimb => 1.0,
-        LadderUpgrade::FastClimb => 1.6,
+    derived.player_ladder_speed = match upgrades.ladder.kind {
+        LadderUpgradeKind::DefaultClimb => 1.0,
+        LadderUpgradeKind::FastClimb => 1.6,
     };
     
     if player.mining_fatigue > 0.0 {
         derived.player_ladder_speed = 0.8; 
     }
 
-    derived.player_bag_carry_capacity = match upgrades.bag {
-        BagUpgrade::DefaultBag => 6,
-        BagUpgrade::SmallPouch => 8,
-        BagUpgrade::BiggerPouch => 12,
-        BagUpgrade::Backpack => 16,
-        BagUpgrade::Sack => 24,
+    derived.player_bag_carry_capacity = match upgrades.bag.kind {
+        BagUpgradeKind::DefaultBag => 6,
+        BagUpgradeKind::SmallPouch => 8,
+        BagUpgradeKind::BiggerPouch => 12,
+        BagUpgradeKind::Backpack => 16,
+        BagUpgradeKind::Sack => 24,
+    };
+
+    derived.player_climb_momentum_max = match upgrades.climb_momentum.kind {
+        ClimbMomentumUpgradeKind::NoClimbMomentum => 0.0,
+        ClimbMomentumUpgradeKind::ClimbMomentum => 1.5,
     };
 
     derived.player_climb_momentum_max = match upgrades.climb_momentum {
