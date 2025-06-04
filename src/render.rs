@@ -136,7 +136,7 @@ pub fn render(game: &mut Game) {
         draw_text(&game.money.to_string(), cursor.x, cursor.y, 32.0, WHITE);
     }
     
-    // INFO: Don't forget some textures are scaled 2x
+    // INFO: Don't forget some textures are scaled 4x
     'show_statue: {
         if !game.ui_show_statue { break 'show_statue; }
 
