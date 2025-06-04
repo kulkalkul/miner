@@ -439,8 +439,14 @@ impl World {
                 }
                 i += stride + space;
             }
-
         }
+        
+        commands.set_tile_area(
+            ivec2(0, (WORLD_HEIGHT_I32-BARRIER_HEIGHT) * CHUNK_SIDE_I32 - 1),
+            ivec2(WORLD_WIDTH_I32*CHUNK_SIDE_I32, 1),
+            Tile::Barrier,
+        );
+        
 
         commands.push_commands(&[ WorldCommand::RecalculateAllMeshes ]);
         world.apply_commands(commands);

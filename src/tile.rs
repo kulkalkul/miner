@@ -33,6 +33,7 @@ pub enum Tile {
     Stone,
     StoneDig,
     HardStone,
+    Barrier,
 
     StoneCopperOre,
     StoneIronOre,
@@ -145,6 +146,7 @@ impl Tile {
             Tile::Stone => false,
             Tile::StoneDig => false,
             Tile::HardStone => false,
+            Tile::Barrier => false,
             
             Tile::StoneCopperOre => false,
             Tile::StoneIronOre => false,
@@ -185,6 +187,7 @@ impl Tile {
             Tile::Stone => true,
             Tile::StoneDig => true,
             Tile::HardStone => true,
+            Tile::Barrier => false,
             
             Tile::StoneCopperOre => true,
             Tile::StoneIronOre => true,
@@ -225,6 +228,7 @@ impl Tile {
             Tile::Stone => false,
             Tile::StoneDig => false,
             Tile::HardStone => false,
+            Tile::Barrier => false,
             
             Tile::StoneCopperOre => false,
             Tile::StoneIronOre => false,
@@ -264,6 +268,7 @@ impl Tile {
             Tile::Stone => false,
             Tile::StoneDig => false,
             Tile::HardStone => false,
+            Tile::Barrier => false,
             
             Tile::StoneCopperOre => false,
             Tile::StoneIronOre => false,
@@ -304,6 +309,7 @@ impl Tile {
             Tile::Stone => Tile::BackgroundStone,
             Tile::StoneDig => Tile::BackgroundStone,
             Tile::HardStone => Tile::BackgroundStone,
+            Tile::Barrier => Tile::ERR,
             
             Tile::StoneCopperOre => Tile::BackgroundStone,
             Tile::StoneIronOre => Tile::BackgroundStone,
@@ -344,6 +350,7 @@ impl Tile {
             Tile::Stone => ItemKind::Air,
             Tile::StoneDig => ItemKind::Air,
             Tile::HardStone => ItemKind::Air,
+            Tile::Barrier => ItemKind::Air,
 
             Tile::StoneCopperOre => ItemKind::CopperOre,
             Tile::StoneIronOre => ItemKind::IronOre,
@@ -384,6 +391,7 @@ impl Tile {
             Tile::Stone => 1.2,
             Tile::StoneDig => 0.5,
             Tile::HardStone => 15.0,
+            Tile::Barrier => f32::INFINITY,
 
             Tile::StoneCopperOre => 1.4,
             Tile::StoneIronOre => 1.8,
