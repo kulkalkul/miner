@@ -9,6 +9,7 @@ pub struct Player {
     pub carrying: Array<ItemKind, 24>,
     pub last_positions: Box<[Vec2; 24]>,
     pub mining_fatigue: f32,
+    pub climb_momentum: f32,
 }
 
 #[derive(Debug)]

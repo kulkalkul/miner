@@ -21,6 +21,8 @@ pub async fn init(assets: Assets) -> Game {
         last_positions: Box::new([vec2(0.0, 0.0); 24]),
         bag_mesh: GameMesh::new(),
         mining_fatigue: 0.0,
+        climb_momentum: 0.0,
+        
     };
 
     player.last_positions[0] = player.trans.pos;

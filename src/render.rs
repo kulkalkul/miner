@@ -207,6 +207,7 @@ pub fn render(game: &mut Game) {
         lcursor.y += button_spacing.y + button_height;
         rcursor.y += button_spacing.y + button_height;
         ui_seq_upgrade_button(lcursor, upgrades.bag.to_seq());
+        ui_seq_upgrade_button(rcursor, upgrades.climb_momentum.to_seq());
 
         // if ui_seq_upgrade_button(rcursor, upgrades.mining.to_seq()) {
         // }

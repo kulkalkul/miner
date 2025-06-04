@@ -16,6 +16,7 @@ pub struct DerivedState {
     pub player_mining_speed: f32,
     pub player_ladder_speed: f32,
     pub player_bag_carry_capacity: usize,
+    pub player_climb_momentum_max: f32,
     pub player_hit_str: f32,
 
     pub ui_show_statue_key: bool,

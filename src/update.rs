@@ -61,6 +61,11 @@ pub fn update(game: &mut Game) {
         BagUpgrade::Backpack => 16,
         BagUpgrade::Sack => 24,
     };
+
+    derived.player_climb_momentum_max = match upgrades.climb_momentum {
+        ClimbMomentumUpgrade::NoClimbMomentum => 0.0,
+        ClimbMomentumUpgrade::ClimbMomentum => 1.5,
+    };
     
     game.total_time += dt;
     
@@ -84,6 +89,7 @@ pub fn update(game: &mut Game) {
 
     // actions :::
     let mut player_movement = IVec2::ZERO;
+    let mut player_movement_f32 = Vec2::ZERO;
 
     // player movement :::
     'player_movement: {
@@ -112,7 +118,8 @@ pub fn update(game: &mut Game) {
             player_movement.x -= 1;
         }
 
-        let mut movement_dir = player_movement.as_vec2() * dt * 50.0;
+        let player_movement_f32 = player_movement.as_vec2();
+        let mut movement_dir = player_movement_f32 * dt * 50.0;
 
         if game.dev_mode {
             player.trans.pos += movement_dir * 10.0;
@@ -127,7 +134,16 @@ pub fn update(game: &mut Game) {
                 movement_dir.y = -9.8 * TILE_SIDE as f32 * dt;
             }
         } else {
-            movement_dir.y *= derived.player_ladder_speed;
+            // INFO: We add *2.5 here because we always subtract *2.0. So this actually makes
+            // it 0.5. It is multiplied by player_movement_f32.y, so this is no longer a scalar value
+            if player_movement_f32.y != 0.0 {
+                player.climb_momentum += dt*2.5 * player_movement_f32.y;
+                player.climb_momentum = f32::clamp(
+                    player.climb_momentum, -derived.player_climb_momentum_max, derived.player_climb_momentum_max
+                );
+            }
+            movement_dir.y *= derived.player_ladder_speed + player.climb_momentum.abs();
+ 
         }
 
         new_pos += movement_dir;
@@ -178,7 +194,11 @@ pub fn update(game: &mut Game) {
         if player_movement != IVec2::ZERO {
             derived.player_moving = true;
         }
-    }    
+    }
+    
+    // INFO: This allows it to slow down from both directions. It compounds when direction changes due to
+    // player.climb_momentum.signum()
+    player.climb_momentum = f32::max(player.climb_momentum.abs() - dt*2.0, 0.0) * player.climb_momentum.signum();
     player.mining_fatigue = f32::max(player.mining_fatigue-dt, 0.0);
     
     derived.player_hit_str = 1.0 / f32::max(player_movement.x.abs() as f32 + player_movement.y.abs() as f32, 1.0);

@@ -4,6 +4,7 @@ pub struct Upgrades {
     pub mining: MiningUpgrade,
     pub ladder: LadderUpgrade,
     pub bag: BagUpgrade,
+    pub climb_momentum: ClimbMomentumUpgrade,
 }
 
 pub struct SeqUpgrade<'a> {
@@ -89,4 +90,8 @@ create_seq! {enum BagUpgrade {
     BiggerPouch => ("Bigger Pouch", 250),
     Backpack => ("Backpack", 750),
     Sack => ("Sack", 1500),
+}}
+create_seq! {enum ClimbMomentumUpgrade {
+    NoClimbMomentum => ("No Climb Momentum", 0),
+    ClimbMomentum => ("Climb Momentum", 1000),
 }}
