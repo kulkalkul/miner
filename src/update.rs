@@ -89,6 +89,7 @@ pub fn update(game: &mut Game) {
 
     // actions :::
     let mut player_movement = IVec2::ZERO;
+    #[allow(unused_assignments)]
     let mut player_movement_f32 = Vec2::ZERO;
 
     // player movement :::
@@ -118,7 +119,7 @@ pub fn update(game: &mut Game) {
             player_movement.x -= 1;
         }
 
-        let player_movement_f32 = player_movement.as_vec2();
+        player_movement_f32 = player_movement.as_vec2();
         let mut movement_dir = player_movement_f32 * dt * 50.0;
 
         if game.dev_mode {
