@@ -15,6 +15,7 @@ pub fn render(game: &mut Game) {
     let assets = &game.assets;
     let world = &game.world;
     let visible_chunks = &game.visible_chunks;
+    let upgrades = &mut game.upgrades;
 
     let world_origin = Rect {
         x: -(GAME_WIDTH_F32 / 2.0),
@@ -160,28 +161,62 @@ pub fn render(game: &mut Game) {
 
         rcursor.x += button_spacing.x + button_width;
 
-        if ui_button(&mut game.ui_state, "Upgrade", lcursor, button_width, &assets.ui_button) {
-            println!("hop");
-        }
-        if ui_button(&mut game.ui_state, "Upgrade", rcursor, button_width, &assets.ui_button) {
-            println!("hop");
-        }
+        let coin_size = assets.coin.texture.size();
+
+        let mut ui_seq_upgrade_button = |position: Vec2, mut state: SeqUpgrade| {
+            let mut disabled = false;
+            let mut pressing = false;
+            disabled |= state.reached_count;
+
+            let can_afford = game.money >= state.cost;
+            
+            if ui_button(
+                &mut game.ui_state,
+                state.name,
+                position,
+                button_width,
+                disabled,
+                Some(&mut pressing),
+                &assets.ui_button,
+            ) && can_afford {
+                (state.upgrade)();
+                game.money -= state.cost;
+            }
+
+            if !disabled {
+                let mut coin_pos = position + vec2(button_width, 0.0) - vec2(coin_size.x, 0.0);
+                // INFO: Magix value because button texture is not centerable without magic value
+                coin_pos += vec2(-4.0, 1.0);
+                
+                if pressing {
+                    coin_pos.y += 1.0;
+                }
+                
+                draw_ui(coin_pos, vec2(1.0, 1.0), &assets.coin.derive_sprite());
+                
+                let text_size = measure_text(&state.cost.to_string(), None, 16, 1.0);
+                coin_pos += vec2(-text_size.width-2.0, button_height/2.0);
+
+                let color = if can_afford { WHITE } else { RED };
+                draw_text(&state.cost.to_string(), coin_pos.x, coin_pos.y, 16.0, color);
+            }
+        };
+
+        ui_seq_upgrade_button(lcursor, upgrades.mining.to_seq());
+        ui_seq_upgrade_button(rcursor, upgrades.ladder.to_seq());
         lcursor.y += button_spacing.y + button_height;
         rcursor.y += button_spacing.y + button_height;
-        if ui_button(&mut game.ui_state, "Upgrade", lcursor, button_width, &assets.ui_button) {
-            println!("hop");
-        }
-        if ui_button(&mut game.ui_state, "Upgrade", rcursor, button_width, &assets.ui_button) {
-            println!("hop");
-        }
-        lcursor.y += button_spacing.y + button_height;
-        rcursor.y += button_spacing.y + button_height;
-        if ui_button(&mut game.ui_state, "Upgrade", lcursor, button_width, &assets.ui_button) {
-            println!("hop");
-        }
-        if ui_button(&mut game.ui_state, "Upgrade", rcursor, button_width, &assets.ui_button) {
-            println!("hop");
-        }
+        ui_seq_upgrade_button(lcursor, upgrades.bag.to_seq());
+
+        // if ui_seq_upgrade_button(rcursor, upgrades.mining.to_seq()) {
+        // }
+        // lcursor.y += button_spacing.y + button_height;
+        // rcursor.y += button_spacing.y + button_height;
+        // if ui_seq_upgrade_button(lcursor, upgrades.mining.to_seq()) {
+        // }
+        // if ui_seq_upgrade_button(rcursor, upgrades.mining.to_seq()) {
+        // }
+
         game.ui_state.mouse_div = prev_mouse_div;
     }
     

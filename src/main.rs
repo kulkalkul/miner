@@ -22,16 +22,18 @@ mod entity;
 mod derived;
 mod action;
 mod ui;
+mod upgrades;
 
-use init::   { init };
-use asset::  { init_assets };
-use asset::  { Assets };
-use ui::     { UIState };
-use update:: { update };
-use render:: { render };
-use world::  { World };
-use derived::{ DerivedState, LateDerivedState };
-use action:: { ActionState };
+use init::    { init };
+use asset::   { init_assets };
+use asset::   { Assets };
+use ui::      { UIState };
+use upgrades::{ Upgrades };
+use update::  { update };
+use render::  { render };
+use world::   { World };
+use derived:: { DerivedState, LateDerivedState };
+use action::  { ActionState };
 
 use entity::*;
 
@@ -59,6 +61,7 @@ pub mod prelude {
     pub use crate::world::conversions::*;
 
     pub use crate::ui::{ UIState };
+    pub use crate::upgrades::*;
 
     pub use crate::derived::{ DerivedState, LateDerivedState };
 
@@ -116,12 +119,11 @@ pub struct Game {
 
     pub tile_durability_map: HashMap<IVec2, f32>,
 
-    pub player_max_carrying: usize,
-
     pub derived: DerivedState,
     pub late_derived: LateDerivedState,
     pub action: ActionState,
     pub input_actions: InputActions,
+    pub upgrades: Upgrades,
 }
 
 #[derive(Default)]

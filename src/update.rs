@@ -29,16 +29,41 @@ pub fn update(game: &mut Game) {
     let derived = &mut game.derived;
     let action = &mut game.action;
     let input_actions = &game.input_actions;
+    let upgrades = &game.upgrades;
     
     let late_derived = &game.late_derived;
 
     let tiles = world.tiles();
 
     let player_last_pos = player.trans.pos;
+
+
+    derived.player_mining_speed = match upgrades.mining {
+        MiningUpgrade::DefaultPickaxe => 1.0,
+        MiningUpgrade::IronPickaxe => 1.5,
+        MiningUpgrade::HardenedPickaxe => 2.0,
+        MiningUpgrade::AlloyPickaxe => 3.0,
+    };
+    
+    derived.player_ladder_speed = match upgrades.ladder {
+        LadderUpgrade::DefaultClimb => 1.0,
+        LadderUpgrade::FastClimb => 1.6,
+    };
+    
+    if player.mining_fatigue > 0.0 {
+        derived.player_ladder_speed = 0.8; 
+    }
+
+    derived.player_bag_carry_capacity = match upgrades.bag {
+        BagUpgrade::DefaultBag => 6,
+        BagUpgrade::SmallPouch => 8,
+        BagUpgrade::BiggerPouch => 12,
+        BagUpgrade::Backpack => 16,
+        BagUpgrade::Sack => 24,
+    };
     
     game.total_time += dt;
     
-
     {
         let epsilon = std::f32::consts::TAU / 16.0;
         for (i, sine) in derived.time_sine_1.iter_mut().enumerate() {
@@ -90,7 +115,7 @@ pub fn update(game: &mut Game) {
         let mut movement_dir = player_movement.as_vec2() * dt * 50.0;
 
         if game.dev_mode {
-            player.trans.pos += movement_dir * 15.0;
+            player.trans.pos += movement_dir * 10.0;
             break 'player_movement;
         }
 
@@ -101,6 +126,8 @@ pub fn update(game: &mut Game) {
             if !tile_one_down.kind.can_climb() || pos.y - tile.world_pos().y > 1.0 {
                 movement_dir.y = -9.8 * TILE_SIDE as f32 * dt;
             }
+        } else {
+            movement_dir.y *= derived.player_ladder_speed;
         }
 
         new_pos += movement_dir;
@@ -151,7 +178,8 @@ pub fn update(game: &mut Game) {
         if player_movement != IVec2::ZERO {
             derived.player_moving = true;
         }
-    }
+    }    
+    player.mining_fatigue = f32::max(player.mining_fatigue-dt, 0.0);
     
     derived.player_hit_str = 1.0 / f32::max(player_movement.x.abs() as f32 + player_movement.y.abs() as f32, 1.0);
 
@@ -191,15 +219,18 @@ pub fn update(game: &mut Game) {
         if !tile.kind.can_mine() { break 'block_mine; }
 
         if touch_vec.x != 0 && tile_one_up.kind.can_climb() { break 'block_mine; }            
+                
+        if tile.kind.item_drop() != ItemKind::Air && player.carrying.length >= derived.player_bag_carry_capacity {
+            break 'block_mine;
+        }
         
         let durability = game.tile_durability_map.entry(tile.pos).or_insert(0.0);
-        *durability += dt * 3.0 * derived.player_hit_str;
+        *durability += dt * 3.0 * derived.player_mining_speed * derived.player_hit_str;
         
         player.anim = assets.player_hit.derive_anim();
 
         if *durability > tile.kind.durability() {
             if tile.kind.item_drop() != ItemKind::Air {
-                if player.carrying.length >= game.player_max_carrying { break 'block_mine; }
                 player_added_to_bags.push(tile.kind.item_drop());
             }
             if touch_vec.y != 0 {
@@ -215,6 +246,7 @@ pub fn update(game: &mut Game) {
                 world_commands.set_tile(tile.pos, tile.kind.mine_results_tile());
             }
 
+            player.mining_fatigue = 1.0;
             *durability = 0.0;
         }
     }
@@ -266,12 +298,9 @@ pub fn update(game: &mut Game) {
     }
 
     for item_kind in player_added_to_bags {
-        if player.carrying.length >= game.player_max_carrying { break; }
+        if player.carrying.length >= derived.player_bag_carry_capacity { break; }
         player.carrying.push(item_kind);        
     }
-
-    // debug_generic(player.trans.collider(), WHITE);
-    // debug_generic(minecart.trans.collider(), RED);
     
     if  minecart.movement == MinecartMovement::Idle &&
         player.trans.collider().intersects(minecart.trans.collider()) &&

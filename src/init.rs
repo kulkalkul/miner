@@ -20,6 +20,7 @@ pub async fn init(assets: Assets) -> Game {
         carrying: Array::with_length(ItemKind::Air, 0),
         last_positions: Box::new([vec2(0.0, 0.0); 24]),
         bag_mesh: GameMesh::new(),
+        mining_fatigue: 0.0,
     };
 
     player.last_positions[0] = player.trans.pos;
@@ -88,11 +89,10 @@ pub async fn init(assets: Assets) -> Game {
         
         tile_durability_map: HashMap::with_capacity(32),
         
-        player_max_carrying: 24,
-        
         derived: DerivedState::default(),
         late_derived: LateDerivedState::default(),
         action: ActionState::default(),
         input_actions: InputActions::default(),
+        upgrades: Default::default(),
     }
 }
