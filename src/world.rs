@@ -210,7 +210,7 @@ impl World {
     pub fn new(tile_set: &TileSetAsset, bump: &Bump) -> Self {
         let tile_chunk = TileChunk {
             dirty: true,
-            tiles: [Tile::Stone; CHUNK_SIZE],
+            tiles: [Tile::BackgroundStone; CHUNK_SIZE],
         };
 
         let mut tile_mesh = Mesh {
@@ -274,8 +274,19 @@ impl World {
         };
 
         let mut commands = world.commands(bump);
+        const BARRIER_HEIGHT: i32 = 13;
 
         commands.push_commands(&[
+            WorldCommand::SetTileArea {
+                tile: Tile::Stone,
+                x: 0, y: (WORLD_HEIGHT_I32-BARRIER_HEIGHT)*CHUNK_SIDE_I32,
+                // BUG: When presented with x=0 and w=160, it should be able to query tiles *between* [0 and 160).
+                // But due to the chunk_pos calculation resulting chunk at the end is not a valid chunk. While
+                // SetTileArea is guarded from that with min/max checks, chunk index calculation is not, hence
+                // for that reason this is doing -1 in both dimensions, painting 1 tile less. It isn't noticeable
+                // by player, but must be fixed at some point.
+                width: WORLD_WIDTH_I32*CHUNK_SIDE_I32-1, height: BARRIER_HEIGHT*CHUNK_SIDE_I32-1,
+            },
             WorldCommand::SetTileArea {
                 tile: Tile::BackgroundStone,
                 x: room_x, y: room_y, width: room_w, height: room_h,
@@ -317,37 +328,43 @@ impl World {
                 x: room_x + room_w/2 - 4, y: room_y-1, width: 8, height: 1,
             },
         ]);
+        
 
-        struct Min(usize);
-        struct Max(usize);
+        // INFO: Min >= 1 always spawns, Min < 1 it spawns with Max/abs(diff). So, if Min(0) Max(1), it is 1/2,
+        // Min(-1) Max(1), it is 1/3 etc.
+        struct Min(i32);
+        struct Max(u32);
 
         let mut ores_map = BTreeMap::new();
 
         let ores = [
-            ( 2 , Tile::StoneCopperOre, Min(8 ), Max(12) ),
-            ( 2 , Tile::StoneIronOre  , Min(3 ), Max(6)  ),
-            ( 2 , Tile::StoneGoldOre  , Min(0 ), Max(0)  ),
+            ( 2 , Tile::StoneCopperOre, Min(4 ), Max(8 ) ),
+            ( 2 , Tile::StoneIronOre  , Min(3 ), Max(6 ) ),
             
-            ( 4 , Tile::StoneIronOre  , Min(8 ), Max(12) ),
-            ( 4 , Tile::StoneGoldOre  , Min(0 ), Max(1)  ),
+            ( 3 , Tile::StoneCopperOre, Min(6 ), Max(10) ),
+            ( 3 , Tile::StoneIronOre  , Min(5 ), Max(10) ),
             
-            ( 5 , Tile::StoneCopperOre, Min(5 ), Max(9)  ),
-            ( 5 , Tile::StoneIronOre  , Min(5 ), Max(9)  ),
+            ( 4 , Tile::StoneCopperOre, Min(10), Max(14) ),
+            ( 4 , Tile::StoneIronOre  , Min(8 ), Max(14) ),
+            
+            ( 5 , Tile::StoneGoldOre  , Min(0 ), Max(1 ) ),
+            ( 5 , Tile::StoneCopperOre, Min(8 ), Max(12) ),
+            ( 5 , Tile::StoneIronOre  , Min(14), Max(14) ),
 
-            ( 6 , Tile::StoneGoldOre  , Min(1 ), Max(2)  ),
+            ( 7 , Tile::StoneGoldOre  , Min(1 ), Max(2 ) ),
             
-            ( 7 , Tile::StoneCopperOre, Min(24), Max(32) ),
-            ( 7 , Tile::StoneIronOre  , Min(6 ), Max(12) ),
+            ( 8 , Tile::StoneCopperOre, Min(5 ), Max(8 ) ),
+            ( 8 , Tile::StoneIronOre  , Min(18), Max(18) ),
+            ( 8 , Tile::StoneEmerald  , Min(-7), Max(1 ) ),
             
-            ( 9 , Tile::StoneGoldOre  , Min(1 ), Max(7)  ),
-            ( 12 , Tile::StoneEmerald  , Min(0 ), Max(1)  ),
-            ( 15, Tile::StoneRuby     , Min(0 ), Max(1)  ),
-            ( 18, Tile::StoneSapphire , Min(0 ), Max(1)  ),
+            ( 9 , Tile::StoneGoldOre  , Min(1 ), Max(7 ) ),
+            ( 9 , Tile::StoneIronOre  , Min(14), Max(10) ),
+            ( 12, Tile::StoneGoldOre  , Min(4 ), Max(8 ) ),            
         ];
 
         let mut ores_i = 0;
         
-        for chunk_y in 0..WORLD_HEIGHT_I32 {
+        for chunk_y in 0..BARRIER_HEIGHT {
             while ores_i < ores.len() {
                 let (wanted_chunk_y, tile, Min(min), Max(max)) = ores[ores_i];
                 
@@ -362,8 +379,8 @@ impl World {
                 let chunk_pos = ivec2(chunk_x, WORLD_HEIGHT_I32-chunk_y-1);
 
                 for (&tile, &(Min(min), Max(max))) in ores_map.iter() {
-                    let gen_count = rand::gen_range(min, max + 1);
-                    let mut local_tile_poses = Vec::with_capacity_in(gen_count, bump);
+                    let gen_count = i32::max(rand::gen_range(min, max as i32 + 1), 0);
+                    let mut local_tile_poses = Vec::with_capacity_in(gen_count as usize, bump);
                     for _ in 0..gen_count {
                         let x = rand::gen_range(0, CHUNK_SIDE_I32);
                         let y = rand::gen_range(0, CHUNK_SIDE_I32);
@@ -375,21 +392,25 @@ impl World {
             }
         }
 
+        struct HMin(usize);
+        struct HMax(usize);
         struct Width(usize);
 
         let hard_stone_pass = [
-            (4 , Min(8 ), Max(24), Width(3 )),
-            (5 , Min(8 ), Max(24), Width(3 )),
-            (6 , Min(10), Max(48), Width(4 )),
-            (7 , Min(10), Max(48), Width(4 )),
-            (8 , Min(12), Max(80), Width(6 )),
-            (10, Min(48), Max(80), Width(10)),
-            (12, Min(48), Max(80), Width(10)),
-            (14, Min(48), Max(80), Width(10)),
-            (16, Min(48), Max(80), Width(10)),
+            (4 , HMin(8 ), HMax(24), Width(3 )),
+            (5 , HMin(8 ), HMax(24), Width(3 )),
+            (6 , HMin(10), HMax(48), Width(4 )),
+            (7 , HMin(10), HMax(48), Width(4 )),
+            (8 , HMin(12), HMax(80), Width(6 )),
+            (10, HMin(48), HMax(80), Width(10)),
+            // (12, HMin(48), HMax(80), Width(10)),
+            // (14, HMin(48), HMax(80), Width(10)),
+            // (16, HMin(48), HMax(80), Width(10)),
+            // (18, HMin(30), HMax(50), Width(4 )),
+            // (20, HMin(10), HMax(20), Width(4 )),
         ];
 
-        for (chunk_y, Min(min), Max(max), Width(width)) in hard_stone_pass {
+        for (chunk_y, HMin(min), HMax(max), Width(width)) in hard_stone_pass {
             let mut tile_y = (WORLD_HEIGHT_I32 - chunk_y) * CHUNK_SIDE_I32 + 8;
             let mut guide_points = Vec::with_capacity_in(WORLD_WIDTH * CHUNK_SIDE, bump);
 
