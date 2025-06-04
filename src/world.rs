@@ -324,36 +324,34 @@ impl World {
         let mut ores_map = BTreeMap::new();
 
         let ores = [
-            ( 0, Tile::StoneCopperOre, Min(8) , Max(12)  ),
-            ( 0, Tile::StoneIronOre  , Min(0) , Max(3)  ),
-            ( 0, Tile::StoneGoldOre  , Min(0) , Max(1)  ),
+            ( 2 , Tile::StoneCopperOre, Min(8 ), Max(12) ),
+            ( 2 , Tile::StoneIronOre  , Min(3 ), Max(6)  ),
+            ( 2 , Tile::StoneGoldOre  , Min(0 ), Max(0)  ),
             
-            ( 1, Tile::StoneIronOre  , Min(3) , Max(6)  ),
-            ( 0, Tile::StoneGoldOre  , Min(1) , Max(2)  ),
+            ( 4 , Tile::StoneIronOre  , Min(8 ), Max(12) ),
+            ( 4 , Tile::StoneGoldOre  , Min(0 ), Max(1)  ),
             
-            ( 1, Tile::StoneCopperOre, Min(5) , Max(9)  ),
-            ( 0, Tile::StoneIronOre  , Min(5) , Max(9)  ),
+            ( 5 , Tile::StoneCopperOre, Min(5 ), Max(9)  ),
+            ( 5 , Tile::StoneIronOre  , Min(5 ), Max(9)  ),
 
-            ( 1, Tile::StoneGoldOre  , Min(1) , Max(4)  ),
+            ( 6 , Tile::StoneGoldOre  , Min(1 ), Max(2)  ),
             
-            ( 1, Tile::StoneCopperOre, Min(6) , Max(12)  ),
-            ( 0, Tile::StoneIronOre  , Min(6) , Max(12)  ),
+            ( 7 , Tile::StoneCopperOre, Min(24), Max(32) ),
+            ( 7 , Tile::StoneIronOre  , Min(6 ), Max(12) ),
             
-            ( 2, Tile::StoneGoldOre  , Min(1) , Max(7)  ),
-            ( 0, Tile::StoneEmerald  , Min(0) , Max(1)  ),
-            ( 0, Tile::StoneRuby     , Min(0) , Max(1)  ),
-            ( 0, Tile::StoneSapphire , Min(0) , Max(1)  ),
+            ( 9 , Tile::StoneGoldOre  , Min(1 ), Max(7)  ),
+            ( 12 , Tile::StoneEmerald  , Min(0 ), Max(1)  ),
+            ( 15, Tile::StoneRuby     , Min(0 ), Max(1)  ),
+            ( 18, Tile::StoneSapphire , Min(0 ), Max(1)  ),
         ];
 
         let mut ores_i = 0;
-        let mut last_generated_y = WORLD_HEIGHT_I32 - WORLD_SPAWN_I32.y / CHUNK_SIDE_I32;
         
         for chunk_y in 0..WORLD_HEIGHT_I32 {
             while ores_i < ores.len() {
-                let (delta_y, tile, Min(min), Max(max)) = ores[ores_i];
+                let (wanted_chunk_y, tile, Min(min), Max(max)) = ores[ores_i];
                 
-                if last_generated_y + delta_y > chunk_y { break; }
-                last_generated_y += delta_y;
+                if wanted_chunk_y > chunk_y { break; }
 
                 ores_i += 1;
 
