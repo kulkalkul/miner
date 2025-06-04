@@ -212,7 +212,10 @@ pub fn update(game: &mut Game) {
         
         if touch_vec == IVec2::ZERO { break 'block_mine; }
 
-        let tile = player_tile.offset_by(touch_vec);
+        let mined_pos = player.trans.pos + vec2(0.0, TILE_SIDE_F32/2.0);
+        let mined_tile = tiles.at_world_pos(mined_pos);
+
+        let tile = mined_tile.offset_by(touch_vec);
         let tile_one_up = tile.up(1);
         let tile_one_down = tile.down(1);
 
