@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use macroquad::prelude::*;
 
-use crate::asset::AssetState;
+use crate::{asset::AssetState, consts::NOT_SO_VERY_BIG_NUMBER};
 
 #[derive(Debug)]
 pub struct Sprite {
@@ -104,7 +104,7 @@ pub fn load_sprite(
         asset_id,
         texture,
         frames: [frame].into(),
-        frame_timer: f32::INFINITY,
+        frame_timer: NOT_SO_VERY_BIG_NUMBER,
     }
 }
 
@@ -114,7 +114,7 @@ pub fn load_sheet_cell(
     row_col: RowCol,
     size: Size,
 ) -> SpriteAsset {
-    load_anim(asset_state, texture, row_col, 1, size, f32::INFINITY)
+    load_anim(asset_state, texture, row_col, 1, size, NOT_SO_VERY_BIG_NUMBER)
 }
 
 pub fn load_sheet_cells(
@@ -127,7 +127,9 @@ pub fn load_sheet_cells(
     let mut cells = Vec::with_capacity(cell_count as usize);
 
     for x in 0..cell_count {
-        cells.push(load_anim(asset_state, texture, RowCol(x as i32, row_col.1), 1, size, f32::INFINITY));
+        cells.push(load_anim(
+            asset_state, texture, RowCol(row_col.0+x as i32, row_col.1), 1, size, NOT_SO_VERY_BIG_NUMBER
+        ));
     }
 
     cells.into_boxed_slice()

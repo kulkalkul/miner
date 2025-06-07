@@ -376,22 +376,21 @@ impl Tile {
 
     pub fn durability(&self) -> f32 {
         match self {
-            Tile::Empty => f32::INFINITY,
+            Tile::Empty => NOT_SO_VERY_BIG_NUMBER,
             
-            Tile::ERR => f32::INFINITY,
-            Tile::UP => f32::INFINITY,
-            Tile::DOWN => f32::INFINITY,
-            Tile::GREEN => f32::INFINITY,
-            Tile::RED => f32::INFINITY,
+            Tile::ERR => NOT_SO_VERY_BIG_NUMBER,
+            Tile::UP => NOT_SO_VERY_BIG_NUMBER,
+            Tile::DOWN => NOT_SO_VERY_BIG_NUMBER,
+            Tile::GREEN => NOT_SO_VERY_BIG_NUMBER,
+            Tile::RED => NOT_SO_VERY_BIG_NUMBER,
             
-            Tile::BackgroundStone => f32::INFINITY,
-            Tile::BackgroundStoneLadder => f32::INFINITY,
-            Tile::BackgroundStoneLadderSupport => f32::INFINITY,
-            
+            Tile::BackgroundStone => NOT_SO_VERY_BIG_NUMBER,
+            Tile::BackgroundStoneLadder => NOT_SO_VERY_BIG_NUMBER,
+            Tile::BackgroundStoneLadderSupport => NOT_SO_VERY_BIG_NUMBER,
             Tile::Stone => 1.2,
             Tile::StoneDig => 0.5,
             Tile::HardStone => 15.0,
-            Tile::Barrier => f32::INFINITY,
+            Tile::Barrier => NOT_SO_VERY_BIG_NUMBER,
 
             Tile::StoneCopperOre => 1.4,
             Tile::StoneIronOre => 1.8,
@@ -400,18 +399,18 @@ impl Tile {
             Tile::StoneRuby => 3.5,
             Tile::StoneSapphire => 3.5,
             
-            Tile::StoneBoundaryBottomRight => f32::INFINITY,
-            Tile::StoneBoundaryBottom => f32::INFINITY,
-            Tile::StoneBoundaryBottomLeft => f32::INFINITY,
-            Tile::StoneBoundaryLeft => f32::INFINITY,
-            Tile::StoneBoundaryTopLeft => f32::INFINITY,
-            Tile::StoneBoundaryTop => f32::INFINITY,
-            Tile::StoneBoundaryTopRight => f32::INFINITY,
-            Tile::StoneBoundaryRight => f32::INFINITY,
-            Tile::StoneBoundaryTopLeftInverse => f32::INFINITY,
-            Tile::StoneBoundaryTopRightInverse => f32::INFINITY,
-            Tile::StoneBoundaryBottomRightInverse => f32::INFINITY,
-            Tile::StoneBoundaryBottomLeftInverse => f32::INFINITY,
+            Tile::StoneBoundaryBottomRight => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryBottom => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryBottomLeft => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryLeft => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryTopLeft => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryTop => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryTopRight => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryRight => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryTopLeftInverse => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryTopRightInverse => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryBottomRightInverse => NOT_SO_VERY_BIG_NUMBER,
+            Tile::StoneBoundaryBottomLeftInverse => NOT_SO_VERY_BIG_NUMBER,
         }
     }
 }

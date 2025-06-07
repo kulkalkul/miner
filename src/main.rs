@@ -70,6 +70,7 @@ pub mod prelude {
 }
 
 mod consts {
+    pub const NOT_SO_VERY_BIG_NUMBER: f32 = 50_000.0;
     pub const GAME_WIDTH: usize = 160;
     pub const GAME_HEIGHT: usize = 120;
 
