@@ -116,7 +116,7 @@ create_seq! {struct ClimbMomentumUpgrade; enum ClimbMomentumUpgradeKind {
 }}
 create_seq! {struct DwarfcopterUpgrade; enum DwarfcopterUpgradeKind {
     NoDwarfcopter => ("No Dwarfcopter", 0),
-    Dwarfcopter4280Pro => ("Dwarfcopter 4280 Pro", 2500),
+    DwarfcopterPro => ("Dwarfcopter Pro", 2500),
 }}
 create_seq! {struct DwarfcopterBoostUpgrade; enum DwarfcopterBoostUpgradeKind {
     NoDwarfcopterBoost => ("No Boost", 0),

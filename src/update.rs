@@ -89,7 +89,7 @@ pub fn update(game: &mut Game) {
 
     derived.player_has_dwarfcopter = match upgrades.dwarfcopter.kind {
         DwarfcopterUpgradeKind::NoDwarfcopter => false,
-        DwarfcopterUpgradeKind::Dwarfcopter4280Pro => true,
+        DwarfcopterUpgradeKind::DwarfcopterPro => true,
     };
 
     derived.player_can_place_ladder = !derived.player_has_dwarfcopter;
