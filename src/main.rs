@@ -4,6 +4,7 @@
 
 #![allow(non_snake_case)]
 #![allow(unused_labels)]
+#![allow(irrefutable_let_patterns)]
 use std::collections::HashMap;
 use std::sync::{LazyLock, Mutex};
 
