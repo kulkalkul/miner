@@ -48,15 +48,15 @@ pub fn update(game: &mut Game) {
     upgrades.bag.derived_unlocked = true;
     upgrades.climb_momentum.derived_unlocked = true;
 
-    upgrades.dwarfcopter.derived_unlocked =
+    upgrades.jetpack.derived_unlocked =
         upgrades.mining.reached(MiningUpgradeKind::AlloyPickaxe) &&
         upgrades.ladder.reached(LadderUpgradeKind::FastClimb) &&
         upgrades.bag.reached(BagUpgradeKind::Sack) &&
         upgrades.climb_momentum.reached(ClimbMomentumUpgradeKind::ClimbMomentum);
 
-    upgrades.dwarfcopter_boost.derived_unlocked = upgrades.dwarfcopter.derived_unlocked;
-    upgrades.dwarfcopter_fuel.derived_unlocked = upgrades.dwarfcopter.derived_unlocked;
-    upgrades.dwarfcopter_storage.derived_unlocked = upgrades.dwarfcopter.derived_unlocked;
+    upgrades.jetpack_boost.derived_unlocked = upgrades.jetpack.derived_unlocked;
+    upgrades.jetpack_fuel.derived_unlocked = upgrades.jetpack.derived_unlocked;
+    upgrades.jetpack_storage.derived_unlocked = upgrades.jetpack.derived_unlocked;
 
     derived.player_mining_speed = match upgrades.mining.kind {
         MiningUpgradeKind::DefaultPickaxe => 1.0,
@@ -87,13 +87,13 @@ pub fn update(game: &mut Game) {
         ClimbMomentumUpgradeKind::ClimbMomentum => 1.5,
     };
 
-    derived.player_has_dwarfcopter = match upgrades.dwarfcopter.kind {
-        DwarfcopterUpgradeKind::NoDwarfcopter => false,
-        DwarfcopterUpgradeKind::DwarfcopterPro => true,
+    derived.player_has_jetpack = match upgrades.jetpack.kind {
+        JetpackUpgradeKind::NoJetpack => false,
+        JetpackUpgradeKind::Jetpack => true,
     };
 
-    derived.player_can_place_ladder = !derived.player_has_dwarfcopter;
-    derived.player_can_use_dwarfcopter = derived.player_has_dwarfcopter &&
+    derived.player_can_place_ladder = !derived.player_has_jetpack;
+    derived.player_can_use_jetpack = derived.player_has_jetpack &&
         player.trans.pos.y <= ELEVATOR_PLATFORM_END.y;
     
     game.total_time += dt;
@@ -153,7 +153,7 @@ pub fn update(game: &mut Game) {
 
         #[allow(unused_assignments)]
         let mut movement_dir = Vec2::ZERO;
-        if derived.player_can_use_dwarfcopter {
+        if derived.player_can_use_jetpack {
             movement_dir = player_movement_f32 * dt * 100.0;
         } else {
             movement_dir = player_movement_f32 * dt * 50.0;
@@ -178,7 +178,7 @@ pub fn update(game: &mut Game) {
         let tile_one_down = tile.down(1);
         
         // gravity
-        if derived.player_can_use_dwarfcopter {
+        if derived.player_can_use_jetpack {
             movement_dir.y += -1.2 * TILE_SIDE as f32  * dt;
         } else if !tile.kind.can_climb() {
             if !tile_one_down.kind.can_climb() || pos.y - tile.world_pos().y > 1.0 {
@@ -391,7 +391,7 @@ pub fn update(game: &mut Game) {
         }
     }
 
-    if derived.player_can_use_dwarfcopter {
+    if derived.player_can_use_jetpack {
         if player.anim.is( &assets.player_idle ) {
             player.anim = assets.player_jetpack_idle.derive_anim();
         }
@@ -467,9 +467,9 @@ pub fn update(game: &mut Game) {
         }
         
         player.trans.pos.y = elevator_platform.trans.pos.y+elevator_platform.trans.offset.y+5.0;
-        player.dwarfcopter_velocity = vec2(0.0, 0.0);
+        player.jetpack_velocity = vec2(0.0, 0.0);
         
-        derived.player_can_use_dwarfcopter = false;
+        derived.player_can_use_jetpack = false;
         next_late_derived.travelling_in_elevator = true;
     }
     
@@ -663,7 +663,7 @@ pub fn update(game: &mut Game) {
         }
     }
     
-    if derived.player_has_dwarfcopter && !game.elevator_spawned {
+    if derived.player_has_jetpack && !game.elevator_spawned {
         game.elevator_spawned = true;   
         world_commands.set_tile_area(
             world_pos_to_tile_pos(ELEVATOR_PLATFORM_END)+ivec2(0, 1),

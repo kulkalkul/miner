@@ -6,10 +6,10 @@ pub struct Upgrades {
     pub bag: BagUpgrade,
     pub climb_momentum: ClimbMomentumUpgrade,
     
-    pub dwarfcopter: DwarfcopterUpgrade,
-    pub dwarfcopter_boost: DwarfcopterBoostUpgrade,
-    pub dwarfcopter_fuel: DwarfcopterFuelUpgrade,
-    pub dwarfcopter_storage: DwarfcopterStorageUpgrade,
+    pub jetpack: JetpackUpgrade,
+    pub jetpack_boost: JetpackBoostUpgrade,
+    pub jetpack_fuel: JetpackFuelUpgrade,
+    pub jetpack_storage: JetpackStorageUpgrade,
 }
 
 pub struct SeqUpgrade<'a> {
@@ -114,23 +114,23 @@ create_seq! {struct ClimbMomentumUpgrade; enum ClimbMomentumUpgradeKind {
     NoClimbMomentum => ("No Climb Momentum", 0),
     ClimbMomentum => ("Climb Momentum", 1000),
 }}
-create_seq! {struct DwarfcopterUpgrade; enum DwarfcopterUpgradeKind {
-    NoDwarfcopter => ("No Dwarfcopter", 0),
-    DwarfcopterPro => ("Dwarfcopter Pro", 2500),
+create_seq! {struct JetpackUpgrade; enum JetpackUpgradeKind {
+    NoJetpack => ("No Jetpack", 0),
+    Jetpack => ("Jetpack", 2500),
 }}
-create_seq! {struct DwarfcopterBoostUpgrade; enum DwarfcopterBoostUpgradeKind {
+create_seq! {struct JetpackBoostUpgrade; enum JetpackBoostUpgradeKind {
     NoDwarfcopterBoost => ("No Boost", 0),
-    DwarfcopterSmallBoost => ("Small Boost", 6000),
+    SmallBoost => ("Small Boost", 6000),
 }}
-create_seq! {struct DwarfcopterFuelUpgrade; enum DwarfcopterFuelUpgradeKind {
-    DefaultDwarfcopterFuel => ("Default Fuel", 0),
-    DwarfcopterQuickTanks => ("Quick Tanks", 3500),
-    DwarfcopterDoubleTanks => ("Long Double Tanks", 6000),
-    DwarfcopterLongHaulTanks => ("Long Haul Tanks", 12000),
+create_seq! {struct JetpackFuelUpgrade; enum JetpackFuelUpgradeKind {
+    DefaultFuel => ("Default Fuel", 0),
+    QuickTanks => ("Quick Tanks", 3500),
+    DoubleTanks => ("Long Double Tanks", 6000),
+    LongHaulTanks => ("Long Haul Tanks", 12000),
 }}
-create_seq! {struct DwarfcopterStorageUpgrade; enum DwarfcopterStorageUpgradeKind {
-    DefaultDwarfcopterStorage => ("Default Storage", 0),
-    DefaultDwarfcopterXLStorage => ("XL Storage", 4000),
-    DefaultDwarfcopterXXLStorage => ("XXL Storage", 7000),
-    DefaultDwarfcopterXXXLStorage => ("XXXL Storage", 13000),
+create_seq! {struct JetpackStorageUpgrade; enum JetpackStorageUpgradeKind {
+    DefaultStorage => ("Default Storage", 0),
+    XLStorage => ("XL Storage", 4000),
+    XXLStorage => ("XXL Storage", 7000),
+    XXXLStorage => ("XXXL Storage", 13000),
 }}
