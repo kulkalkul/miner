@@ -38,8 +38,17 @@ pub mod consts {
     pub const RAIL_START: IVec2 = ivec2(WORLD_SPAWN_I32.x+MINE_AREA_WIDTH_I32/2, WORLD_SPAWN_I32.y);
     pub const RAIL_END: IVec2 = ivec2(ROOM_END_I32.x-1, WORLD_SPAWN_I32.y);
     
-    pub const MINECART_START: Vec2 = vec2(RAIL_START.x as f32*TILE_SIDE_F32 + 3.0, RAIL_START.y as f32*TILE_SIDE_F32);
-    pub const MINECART_END: Vec2 = vec2(RAIL_END.x as f32*TILE_SIDE_F32, RAIL_END.y as f32*TILE_SIDE_F32);
+    pub const BARRIER_HEIGHT: i32 = 13;
+    pub const BARRIER_POS: IVec2 = ivec2(0, (WORLD_HEIGHT_I32-BARRIER_HEIGHT)*CHUNK_SIDE_I32);
+    
+    pub const MINECART_START: Vec2 = vec2(
+        RAIL_START.x as f32*TILE_SIDE_F32 + 3.0,
+        RAIL_START.y as f32*TILE_SIDE_F32,
+    );
+    pub const MINECART_END: Vec2 = vec2(
+        RAIL_END.x as f32*TILE_SIDE_F32,
+        RAIL_END.y as f32*TILE_SIDE_F32,
+    );
 }
 
 use consts::*;
@@ -274,12 +283,11 @@ impl World {
         };
 
         let mut commands = world.commands(bump);
-        const BARRIER_HEIGHT: i32 = 13;
 
         commands.push_commands(&[
             WorldCommand::SetTileArea {
                 tile: Tile::Stone,
-                x: 0, y: (WORLD_HEIGHT_I32-BARRIER_HEIGHT)*CHUNK_SIDE_I32,
+                x: BARRIER_POS.x, y: BARRIER_POS.y,
                 // BUG: When presented with x=0 and w=160, it should be able to query tiles *between* [0 and 160).
                 // But due to the chunk_pos calculation resulting chunk at the end is not a valid chunk. While
                 // SetTileArea is guarded from that with min/max checks, chunk index calculation is not, hence
