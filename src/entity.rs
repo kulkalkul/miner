@@ -101,16 +101,97 @@ impl ItemKind {
 
 impl Transform {
     pub fn collider(&self) -> BoxCollider {
+        BoxCollider::new(self.offset+self.pos, self.size)
+    }
+    pub fn collider_size(&self, size: Vec2) -> BoxCollider {
+        let collider = BoxCollider::new(self.offset+self.pos, size);
         BoxCollider {
-            p1: self.offset + self.pos,
-            p2: self.offset + self.pos + self.size,
+            p1: Vec2::min(collider.p1, collider.p2),
+            p2: Vec2::max(collider.p1, collider.p2),
         }
+    }
+    pub fn collider_offset_size(&self, offset: Vec2, size: Vec2) -> BoxCollider {
+        let collider = BoxCollider::new(self.offset+self.pos+offset, size);
+        BoxCollider {
+            p1: Vec2::min(collider.p1, collider.p2),
+            p2: Vec2::max(collider.p1, collider.p2),
+        }
+    }
+    pub fn offsetted_pos(&self) -> Vec2 {
+        self.offset+self.pos
+    }
+    pub fn x_offsetted_pos(&self) -> Vec2 {
+        vec2(self.offset.x+self.pos.x, self.pos.y)
+    }
+    pub fn y_offsetted_pos(&self) -> Vec2 {
+        vec2(self.pos.x, self.offset.y+self.pos.y)
     }
 }
 
 impl BoxCollider {
-    pub fn intersects(&self, collidee: BoxCollider) -> bool {
-        self.p1.x <= collidee.p2.x && self.p2.x >= collidee.p1.x &&
-        self.p1.y <= collidee.p2.y && self.p2.y >= collidee.p1.y
+    pub fn new(position: Vec2, size: Vec2) -> BoxCollider {
+        BoxCollider {
+            p1: position,
+            p2: position+size,
+        }
+    }
+    pub fn intersects(&self, other: BoxCollider) -> bool {
+        self.p1.x <= other.p2.x && self.p2.x >= other.p1.x &&
+        self.p1.y <= other.p2.y && self.p2.y >= other.p1.y
+    }
+    pub fn collides(&self, mut other: BoxCollider, vel: Vec2) -> Option<(Vec2, Vec2, f32)> {
+        if vel.x == 0.0 && vel.y == 0.0 { return None; }
+
+        let size = self.p2 - self.p1;
+
+        other.p1 -= size/2.0;
+        other.p2 += size/2.0;
+
+        if let Some((contact_point, contact_normal, contact_time)) = other.ray_collides(self.p1 + size/2.0, vel) {
+            if contact_time <= 1.0 {
+                return Some((contact_point, contact_normal, contact_time));
+            }
+        }
+
+        None
+    }
+    pub fn ray_collides(&self, ray_origin: Vec2, ray_dir: Vec2) -> Option<(Vec2, Vec2, f32)> {
+        let mut t_near = (self.p1 - ray_origin)/ray_dir;
+        let mut t_far = (self.p2 - ray_origin)/ray_dir;
+
+        if t_near.x > t_far.x { std::mem::swap(&mut t_near.x, &mut t_far.x); }
+        if t_near.y > t_far.y { std::mem::swap(&mut t_near.y, &mut t_far.y); }
+        
+        if t_near.x > t_far.y || t_near.y > t_far.x { return None; }
+
+        let t_hit_near = f32::max(t_near.x, t_near.y);
+        let t_hit_far = f32::min(t_far.x, t_far.y);
+
+        if t_hit_far < 0.0 { return None; }
+
+        let contact_point = ray_origin + t_hit_near * ray_dir;
+        let mut contact_normal = Vec2::ZERO;
+
+        if t_near.x > t_near.y {
+            if ray_dir.x < 0.0 {
+                contact_normal = vec2(1.0, 0.0);
+            } else {
+                contact_normal = vec2(-1.0, 0.0);
+            }
+        } else if t_near.x < t_near.y {
+            if ray_dir.y < 0.0 {
+                contact_normal = vec2(0.0, 1.0);
+            } else {
+                contact_normal = vec2(0.0, -1.0);
+            }
+        }
+
+        Some((contact_point, contact_normal, t_hit_near))
+    }
+    pub fn contains(&self, other: BoxCollider) -> bool {
+        self.p1.x <= other.p2.x && self.p2.x <= other.p2.x &&
+        self.p1.x >= other.p1.x && self.p2.x >= other.p1.x &&
+        self.p1.y <= other.p2.y && self.p2.y <= other.p2.y &&
+        self.p1.y >= other.p1.y && self.p2.y >= other.p1.y
     }
 }
