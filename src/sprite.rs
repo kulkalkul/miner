@@ -20,6 +20,7 @@ pub struct Animation {
     pub frame_timer: f32,
     pub accumulated: f32,
     pub repeated: i32,
+    pub modifier: f32,
 }
 
 #[derive(Debug)]
@@ -72,6 +73,7 @@ impl SpriteAsset {
             frame_timer: self.frame_timer,
             accumulated: self.frame_timer,
             repeated: -1,
+            modifier: 1.0,
         }
     }
 }
@@ -233,7 +235,7 @@ pub fn load_anim(
 }
 
 pub fn tick_animation(sprite: &mut Sprite, anim: &mut Animation, dt: f32) {
-    anim.accumulated += dt;
+    anim.accumulated += dt*anim.modifier;
     if anim.accumulated > anim.frame_timer {
         anim.accumulated = anim.accumulated - anim.frame_timer;
         anim.index += 1;

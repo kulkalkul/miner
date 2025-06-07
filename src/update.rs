@@ -375,6 +375,11 @@ pub fn update(game: &mut Game) {
         player.anim = assets.player_hit.derive_anim();
     }
 
+    if player.anim.is(&assets.player_hit) {
+        player.anim.modifier = derived.player_hit_str;
+    }
+    
+
     // bag handling
     let directional_offset =
         if player.sprite.flip_x { player.trans.offset * vec2(-1.0, 1.0) }
