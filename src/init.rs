@@ -12,9 +12,10 @@ pub async fn init(assets: Assets) -> Game {
     let mut player = Player {
         trans: Transform {
             pos: WORLD_SPAWN_F32 * Vec2::splat(TILE_SIDE_F32),
-            size: vec2(10.0, 12.0),
+            size: vec2(16.0, 16.0),
             offset: vec2(-7.5, 0.0),
         },
+        tile_size: vec2(10.0, 12.0),
         sprite: assets.player_idle.derive_sprite(),
         anim: assets.player_idle.derive_anim(),
         carrying: Array::with_length(ItemKind::Air, 0),

@@ -3,6 +3,7 @@ use crate::prelude::*;
 #[derive(Debug)]
 pub struct Player {
     pub trans: Transform,
+    pub tile_size: Vec2,
     pub sprite: Sprite,
     pub anim: Animation,
     pub bag_mesh: GameMesh,

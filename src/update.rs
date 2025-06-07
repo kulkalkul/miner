@@ -128,7 +128,8 @@ pub fn update(game: &mut Game) {
         let pos = player.trans.pos;
         let mut new_pos = player.trans.pos;
         let size = player.trans.size;
-        let hsize = size / 2.0;
+        let tsize = player.tile_size;
+        let htsize = tsize / 2.0;
         let tile = tiles.at_world_pos(pos);
 
         if input_actions.toggle_dev_mode {
@@ -203,17 +204,17 @@ pub fn update(game: &mut Game) {
         new_pos += movement_dir;
 
         let right_intersection = World::query_intersected_tiles_y(&game.bump,
-            new_pos.x+hsize.x, [pos.y, pos.y+size.y]
+            new_pos.x+htsize.x, [pos.y, pos.y+tsize.y]
         );
         let left_intersection = World::query_intersected_tiles_y(&game.bump,
-            new_pos.x-hsize.x+1.0, [pos.y, pos.y+size.y]
+            new_pos.x-htsize.x+1.0, [pos.y, pos.y+tsize.y]
         );
 
         let top_intersection = World::query_intersected_tiles_x(&game.bump,
-            [pos.x-hsize.x+1.0, pos.x+hsize.x], new_pos.y+size.y
+            [pos.x-htsize.x+1.0, pos.x+htsize.x], new_pos.y+tsize.y
         );
         let bottom_intersection = World::query_intersected_tiles_x(&game.bump,
-            [pos.x-hsize.x+1.0, pos.x+hsize.x], new_pos.y
+            [pos.x-htsize.x+1.0, pos.x+htsize.x], new_pos.y
         );
 
         for tile_pos in bottom_intersection {
