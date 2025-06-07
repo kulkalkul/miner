@@ -259,17 +259,6 @@ pub fn update(game: &mut Game) {
     player.mining_fatigue = f32::max(player.mining_fatigue-dt, 0.0);
     
     derived.player_hit_str = 1.0 / f32::max(player_movement.x.abs() as f32 + player_movement.y.abs() as f32, 1.0);
-
-    // player animations :::
-    if player.anim.is( &assets.player_idle ) && derived.player_moving {
-        player.anim = assets.player_walk.derive_anim();
-    }
-    if player.anim.is( &assets.player_walk ) && !derived.player_moving {
-        player.anim = assets.player_idle.derive_anim();
-    }
-    if player.anim.is( &assets.player_hit) && derived.player_anim_finished {
-        player.anim = assets.player_idle.derive_anim();
-    }
     
     let player_tile = tiles.at_world_pos(player.trans.pos);
     let mut world_commands = world.commands(&game.bump);
@@ -308,8 +297,8 @@ pub fn update(game: &mut Game) {
         
         let durability = game.tile_durability_map.entry(tile.pos).or_insert(0.0);
         *durability += dt * 3.0 * derived.player_mining_speed * derived.player_hit_str;
-        
-        player.anim = assets.player_hit.derive_anim();
+
+        derived.player_mining = true;        
 
         if *durability > tile.kind.durability() {
             if tile.kind.item_drop() != ItemKind::Air {
@@ -370,6 +359,20 @@ pub fn update(game: &mut Game) {
             }
         }
         
+    }
+    
+    // player animations :::
+    if !derived.player_mining && player.anim.is( &assets.player_idle ) && derived.player_moving {
+        player.anim = assets.player_walk.derive_anim();
+    }
+    if !derived.player_mining && player.anim.is( &assets.player_walk ) && !derived.player_moving {
+        player.anim = assets.player_idle.derive_anim();
+    }
+    if !derived.player_mining && player.anim.is( &assets.player_hit) && derived.player_anim_finished {
+        player.anim = assets.player_idle.derive_anim();
+    }
+    if derived.player_mining && player.anim.is_not(&assets.player_hit) {
+        player.anim = assets.player_hit.derive_anim();
     }
 
     // bag handling
