@@ -29,6 +29,9 @@ pub enum Tile {
     BackgroundStone,
     BackgroundStoneLadder,
     BackgroundStoneLadderSupport,
+    BackgroundStoneElevatorLeft,
+    BackgroundStoneElevatorMiddle,
+    BackgroundStoneElevatorRight,
     
     Stone,
     StoneDig,
@@ -142,6 +145,9 @@ impl Tile {
             Tile::BackgroundStone => true,
             Tile::BackgroundStoneLadder => true,
             Tile::BackgroundStoneLadderSupport => true,
+            Tile::BackgroundStoneElevatorLeft => false,
+            Tile::BackgroundStoneElevatorMiddle => false,
+            Tile::BackgroundStoneElevatorRight => false,
             
             Tile::Stone => false,
             Tile::StoneDig => false,
@@ -183,6 +189,9 @@ impl Tile {
             Tile::BackgroundStone => false,
             Tile::BackgroundStoneLadder => false,
             Tile::BackgroundStoneLadderSupport => false,
+            Tile::BackgroundStoneElevatorLeft => false,
+            Tile::BackgroundStoneElevatorMiddle => false,
+            Tile::BackgroundStoneElevatorRight => false,
             
             Tile::Stone => true,
             Tile::StoneDig => true,
@@ -223,6 +232,9 @@ impl Tile {
             Tile::BackgroundStone => false,
             Tile::BackgroundStoneLadder => true,
             Tile::BackgroundStoneLadderSupport => true,
+            Tile::BackgroundStoneElevatorLeft => false,
+            Tile::BackgroundStoneElevatorMiddle => false,
+            Tile::BackgroundStoneElevatorRight => false,
             
             
             Tile::Stone => false,
@@ -264,6 +276,9 @@ impl Tile {
             Tile::BackgroundStone => true,
             Tile::BackgroundStoneLadder => true,
             Tile::BackgroundStoneLadderSupport => true,
+            Tile::BackgroundStoneElevatorLeft => false,
+            Tile::BackgroundStoneElevatorMiddle => false,
+            Tile::BackgroundStoneElevatorRight => false,
             
             Tile::Stone => false,
             Tile::StoneDig => false,
@@ -305,6 +320,9 @@ impl Tile {
             Tile::BackgroundStone => Tile::ERR,
             Tile::BackgroundStoneLadder => Tile::ERR,
             Tile::BackgroundStoneLadderSupport => Tile::ERR,
+            Tile::BackgroundStoneElevatorLeft => Tile::ERR,
+            Tile::BackgroundStoneElevatorMiddle => Tile::ERR,
+            Tile::BackgroundStoneElevatorRight => Tile::ERR,
             
             Tile::Stone => Tile::BackgroundStone,
             Tile::StoneDig => Tile::BackgroundStone,
@@ -346,6 +364,9 @@ impl Tile {
             Tile::BackgroundStone => ItemKind::Air,
             Tile::BackgroundStoneLadder => ItemKind::Air,
             Tile::BackgroundStoneLadderSupport => ItemKind::Air,
+            Tile::BackgroundStoneElevatorLeft => ItemKind::Air,
+            Tile::BackgroundStoneElevatorMiddle => ItemKind::Air,
+            Tile::BackgroundStoneElevatorRight => ItemKind::Air,
             
             Tile::Stone => ItemKind::Air,
             Tile::StoneDig => ItemKind::Air,
@@ -387,6 +408,10 @@ impl Tile {
             Tile::BackgroundStone => NOT_SO_VERY_BIG_NUMBER,
             Tile::BackgroundStoneLadder => NOT_SO_VERY_BIG_NUMBER,
             Tile::BackgroundStoneLadderSupport => NOT_SO_VERY_BIG_NUMBER,
+            Tile::BackgroundStoneElevatorLeft => NOT_SO_VERY_BIG_NUMBER,
+            Tile::BackgroundStoneElevatorMiddle => NOT_SO_VERY_BIG_NUMBER,
+            Tile::BackgroundStoneElevatorRight => NOT_SO_VERY_BIG_NUMBER,
+            
             Tile::Stone => 1.2,
             Tile::StoneDig => 0.5,
             Tile::HardStone => 15.0,

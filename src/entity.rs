@@ -46,6 +46,17 @@ pub struct Minecart {
     pub movement: MinecartMovement,
 }
 
+#[derive(Debug)]
+pub struct ElevatorPlatform {
+    pub trans: Transform,
+    pub sprite: Sprite,
+    pub anim: Animation,
+    pub velocity: Vec2,
+    pub down_or_up: bool,
+    pub player_inside_for: f32,
+    pub walk_collider: Vec2,
+}
+
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum MinecartMovement {
     Idle,

@@ -24,6 +24,8 @@ pub fn update(game: &mut Game) {
     let minecart = &mut game.minecart;
     let crusher = &mut game.crusher;
     let statue = &mut game.statue;
+    let elevator_cage = &mut game.elevator_cage;
+    let elevator_platform = &mut game.elevator_platform;
     
     let world = &mut game.world;
     let visible_chunks = &mut game.visible_chunks;
@@ -38,7 +40,6 @@ pub fn update(game: &mut Game) {
     let tiles = world.tiles();
 
     let player_last_pos = player.trans.pos;
-
 
     // upgrades :::
 
@@ -92,7 +93,8 @@ pub fn update(game: &mut Game) {
     };
 
     derived.player_can_place_ladder = !derived.player_has_dwarfcopter;
-    derived.player_can_use_dwarfcopter = derived.player_has_dwarfcopter;
+    derived.player_can_use_dwarfcopter = derived.player_has_dwarfcopter &&
+        player.trans.pos.y <= ELEVATOR_PLATFORM_END.y;
     
     game.total_time += dt;
     
@@ -155,6 +157,17 @@ pub fn update(game: &mut Game) {
         } else {
             movement_dir = player_movement_f32 * dt * 50.0;
         }
+        
+        if player_movement.x > 0 {
+            player.sprite.flip_x = false;
+        } else if player_movement.x < 0 {
+            player.sprite.flip_x = true;
+        }
+
+        if late_derived.travelling_in_elevator {
+            player.trans.pos += movement_dir;
+            break 'player_movement;
+        }
 
         if game.dev_mode {
             player.trans.pos += movement_dir * 10.0;
@@ -181,6 +194,10 @@ pub fn update(game: &mut Game) {
             }
             movement_dir.y *= derived.player_ladder_speed + player.climb_momentum.abs();
  
+        }
+        
+        if player_movement != IVec2::ZERO {
+            derived.player_moving = true;
         }
 
         new_pos += movement_dir;
@@ -220,17 +237,19 @@ pub fn update(game: &mut Game) {
             derived.player_touching_top = true;
         }
 
-        player.trans.pos = new_pos;
-        
-        if player_movement.x > 0 {
-            player.sprite.flip_x = false;
-        } else if player_movement.x < 0 {
-            player.sprite.flip_x = true;
-        }
+        let mut trans = player.trans;
+        trans.pos = new_pos;
+        trans.size = size;
 
-        if player_movement != IVec2::ZERO {
-            derived.player_moving = true;
+        let elevator_collider = elevator_platform.trans
+            .collider_offset_size(vec2(0.0, 4.9), elevator_platform.walk_collider);
+        
+        let change = trans.pos - player.trans.pos;
+        if let Some((_point, normal, time)) = trans.collider().collides(elevator_collider, change) {
+            trans.pos += normal * change.abs() * (1.0-time);
         }
+        
+        player.trans.pos = trans.pos;
     }
     
     // INFO: This allows it to slow down from both directions. It compounds when direction changes due to
@@ -257,6 +276,8 @@ pub fn update(game: &mut Game) {
     let mut player_added_to_bags = Vec::with_capacity_in(4, &game.bump);
 
     'block_mine: {
+        if late_derived.travelling_in_elevator { break 'block_mine; }
+
         let touch_vec = if derived.player_touching_left && player_movement.x < 0 {
             ivec2(-1, 0)
         } else if derived.player_touching_right && player_movement.x > 0 {
@@ -318,6 +339,7 @@ pub fn update(game: &mut Game) {
 
     'lay_ladder: {
         if !derived.player_can_place_ladder { break 'lay_ladder; }
+        if late_derived.travelling_in_elevator { break 'lay_ladder; }
 
         let tile = player_tile;
         let tile_one_up = tile.up(1);
@@ -362,6 +384,65 @@ pub fn update(game: &mut Game) {
     for item_kind in player_added_to_bags {
         if player.carrying.length >= derived.player_bag_carry_capacity { break; }
         player.carrying.push(item_kind);        
+    }
+
+    if  game.elevator_spawned &&
+        player.trans.collider().contains(elevator_platform.trans.collider())
+    {
+        if elevator_platform.player_inside_for < 5.0 {
+            let anim = &assets.elevator_platform_countdown[elevator_platform.player_inside_for as usize];
+            if elevator_platform.anim.is_not(anim) {
+                elevator_platform.anim = anim.derive_anim();
+            }
+            elevator_platform.player_inside_for += dt;
+        }
+    }
+    
+    if  game.elevator_spawned &&
+        elevator_platform.player_inside_for >= 5.0
+    {
+        let direction = if elevator_platform.down_or_up { -800.0 } else { 800.0 };
+        elevator_platform.trans.pos.y -= direction*dt;
+                
+        if elevator_platform.trans.pos.y <= ELEVATOR_PLATFORM_END_STOP.y {
+            elevator_platform.trans.pos.y = ELEVATOR_PLATFORM_END_STOP.y;
+            elevator_platform.player_inside_for = 0.0;
+            elevator_platform.anim = assets.elevator_platform_idle.derive_anim();
+            elevator_platform.down_or_up = !elevator_platform.down_or_up;
+        }
+        
+        if elevator_platform.trans.pos.y >= ELEVATOR_PLATFORM_START.y {
+            elevator_platform.trans.pos.y = ELEVATOR_PLATFORM_START.y;
+            elevator_platform.player_inside_for = 0.0;
+            elevator_platform.anim = assets.elevator_platform_idle.derive_anim();
+            elevator_platform.down_or_up = !elevator_platform.down_or_up;
+        }
+
+        if elevator_platform.anim.is_not(&assets.elevator_platform_moving) {
+            elevator_platform.anim = assets.elevator_platform_moving.derive_anim();
+        }
+        
+        if player.trans.collider().p1.x < elevator_platform.trans.collider().p1.x {
+            player.trans.pos.x = elevator_platform.trans.collider().p1.x - player.trans.offset.x+1.0;
+        }
+        if player.trans.collider().p2.x > elevator_platform.trans.collider().p2.x {
+            player.trans.pos.x = elevator_platform.trans.collider().p2.x + player.trans.offset.x-2.0;
+        }
+        
+        player.trans.pos.y = elevator_platform.trans.pos.y+elevator_platform.trans.offset.y+5.0;
+        player.dwarfcopter_velocity = vec2(0.0, 0.0);
+        
+        derived.player_can_use_dwarfcopter = false;
+        next_late_derived.travelling_in_elevator = true;
+    }
+    
+    if  game.elevator_spawned &&
+        !player.trans.collider().contains(elevator_platform.trans.collider())
+    {
+        elevator_platform.player_inside_for = 0.0;
+        if elevator_platform.anim.is_not(&assets.elevator_platform_idle) {
+            elevator_platform.anim = assets.elevator_platform_idle.derive_anim();
+        }
     }
     
     if  minecart.movement == MinecartMovement::Idle &&
@@ -507,6 +588,8 @@ pub fn update(game: &mut Game) {
     }
 
     // tick animations :::
+    tick_animation(&mut elevator_cage.sprite, &mut elevator_cage.anim, dt);
+    tick_animation(&mut elevator_platform.sprite, &mut elevator_platform.anim, dt);
     tick_animation(&mut minecart.sprite, &mut minecart.anim, dt);
     tick_animation(&mut crusher.sprite, &mut crusher.anim, dt);
     tick_animation(&mut player.sprite, &mut player.anim, dt);
@@ -541,6 +624,25 @@ pub fn update(game: &mut Game) {
                 break 'escape;
             }
         }
+    }
+    
+    if derived.player_has_dwarfcopter && !game.elevator_spawned {
+        game.elevator_spawned = true;   
+        world_commands.set_tile_area(
+            world_pos_to_tile_pos(ELEVATOR_PLATFORM_END)+ivec2(0, 1),
+            world_pos_to_tile_pos(ELEVATOR_PLATFORM_START-ELEVATOR_PLATFORM_END)+ivec2(1, 0),
+            Tile::BackgroundStoneElevatorLeft,
+        );
+        world_commands.set_tile_area(
+            world_pos_to_tile_pos(ELEVATOR_PLATFORM_END)+ivec2(1, 1),
+            world_pos_to_tile_pos(ELEVATOR_PLATFORM_START-ELEVATOR_PLATFORM_END)+ivec2(1, 0),
+            Tile::BackgroundStoneElevatorMiddle,
+        );
+        world_commands.set_tile_area(
+            world_pos_to_tile_pos(ELEVATOR_PLATFORM_END)+ivec2(2, 1),
+            world_pos_to_tile_pos(ELEVATOR_PLATFORM_START-ELEVATOR_PLATFORM_END)+ivec2(1, 0),
+            Tile::BackgroundStoneElevatorRight,
+        );
     }
 
 

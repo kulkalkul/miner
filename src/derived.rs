@@ -28,4 +28,5 @@ pub struct DerivedState {
 #[derive(Default)]
 pub struct LateDerivedState {
     pub ui_is_active: bool,
+    pub travelling_in_elevator: bool,
 }

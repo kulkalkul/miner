@@ -10,6 +10,8 @@ pub fn render(game: &mut Game) {
     let minecart = &game.minecart;
     let player = &game.player;
     let crusher = &game.crusher;
+    let elevator_cage = &game.elevator_cage;
+    let elevator_platform = &game.elevator_platform;
     
     let derived = &game.derived;
     let assets = &game.assets;
@@ -75,8 +77,11 @@ pub fn render(game: &mut Game) {
         );
     }
     
-
     let sprite_dir = if player.sprite.flip_x { vec2(-1.0, 1.0) } else { vec2(1.0, 1.0) };
+
+    if game.elevator_spawned {
+        draw_sprite(elevator_platform.trans.pos, &elevator_platform.sprite);
+    }
 
     // draw player :::
     let mut last_position = player.trans.pos + player.trans.offset*sprite_dir;
@@ -98,6 +103,11 @@ pub fn render(game: &mut Game) {
     }
     
     draw_sprite_offset(player.trans.pos, player.trans.offset, &player.sprite);
+    
+    if game.elevator_spawned {
+        draw_sprite(elevator_cage.trans.pos, &elevator_cage.sprite);
+    }
+    
 
     // overlay ui
 

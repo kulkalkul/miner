@@ -22,6 +22,11 @@ pub struct Assets {
 
     pub statue: SpriteAsset,
 
+    pub elevator_cage: SpriteAsset,
+    pub elevator_platform_idle: SpriteAsset,
+    pub elevator_platform_countdown: Box<[SpriteAsset]>,
+    pub elevator_platform_moving: SpriteAsset,
+
     pub crusher_working: SpriteAsset,
     pub minecart_idle: SpriteAsset,
     pub minecart_moving: SpriteAsset,
@@ -45,6 +50,9 @@ pub async fn init_assets() -> Assets {
     
     let coin_tex = load_asset_texture("coin").await;
     let coins_tex = load_asset_texture("coins").await;
+
+    let elevator_cage_tex = load_asset_texture("elevator_cage").await;
+    let elevator_platform_tex = load_asset_texture("elevator_platform").await;
 
     let player_tex = load_asset_texture("player").await;
     let statue_tex = load_asset_texture("statue").await;
@@ -73,13 +81,24 @@ pub async fn init_assets() -> Assets {
 
         statue: load_sheet_cell(&mut state, &statue_tex, RowCol(0, 0), Size(32, 48)),
         
+        elevator_cage: load_anim(&mut state, &elevator_cage_tex , RowCol(0, 0), 12, Size(48, 41), 100.0),
+        elevator_platform_idle: load_anim(
+            &mut state, &elevator_platform_tex , RowCol(0, 0), 1, Size(48, 41), 400.0
+        ),
+        elevator_platform_countdown: load_sheet_cells(
+            &mut state, &elevator_platform_tex, RowCol(1, 0), 5, Size(48 , 41)
+        ),
+        elevator_platform_moving: load_anim(
+            &mut state, &elevator_platform_tex , RowCol(6, 0), 4, Size(48, 41), 100.0
+        ),
+
         crusher_working: load_anim(&mut state, &crusher_tex , RowCol(0, 0), 3, Size(256, 128), 200.0),
         
         minecart_idle:   load_anim(&mut state, &minecart_tex, RowCol(0, 0), 1, Size(15 , 16)  , 400.0),
         minecart_moving: load_anim(&mut state, &minecart_tex, RowCol(1, 0), 4, Size(15 , 16)  , 150.0),
         
-        rail_start:      load_sheet_cell(&mut state, &rail_tex    , RowCol(0, 0), Size(16 , 6)),
-        rail:            load_sheet_cell(&mut state, &rail_tex    , RowCol(1, 0), Size(16 , 6)),
+        rail_start:      load_sheet_cell(&mut state, &rail_tex, RowCol(0, 0), Size(16 , 6)),
+        rail:            load_sheet_cell(&mut state, &rail_tex, RowCol(1, 0), Size(16 , 6)),
 
         items:    load_tile_set(&mut state, &items_tex   , ivec2(16, 16)),
         tile_set: load_tile_set(&mut state, &tile_set_tex, ivec2(16, 16)),

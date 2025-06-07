@@ -114,6 +114,10 @@ pub struct Game {
     pub crusher: Crusher,
     pub minecart: Minecart,
 
+    pub elevator_cage: SimpleEntity,
+    pub elevator_platform: ElevatorPlatform,
+    pub elevator_spawned: bool,
+
     pub coins: Vec<CoinBundle>,
 
     pub ui_show_statue: bool,

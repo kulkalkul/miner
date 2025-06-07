@@ -49,6 +49,22 @@ pub mod consts {
         RAIL_END.x as f32*TILE_SIDE_F32,
         RAIL_END.y as f32*TILE_SIDE_F32,
     );
+    pub const ELEVATOR_CAGE: IVec2 = ivec2(
+        STATUE.x-3,
+        STATUE.y
+    );
+    pub const ELEVATOR_PLATFORM_START: Vec2 = vec2(
+        ELEVATOR_CAGE.x as f32*TILE_SIDE_F32,
+        ELEVATOR_CAGE.y as f32*TILE_SIDE_F32 - 5.0,
+    );
+    pub const ELEVATOR_PLATFORM_END: Vec2 = vec2(
+        ELEVATOR_PLATFORM_START.x,
+        (BARRIER_POS.y - 2) as f32*TILE_SIDE_F32,
+    );
+    pub const ELEVATOR_PLATFORM_END_STOP: Vec2 = vec2(
+        ELEVATOR_PLATFORM_START.x,
+        (BARRIER_POS.y - 2) as f32*TILE_SIDE_F32-21.0,
+    );
 }
 
 use consts::*;

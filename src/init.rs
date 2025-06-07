@@ -63,6 +63,33 @@ pub async fn init(assets: Assets) -> Game {
         movement: MinecartMovement::Idle,
     };
 
+    let elevator_cage = SimpleEntity {
+        trans: Transform {
+            pos: (ELEVATOR_CAGE * ivec2(CHUNK_SIDE_I32, CHUNK_SIDE_I32)).as_vec2(),
+            size: vec2(0.0, 0.0),
+            offset: vec2(0.0, 0.0),
+        },
+        sprite: assets.elevator_cage.derive_sprite(),
+        anim: assets.elevator_cage.derive_anim(),
+    };
+
+    let elevator_platform_transform = Transform {
+        pos: ELEVATOR_PLATFORM_START,
+        size: vec2(44.0, 42.0),
+        offset: vec2(2.0, 0.0),
+    };
+
+    let elevator_platform = ElevatorPlatform {
+        trans: elevator_platform_transform,
+        sprite: assets.elevator_platform_idle.derive_sprite(),
+        anim: assets.elevator_platform_idle.derive_anim(),
+        velocity: vec2(0.0, 0.0),
+        down_or_up: false,
+        player_inside_for: 0.0,
+        walk_collider: vec2(44.0, -5.0),
+    };
+    
+
     
     let world = World::new(&assets.tile_set, &bump);
 
@@ -87,6 +114,10 @@ pub async fn init(assets: Assets) -> Game {
         statue,
         crusher,
         minecart,
+
+        elevator_cage,
+        elevator_platform,
+        elevator_spawned: false,
 
         ui_show_statue: false,
         
