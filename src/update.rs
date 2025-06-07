@@ -33,6 +33,7 @@ pub fn update(game: &mut Game) {
     let upgrades = &mut game.upgrades;
     
     let late_derived = &game.late_derived;
+    let mut next_late_derived = LateDerivedState::default();
 
     let tiles = world.tiles();
 
@@ -366,7 +367,7 @@ pub fn update(game: &mut Game) {
     if  minecart.movement == MinecartMovement::Idle &&
         player.trans.collider().intersects(minecart.trans.collider()) &&
         player.carrying.length > 0
-    {        
+    {
         if  minecart.cooldown <= 1.8 &&
             minecart.carrying.length < minecart.carrying.cap()
         {
@@ -547,10 +548,8 @@ pub fn update(game: &mut Game) {
     world.apply_commands(world_commands);
     world.apply_updates(&assets.tile_set);
     
-    game.late_derived = LateDerivedState::default();
-    let late_derived = &mut game.late_derived;
-
-    late_derived.ui_is_active = game.ui_show_statue;
+    next_late_derived.ui_is_active = game.ui_show_statue;
+    game.late_derived = next_late_derived;
     
     game.bump.reset();
 }
