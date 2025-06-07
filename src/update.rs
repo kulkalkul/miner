@@ -7,12 +7,13 @@ pub fn update(game: &mut Game) {
     game.action.reset();
     
     game.input_actions = InputActions {
-        move_left: is_key_down(KeyCode::A),
-        move_right: is_key_down(KeyCode::D),
-        move_up: is_key_down(KeyCode::W),
-        move_down: is_key_down(KeyCode::S),
-        interact: is_key_pressed(KeyCode::E),
-        escape: is_key_pressed(KeyCode::Escape),
+        move_left      : is_key_down(KeyCode::A) || is_key_down(KeyCode::Left),
+        move_right     : is_key_down(KeyCode::D) || is_key_down(KeyCode::Right),
+        move_up        : is_key_down(KeyCode::W) || is_key_down(KeyCode::Up),
+        move_down      : is_key_down(KeyCode::S) || is_key_down(KeyCode::Down),
+
+        interact       : is_key_pressed(KeyCode::E),
+        escape         : is_key_pressed(KeyCode::Escape),
         toggle_dev_mode: is_key_pressed(KeyCode::Tab),
     };
 
