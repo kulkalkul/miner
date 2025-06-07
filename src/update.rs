@@ -362,20 +362,48 @@ pub fn update(game: &mut Game) {
     }
     
     // player animations :::
-    if !derived.player_mining && player.anim.is( &assets.player_idle ) && derived.player_moving {
-        player.anim = assets.player_walk.derive_anim();
+    if !derived.player_mining && derived.player_moving {
+        if player.anim.is( &assets.player_idle ) {
+            player.anim = assets.player_walk.derive_anim();
+        } else if player.anim.is( &assets.player_jetpack_idle ) {
+            player.anim = assets.player_jetpack_move.derive_anim();
+        }
     }
-    if !derived.player_mining && player.anim.is( &assets.player_walk ) && !derived.player_moving {
-        player.anim = assets.player_idle.derive_anim();
+    if !derived.player_mining && !derived.player_moving {
+        if player.anim.is( &assets.player_walk ) {
+            player.anim = assets.player_idle.derive_anim();
+        } else if player.anim.is( &assets.player_jetpack_move ) {
+            player.anim = assets.player_jetpack_idle.derive_anim();
+        }
     }
-    if !derived.player_mining && player.anim.is( &assets.player_hit) && derived.player_anim_finished {
-        player.anim = assets.player_idle.derive_anim();
+    if !derived.player_mining && derived.player_anim_finished {
+        if player.anim.is( &assets.player_hit) {
+            player.anim = assets.player_idle.derive_anim();
+        } else if player.anim.is( &assets.player_jetpack_hit) {
+            player.anim = assets.player_jetpack_idle.derive_anim();
+        }
     }
-    if derived.player_mining && player.anim.is_not(&assets.player_hit) {
-        player.anim = assets.player_hit.derive_anim();
+    if derived.player_mining {
+        if player.anim.is_not( &assets.player_hit ) {
+            player.anim = assets.player_hit.derive_anim();
+        } else if player.anim.is_not( &assets.player_hit ) {
+            player.anim = assets.player_jetpack_hit.derive_anim();
+        }
     }
 
-    if player.anim.is(&assets.player_hit) {
+    if derived.player_can_use_dwarfcopter {
+        if player.anim.is( &assets.player_idle ) {
+            player.anim = assets.player_jetpack_idle.derive_anim();
+        }
+        if player.anim.is( &assets.player_walk ) {
+            player.anim = assets.player_jetpack_move.derive_anim();
+        }
+        if player.anim.is( &assets.player_hit ) {
+            player.anim = assets.player_jetpack_hit.derive_anim();
+        }
+    }
+
+    if player.anim.is( &assets.player_hit ) || player.anim.is( &assets.player_jetpack_hit ) {
         player.anim.modifier = derived.player_hit_str;
     }
     
