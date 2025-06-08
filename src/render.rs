@@ -130,6 +130,19 @@ pub fn render(game: &mut Game) {
         set_camera(&camera);
     }
 
+    
+    if game.elevator_spawned && derived.player_can_use_jetpack {
+        let elevator_pos = elevator_platform.trans.pos + elevator_platform.trans.size/2.0;
+        if elevator_pos.distance(player.trans.pos) >= 128.0 {
+            let dir = (elevator_pos-player.trans.pos).normalize();
+            let mut pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/2.0);
+            pos += dir*vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/2.0)*0.9*vec2(1.0, -1.0);
+            let measurement = measure_text("ELEVATOR", None, 16, 1.0);
+            pos -= vec2(measurement.width/2.0, measurement.height/2.0);
+            draw_text("ELEVATOR", pos.x, pos.y, 16.0, WHITE);
+        }
+    }
+
     let corner_padding = vec2(2.0, 2.0);
     let padding = vec2(1.0, 1.0);
     let mut cursor = vec2(UI_WIDTH_F32, 0.0);
