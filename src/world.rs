@@ -528,7 +528,37 @@ impl World {
                 commands.set_tile_area(ivec2(x, y), ivec2(width, 1), Tile::Stone);
             }
         }
-        
+
+        let mut scatter_i = 0;
+
+        while scatter_i < WORLD_WIDTH_I32*CHUNK_SIDE_I32 {
+            scatter_i += rand::gen_range(2, 8);
+
+            let mut y = (WORLD_HEIGHT_I32-BARRIER_HEIGHT)*CHUNK_SIDE_I32 - 16;
+
+            for _ in 0..12 {
+                y -= rand::gen_range(8, 24);
+                let offset_x = rand::gen_range(-4, 4);
+                let offset_y = rand::gen_range(-4, 4);
+                
+                let center_top = ivec2(offset_x+scatter_i, offset_y+y);
+
+                let half_width = rand::gen_range(1, 4);
+                let height = rand::gen_range(2, 5);
+
+                let height = i32::min(height, half_width);
+
+                let mut start = center_top-ivec2(-half_width, 0);
+                let mut size = ivec2(half_width*2, height);
+
+                for _ in 0..height {
+                    commands.set_tile_area(start, size, Tile::Stone);
+                    start.y -= 1;
+                    start.x -= 1;
+                    size.x -= 1;
+                }
+            }
+        }
         
         commands.set_tile_area(
             ivec2(0, (WORLD_HEIGHT_I32-BARRIER_HEIGHT) * CHUNK_SIDE_I32 - 1),
