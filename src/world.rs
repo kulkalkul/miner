@@ -485,13 +485,56 @@ impl World {
                 i += stride + space;
             }
         }
+
+        let mut stepping_stone_i = 0;
+
+        while stepping_stone_i < WORLD_WIDTH_I32*CHUNK_SIDE_I32 {
+            let x = rand::gen_range(4, 10);
+            stepping_stone_i = i32::min(stepping_stone_i+x, WORLD_WIDTH_I32*CHUNK_SIDE_I32);
+
+            let height = rand::gen_range(2, 5);
+            let smallest_width = rand::gen_range(2, 4);
+            let mut x_offsets = Vec::with_capacity_in(height as usize, &bump);
+            let mut widths = Vec::with_capacity_in(height as usize, &bump);
+
+            let mut next_width = smallest_width;
+            let mut next_x_offset = 0;
+            let to_mid = height/2;
+            let to_end = height-to_mid;
+
+            for _ in 0..to_mid {
+                widths.push(next_width);
+                x_offsets.push(next_x_offset);
+                next_width += 2;
+                next_x_offset -= 1;
+            }
+            for _ in 0..to_end {
+                widths.push(next_width);
+                x_offsets.push(next_x_offset);
+                next_width -= 2;
+                next_x_offset += 1;
+            }
+
+            let barrier_point = (WORLD_HEIGHT_I32-BARRIER_HEIGHT)*CHUNK_SIDE_I32 - 16;
+            let local_y_offset = rand::gen_range(-4, 4);
+
+            for (i, y) in (barrier_point..barrier_point+height).enumerate() {
+                let local_x_offset = rand::gen_range(-2, 2);
+                let width = widths[i];
+                let x_offset = local_x_offset + x_offsets[i];
+                let x = local_x_offset + x_offsets[i] + stepping_stone_i;
+                let y = local_y_offset + y;
+
+                commands.set_tile_area(ivec2(x, y), ivec2(width, 1), Tile::Stone);
+            }
+        }
+        
         
         commands.set_tile_area(
             ivec2(0, (WORLD_HEIGHT_I32-BARRIER_HEIGHT) * CHUNK_SIDE_I32 - 1),
             ivec2(WORLD_WIDTH_I32*CHUNK_SIDE_I32, 1),
             Tile::Barrier,
-        );
-        
+        );        
 
         commands.push_commands(&[ WorldCommand::RecalculateAllMeshes ]);
         world.apply_commands(commands);
