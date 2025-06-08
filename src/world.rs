@@ -536,8 +536,7 @@ impl World {
             scatter_i += rand::gen_range(2, 8);
 
             let mut y = (WORLD_HEIGHT_I32-BARRIER_HEIGHT)*CHUNK_SIDE_I32 - 16;
-
-            for _ in 0..12 {
+            for _ in 0..32 {
                 y -= rand::gen_range(8, 24);
                 let offset_x = rand::gen_range(-4, 4);
                 let offset_y = rand::gen_range(-4, 4);
