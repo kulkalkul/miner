@@ -7,7 +7,7 @@ use crate::tile::{ TileSetAsset, TileChunk };
 pub mod consts {
     use super::*;
 
-    pub const WORLD_WIDTH: usize = 10;
+    pub const WORLD_WIDTH: usize = 32;
     pub const WORLD_HEIGHT: usize = 128;
     pub const WORLD_SIZE: usize = WORLD_WIDTH * WORLD_HEIGHT;
     pub const TILE_SIDE: usize = 16;
