@@ -115,7 +115,7 @@ pub fn render(game: &mut Game) {
         let pos = statue.trans.pos + statue.trans.size/2.0 - assets.ui_keys.texture.size()/2.0 * vec2(0.5, 0.5);
         draw_sprite_scaled(pos, vec2(0.5, 0.5), &assets.ui_keys.derive_sprite());
     }
-    
+        
     // actual ui
     
     {
@@ -242,13 +242,13 @@ pub fn render(game: &mut Game) {
         
         lcursor.y += button_spacing.y + button_height;
         rcursor.y += button_spacing.y + button_height;
-        ui_seq_upgrade_button(lcursor, upgrades.dwarfcopter.to_seq());
-        ui_seq_upgrade_button(rcursor, upgrades.dwarfcopter_fuel.to_seq());
+        ui_seq_upgrade_button(lcursor, upgrades.jetpack.to_seq());
+        ui_seq_upgrade_button(rcursor, upgrades.jetpack_fuel.to_seq());
         
         lcursor.y += button_spacing.y + button_height;
         rcursor.y += button_spacing.y + button_height;
-        ui_seq_upgrade_button(lcursor, upgrades.dwarfcopter_boost.to_seq());
-        ui_seq_upgrade_button(rcursor, upgrades.dwarfcopter_storage.to_seq());
+        ui_seq_upgrade_button(lcursor, upgrades.jetpack_boost.to_seq());
+        ui_seq_upgrade_button(rcursor, upgrades.jetpack_storage.to_seq());
 
         game.ui_state.mouse_div = prev_mouse_div;
     }
