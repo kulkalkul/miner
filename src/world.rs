@@ -530,6 +530,7 @@ impl World {
         }
 
         let mut scatter_i = 0;
+        let mut smallest_scatter_y = WORLD_HEIGHT_I32*CHUNK_SIDE_I32;
 
         while scatter_i < WORLD_WIDTH_I32*CHUNK_SIDE_I32 {
             scatter_i += rand::gen_range(2, 8);
@@ -558,14 +559,50 @@ impl World {
                     size.x -= 1;
                 }
             }
+            
+            smallest_scatter_y = i32::min(smallest_scatter_y, y);
+        }
+        world.apply_commands(commands);
+
+        let mut commands = world.commands(&bump);
+        let tiles = world.tiles();
+                
+        for y in smallest_scatter_y..(WORLD_HEIGHT_I32-BARRIER_HEIGHT)*CHUNK_SIDE_I32 {
+            for x in 0..WORLD_WIDTH_I32*CHUNK_SIDE_I32 {
+                if tiles.at_tile_pos(ivec2(x, y)).kind == Tile::Stone {
+                    let chance = rand::gen_range(0, 300);
+                    if chance <= 4 {
+                        commands.set_tile(ivec2(x, y), Tile::StoneSapphire);
+                    } else if chance <= 6 {
+                        commands.set_tile(ivec2(x, y), Tile::StoneRuby);
+                    } else if chance <= 10 {
+                        commands.set_tile(ivec2(x, y), Tile::StoneEmerald);
+                    } else if chance <= 40 {
+                        commands.set_tile(ivec2(x, y), Tile::StoneGoldOre);
+                    }
+                }
+            }
         }
         
         commands.set_tile_area(
             ivec2(0, (WORLD_HEIGHT_I32-BARRIER_HEIGHT) * CHUNK_SIDE_I32 - 1),
             ivec2(WORLD_WIDTH_I32*CHUNK_SIDE_I32, 1),
             Tile::Barrier,
-        );        
-
+        );
+        
+        // INFO: 32 because if player ever goes that down it should be easy to return from
+        // there, so it helps with providing landmarkds.
+        commands.set_tile_area(
+            ivec2(0, smallest_scatter_y),
+            ivec2(WORLD_WIDTH_I32*CHUNK_SIDE_I32, 32),
+            Tile::HardStone,
+        );
+        commands.set_tile_area(
+            ivec2(0, smallest_scatter_y+32),
+            ivec2(WORLD_WIDTH_I32*CHUNK_SIDE_I32, 1),
+            Tile::Barrier,
+        );
+        
         commands.push_commands(&[ WorldCommand::RecalculateAllMeshes ]);
         world.apply_commands(commands);
 
