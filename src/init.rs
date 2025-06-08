@@ -56,6 +56,7 @@ pub async fn init(assets: Assets) -> Game {
             size: vec2(15.0, 7.0),
             offset: vec2(0.0, 0.0),
         },
+        rotation: 0.0,
         sprite: assets.minecart_idle.derive_sprite(),
         anim: assets.minecart_idle.derive_anim(),
         carrying: Array::new(Item::default()),

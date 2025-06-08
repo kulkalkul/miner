@@ -36,6 +36,7 @@ pub struct Assets {
     
     pub rail_start: SpriteAsset,
     pub rail: SpriteAsset,
+    pub rail_diagonal: SpriteAsset,
 
     pub items: TileSetAsset,
     pub tile_set: TileSetAsset,
@@ -60,6 +61,7 @@ pub async fn init_assets() -> Assets {
     let player_tex = load_asset_texture("player").await;
     let statue_tex = load_asset_texture("statue").await;
     let crusher_tex = load_asset_texture("crusher").await;
+    
     let minecart_tex = load_asset_texture("minecart").await;
     let rail_tex = load_asset_texture("rail").await;
     
@@ -103,8 +105,9 @@ pub async fn init_assets() -> Assets {
         minecart_idle:   load_anim(&mut state, &minecart_tex, RowCol(0, 0), 1, Size(15 , 16)  , 400.0),
         minecart_moving: load_anim(&mut state, &minecart_tex, RowCol(1, 0), 4, Size(15 , 16)  , 150.0),
         
-        rail_start:      load_sheet_cell(&mut state, &rail_tex, RowCol(0, 0), Size(16 , 6)),
-        rail:            load_sheet_cell(&mut state, &rail_tex, RowCol(1, 0), Size(16 , 6)),
+        rail_start:      load_sheet_cell(&mut state, &rail_tex, RowCol(0, 0), Size(16 , 9)),
+        rail:            load_sheet_cell(&mut state, &rail_tex, RowCol(1, 0), Size(16 , 9)),
+        rail_diagonal:   load_sheet_cell(&mut state, &rail_tex, RowCol(2, 0), Size(16 , 9)),
 
         items:    load_tile_set(&mut state, &items_tex   , ivec2(16, 16)),
         tile_set: load_tile_set(&mut state, &tile_set_tex, ivec2(16, 16)),

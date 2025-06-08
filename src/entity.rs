@@ -40,6 +40,7 @@ pub struct Crusher {
 #[derive(Debug)]
 pub struct Minecart {
     pub trans: Transform,
+    pub rotation: f32,
     pub sprite: Sprite,
     pub anim: Animation,
     pub carrying: Array<Item, 48>,

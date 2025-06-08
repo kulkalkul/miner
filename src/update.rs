@@ -481,7 +481,7 @@ pub fn update(game: &mut Game) {
             elevator_platform.anim = assets.elevator_platform_idle.derive_anim();
         }
     }
-    
+
     if  minecart.movement == MinecartMovement::Idle &&
         player.trans.collider().intersects(minecart.trans.collider()) &&
         player.carrying.length > 0
@@ -537,15 +537,33 @@ pub fn update(game: &mut Game) {
     minecart.cooldown = f32::max(minecart.cooldown-dt, 0.0);
 
     if minecart.movement == MinecartMovement::Forwards {
-        minecart.trans.pos.x += 150.0 * dt;
-        if minecart.trans.pos.x >= MINECART_END.x {
+        let mut new_pos = minecart.trans.pos + vec2(150.0, 0.0) * dt;
+        let mut new_rotation = 0.0;
+
+        if new_pos.x >= MINECART_STRAIGHT_END.x {
+            new_pos = minecart.trans.pos + (MINECART_DIAGONAL_END-MINECART_STRAIGHT_END).normalize() * 150.0 * dt;
+            new_rotation = 32.0f32.to_radians();
+        }
+        minecart.trans.pos = new_pos;
+        minecart.rotation = new_rotation;
+        
+        if new_pos.x >= MINECART_DIAGONAL_END.x {
             minecart.movement = MinecartMovement::Backwards;
         }
     }
 
     if minecart.movement == MinecartMovement::Backwards {
-        minecart.trans.pos.x -= 150.0 * dt;
-        if minecart.trans.pos.x <= MINECART_START.x {
+        let mut new_pos = minecart.trans.pos + (MINECART_STRAIGHT_END-MINECART_DIAGONAL_END).normalize() * 150.0 * dt;
+        let mut new_rotation = 22.0f32.to_radians();
+        
+        if new_pos.x <= MINECART_STRAIGHT_END.x {
+            new_pos = minecart.trans.pos - vec2(150.0, 0.0) * dt;
+            new_rotation = 0.0;
+        }
+        minecart.trans.pos = new_pos;
+        minecart.rotation = new_rotation;
+
+        if new_pos.x <= MINECART_START.x {
             minecart.trans.pos.x = MINECART_START.x;
             minecart.movement = MinecartMovement::Idle;
             minecart.anim = assets.minecart_idle.derive_anim();

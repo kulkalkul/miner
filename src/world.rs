@@ -36,7 +36,8 @@ pub mod consts {
     pub const STATUE: IVec2 = ivec2(WORLD_SPAWN_I32.x-MINE_AREA_WIDTH_I32/2-2, WORLD_SPAWN_I32.y);
 
     pub const RAIL_START: IVec2 = ivec2(WORLD_SPAWN_I32.x+MINE_AREA_WIDTH_I32/2, WORLD_SPAWN_I32.y);
-    pub const RAIL_END: IVec2 = ivec2(ROOM_END_I32.x-1, WORLD_SPAWN_I32.y);
+    pub const RAIL_STRAIGHT_END: IVec2 = ivec2(RAIL_START.x+6, WORLD_SPAWN_I32.y);
+    pub const RAIL_DIAGONAL_END: IVec2 = ivec2(RAIL_START.x+26, ROOM_END_I32.y+1);
     
     pub const BARRIER_HEIGHT: i32 = 13;
     pub const BARRIER_POS: IVec2 = ivec2(0, (WORLD_HEIGHT_I32-BARRIER_HEIGHT)*CHUNK_SIDE_I32);
@@ -45,9 +46,13 @@ pub mod consts {
         RAIL_START.x as f32*TILE_SIDE_F32 + 3.0,
         RAIL_START.y as f32*TILE_SIDE_F32,
     );
-    pub const MINECART_END: Vec2 = vec2(
-        RAIL_END.x as f32*TILE_SIDE_F32,
-        RAIL_END.y as f32*TILE_SIDE_F32,
+    pub const MINECART_STRAIGHT_END: Vec2 = vec2(
+        RAIL_STRAIGHT_END.x as f32*TILE_SIDE_F32 + TILE_SIDE_F32/2.0,
+        RAIL_STRAIGHT_END.y as f32*TILE_SIDE_F32,
+    );
+    pub const MINECART_DIAGONAL_END: Vec2 = vec2(
+        RAIL_DIAGONAL_END.x as f32*TILE_SIDE_F32-24.0,
+        RAIL_DIAGONAL_END.y as f32*TILE_SIDE_F32-1.0,
     );
     pub const ELEVATOR_CAGE: IVec2 = ivec2(
         STATUE.x-3,

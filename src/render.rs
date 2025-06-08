@@ -56,17 +56,24 @@ pub fn render(game: &mut Game) {
 
     let rail_start_sprite = assets.rail_start.derive_sprite();
     let rail_sprite = assets.rail.derive_sprite();
+    let rail_diagonal_sprite = assets.rail_diagonal.derive_sprite();
     
     draw_sprite(tile_pos_to_world_pos(RAIL_START), &rail_start_sprite);
 
     // draw rail :::
-    for x in RAIL_START.x+1..=RAIL_END.x {
+    for x in RAIL_START.x+1..=RAIL_STRAIGHT_END.x {
         let tile_pos = ivec2(x, RAIL_START.y);
         let world_pos = tile_pos_to_world_pos(tile_pos);
         draw_sprite(world_pos, &rail_sprite);
     }
+    
+    for (i, x) in (RAIL_STRAIGHT_END.x+1..=RAIL_DIAGONAL_END.x).enumerate() {
+        let tile_pos = ivec2(x, RAIL_START.y);
+        let world_pos = tile_pos_to_world_pos(tile_pos);
+        draw_sprite(world_pos+vec2(i as f32 * -2.0, i as f32 * 7.0), &rail_diagonal_sprite);
+    }
 
-    draw_sprite(minecart.trans.pos, &minecart.sprite);
+    draw_sprite_rotated(minecart.trans.pos, minecart.rotation, &minecart.sprite);
     draw_sprite(statue.trans.pos, &statue.sprite);
 
     for coin in &game.coins {
@@ -82,7 +89,7 @@ pub fn render(game: &mut Game) {
     if game.elevator_spawned {
         draw_sprite(elevator_platform.trans.pos, &elevator_platform.sprite);
     }
-
+    
     // draw player :::
     let mut last_position = player.trans.pos + player.trans.offset*sprite_dir;
     let mut half_y = 2.5;
