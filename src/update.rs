@@ -537,15 +537,17 @@ pub fn update(game: &mut Game) {
     minecart.cooldown = f32::max(minecart.cooldown-dt, 0.0);
 
     if minecart.movement == MinecartMovement::Forwards {
-        let mut new_pos = minecart.trans.pos + vec2(150.0, 0.0) * dt;
+        let mut new_pos = minecart.trans.pos + vec2(minecart.speed, 0.0) * dt;
         let mut new_rotation = 0.0;
 
         if new_pos.x >= MINECART_STRAIGHT_END.x {
-            new_pos = minecart.trans.pos + (MINECART_DIAGONAL_END-MINECART_STRAIGHT_END).normalize() * 150.0 * dt;
+            new_pos = minecart.trans.pos + (MINECART_DIAGONAL_END-MINECART_STRAIGHT_END).normalize()
+                * minecart.speed * dt;
             new_rotation = 32.0f32.to_radians();
         }
         minecart.trans.pos = new_pos;
         minecart.rotation = new_rotation;
+        minecart.speed = f32::min(minecart.speed + dt*55.0, 180.0);
         
         if new_pos.x >= MINECART_DIAGONAL_END.x {
             minecart.movement = MinecartMovement::Backwards;
@@ -553,20 +555,24 @@ pub fn update(game: &mut Game) {
     }
 
     if minecart.movement == MinecartMovement::Backwards {
-        let mut new_pos = minecart.trans.pos + (MINECART_STRAIGHT_END-MINECART_DIAGONAL_END).normalize() * 150.0 * dt;
+        let mut new_pos = minecart.trans.pos + (MINECART_STRAIGHT_END-MINECART_DIAGONAL_END).normalize()
+            * minecart.speed * dt;
         let mut new_rotation = 22.0f32.to_radians();
         
         if new_pos.x <= MINECART_STRAIGHT_END.x {
-            new_pos = minecart.trans.pos - vec2(150.0, 0.0) * dt;
+            new_pos = minecart.trans.pos - vec2(minecart.speed, 0.0) * dt;
             new_rotation = 0.0;
         }
         minecart.trans.pos = new_pos;
         minecart.rotation = new_rotation;
+        
+        minecart.speed = f32::min(minecart.speed + dt*55.0, 250.0);
 
         if new_pos.x <= MINECART_START.x {
             minecart.trans.pos.x = MINECART_START.x;
             minecart.movement = MinecartMovement::Idle;
             minecart.anim = assets.minecart_idle.derive_anim();
+            minecart.speed = 50.0;
 
             let mut sum = 0;
             for item in minecart.carrying.slice() {

@@ -41,6 +41,7 @@ pub struct Crusher {
 pub struct Minecart {
     pub trans: Transform,
     pub rotation: f32,
+    pub speed: f32,
     pub sprite: Sprite,
     pub anim: Animation,
     pub carrying: Array<Item, 48>,
