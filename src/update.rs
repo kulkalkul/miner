@@ -306,7 +306,8 @@ pub fn update(game: &mut Game) {
             if tile.kind.item_drop() != ItemKind::Air {
                 player_added_to_bags.push(tile.kind.item_drop());
             }
-            if touch_vec.y != 0 {
+            
+            if !derived.player_can_use_jetpack && touch_vec.y != 0 {
                 if tile_one_down.kind.is_air() {
                     world_commands.set_tile(tile.pos, Tile::BackgroundStoneLadder);
                 } else {
@@ -330,6 +331,7 @@ pub fn update(game: &mut Game) {
     let player_tile = tiles.at_world_pos(player.trans.pos);
 
     'lay_ladder: {
+        if derived.player_can_use_jetpack { break 'lay_ladder; }
         if !derived.player_can_place_ladder { break 'lay_ladder; }
         if late_derived.travelling_in_elevator { break 'lay_ladder; }
 
