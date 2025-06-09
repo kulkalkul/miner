@@ -289,6 +289,21 @@ pub fn draw_ui(position: Vec2, scale: Vec2, sprite: &Sprite) {
     });
 }
 
+pub fn draw_ui_partial(position: Vec2, scale: Vec2, partial: Vec2, sprite: &Sprite) {
+    let mut source = sprite.texture_frame;
+    let offset_x = source.w * (1.0-partial.x) * scale.x;
+    let offset_y = source.h * (1.0-partial.y) * scale.y;
+
+    source.w *= partial.x;
+    source.h *= partial.y;
+
+    draw_texture_ex(&sprite.texture, offset_x+position.x, offset_y+position.y, WHITE, DrawTextureParams {
+        dest_size: Some(sprite.texture_frame.size()*scale*partial),
+        source: Some(source),
+        ..Default::default()
+    });
+}
+
 pub fn draw_ui_three_patch(position: Vec2, width: f32, sprites: &[SpriteAsset; 3]) {
     // HACK: Well...
     let texture = &sprites[0].texture;

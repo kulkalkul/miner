@@ -26,6 +26,7 @@ pub fn update(game: &mut Game) {
     let statue = &mut game.statue;
     let elevator_cage = &mut game.elevator_cage;
     let elevator_platform = &mut game.elevator_platform;
+    let ui_inventory_bar_frame = &mut game.ui_inventory_bar_frame;
     
     let world = &mut game.world;
     let visible_chunks = &mut game.visible_chunks;
@@ -292,6 +293,9 @@ pub fn update(game: &mut Game) {
         if touch_vec.x != 0 && tile_one_up.kind.can_climb() { break 'block_mine; }            
                 
         if tile.kind.item_drop() != ItemKind::Air && player.carrying.length >= derived.player_bag_carry_capacity {
+            if ui_inventory_bar_frame.anim.is_not(&assets.ui_inventory_bar_frame_full) {
+                ui_inventory_bar_frame.anim = assets.ui_inventory_bar_frame_full.derive_anim();
+            }
             break 'block_mine;
         }
         
@@ -659,12 +663,17 @@ pub fn update(game: &mut Game) {
         }
     }
 
+    if ui_inventory_bar_frame.anim.is(&assets.ui_inventory_bar_frame_full) && ui_inventory_bar_frame.anim.repeated > 0 {
+        ui_inventory_bar_frame.anim = assets.ui_inventory_bar_frame.derive_anim();
+    }
+
     // tick animations :::
     tick_animation(&mut elevator_cage.sprite, &mut elevator_cage.anim, dt);
     tick_animation(&mut elevator_platform.sprite, &mut elevator_platform.anim, dt);
     tick_animation(&mut minecart.sprite, &mut minecart.anim, dt);
     tick_animation(&mut crusher.sprite, &mut crusher.anim, dt);
     tick_animation(&mut player.sprite, &mut player.anim, dt);
+    tick_animation(&mut ui_inventory_bar_frame.sprite, &mut ui_inventory_bar_frame.anim, dt);
     
     // update visible chunks :::
     {

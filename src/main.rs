@@ -121,6 +121,7 @@ pub struct Game {
 
     pub coins: Vec<CoinBundle>,
 
+    pub ui_inventory_bar_frame: UIEntity,
     pub ui_show_statue: bool,
 
     pub tile_durability_map: HashMap<IVec2, f32>,

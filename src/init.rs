@@ -90,9 +90,12 @@ pub async fn init(assets: Assets) -> Game {
         player_inside_for: 0.0,
         walk_collider: vec2(44.0, -5.0),
     };
-    
 
-    
+    let ui_inventory_bar_frame = UIEntity {
+        sprite: assets.ui_inventory_bar_frame.derive_sprite(),
+        anim: assets.ui_inventory_bar_frame.derive_anim(),
+    };
+        
     let world = World::new(&assets.tile_set, &bump);
 
     Game {
@@ -121,6 +124,7 @@ pub async fn init(assets: Assets) -> Game {
         elevator_platform,
         elevator_spawned: false,
 
+        ui_inventory_bar_frame,
         ui_show_statue: false,
         
         tile_durability_map: HashMap::with_capacity(32),

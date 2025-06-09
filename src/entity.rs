@@ -24,6 +24,12 @@ pub struct CoinBundle {
 }
 
 #[derive(Debug)]
+pub struct UIEntity {
+    pub sprite: Sprite,
+    pub anim: Animation,
+}
+
+#[derive(Debug)]
 pub struct SimpleEntity {
     pub trans: Transform,
     pub sprite: Sprite,

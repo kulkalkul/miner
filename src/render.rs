@@ -1,6 +1,8 @@
 use crate::prelude::*;
 
 use crate::apply_debug_commands;
+use crate::sprite::draw_sprite_rotated;
+use crate::sprite::draw_ui_partial;
 use crate::sprite::{ draw_sprite, draw_sprite_scaled, draw_sprite_offset, draw_ui };
 use crate::ui::*;
 
@@ -8,6 +10,7 @@ use crate::ui::*;
 pub fn render(game: &mut Game) {
     let statue = &game.statue;
     let minecart = &game.minecart;
+    let ui_inventory_bar_frame = &game.ui_inventory_bar_frame;
     let player = &game.player;
     let crusher = &game.crusher;
     let elevator_cage = &game.elevator_cage;
@@ -151,10 +154,9 @@ pub fn render(game: &mut Game) {
     }
 
     let corner_padding = vec2(2.0, 2.0);
-    let padding = vec2(1.0, 1.0);
-    let mut cursor = vec2(UI_WIDTH_F32, 0.0);
-
     {
+        let mut cursor = vec2(UI_WIDTH_F32, 0.0);
+    
         cursor.x -= (assets.coin.texture.size()).x*2.0 + corner_padding.x;
         cursor.y += corner_padding.y;
         draw_ui(cursor, vec2(2.0, 2.0), &assets.coin.derive_sprite());
@@ -164,6 +166,14 @@ pub fn render(game: &mut Game) {
         cursor.y += assets.coin.texture.size().y*2.0 - 8.0;
         cursor.x -= text_size.width*2.0;
         draw_text(&game.money.to_string(), cursor.x, cursor.y, 32.0, WHITE);
+    }
+
+    {
+        let cursor = vec2(4.0, 4.0);
+        let ratio = player.carrying.length as f32 / derived.player_bag_carry_capacity as f32;
+        draw_ui(cursor, vec2(2.0, 2.0), &assets.ui_inventory_bar_background.derive_sprite());
+        draw_ui_partial(cursor, vec2(2.0, 2.0), vec2(1.0, ratio), &assets.ui_inventory_bar_fill.derive_sprite());
+        draw_ui(cursor, vec2(2.0, 2.0), &ui_inventory_bar_frame.sprite);
     }
     
     // INFO: Don't forget some textures are scaled 4x
