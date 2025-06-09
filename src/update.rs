@@ -40,8 +40,6 @@ pub fn update(game: &mut Game) {
 
     let tiles = world.tiles();
 
-    let player_last_pos = player.trans.pos;
-
     // upgrades :::
 
     upgrades.mining.derived_unlocked = true;
@@ -424,15 +422,6 @@ pub fn update(game: &mut Game) {
     
 
     // bag handling
-    let directional_offset =
-        if player.sprite.flip_x { player.trans.offset * vec2(-1.0, 1.0) }
-        else { player.trans.offset };
-
-    if (player.last_positions[0]).distance(player.trans.pos + directional_offset) > 2.0 {
-        player.last_positions.rotate_right(1);
-        player.last_positions[0] = player.trans.pos + directional_offset;
-    }
-
     for item_kind in player_added_to_bags {
         if player.carrying.length >= derived.player_bag_carry_capacity { break; }
         player.carrying.push(item_kind);        

@@ -94,24 +94,6 @@ pub fn render(game: &mut Game) {
     }
     
     // draw player :::
-    let mut last_position = player.trans.pos + player.trans.offset*sprite_dir;
-    let mut half_y = 2.5;
-    for &pos in &player.last_positions[..player.carrying.length] {
-        let diff = last_position - pos;
-
-        let dir = diff.normalize_or_zero();
-
-        half_y = f32::min(half_y+0.5, 4.5);
-
-        let local_offset = dir.rotate(vec2(0.0, half_y));
-        last_position = pos;
-        
-        let pos1 = pos - local_offset;
-        let pos2 = pos + local_offset;        
-    
-        draw_line(pos1.x, pos1.y, pos2.x, pos2.y, half_y * 2.0, BROWN);
-    }
-    
     draw_sprite_offset(player.trans.pos, player.trans.offset, &player.sprite);
     
     if game.elevator_spawned {
