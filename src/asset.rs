@@ -83,9 +83,9 @@ pub async fn init_assets() -> Assets {
         player_idle: load_anim(&mut state, &player_tex, RowCol(0, 0), 2, Size(16, 16), 400.0),
         player_walk: load_anim(&mut state, &player_tex, RowCol(2, 0), 2, Size(16, 16), 150.0),
         player_hit:  load_anim(&mut state, &player_tex, RowCol(4, 0), 2, Size(16, 16), 150.0),
-        player_jetpack_idle: load_anim(&mut state, &player_tex, RowCol(6, 0), 2, Size(16, 16), 400.0),
-        player_jetpack_move: load_anim(&mut state, &player_tex, RowCol(8, 0), 3, Size(16, 16), 150.0),
-        player_jetpack_hit:  load_anim(&mut state, &player_tex, RowCol(11, 0), 2, Size(16, 16), 150.0),
+        player_jetpack_idle: load_anim(&mut state, &player_tex, RowCol(6, 0), 1, Size(16, 16), 150.0),
+        player_jetpack_move: load_anim(&mut state, &player_tex, RowCol(7, 0), 2, Size(16, 16), 150.0),
+        player_jetpack_hit:  load_anim(&mut state, &player_tex, RowCol(9, 0), 2, Size(16, 16), 150.0),
 
         statue: load_sheet_cell(&mut state, &statue_tex, RowCol(0, 0), Size(32, 48)),
         
