@@ -291,8 +291,8 @@ pub fn draw_ui(position: Vec2, scale: Vec2, sprite: &Sprite) {
 
 pub fn draw_ui_partial(position: Vec2, scale: Vec2, partial: Vec2, sprite: &Sprite) {
     let mut source = sprite.texture_frame;
-    let offset_x = source.w * (1.0-partial.x) * scale.x;
-    let offset_y = source.h * (1.0-partial.y) * scale.y;
+    let offset_x = source.w * scale.x * (1.0-partial.x);
+    let offset_y = source.h * scale.y * (1.0-partial.y);
 
     source.w *= partial.x;
     source.h *= partial.y;
