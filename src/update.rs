@@ -401,6 +401,17 @@ pub fn update(game: &mut Game) {
         if player.anim.is( &assets.player_hit ) {
             player.anim = assets.player_jetpack_hit.derive_anim();
         }
+    } else {
+        if player.anim.is( &assets.player_jetpack_idle ) {
+            player.anim = assets.player_idle.derive_anim();
+        }
+        if player.anim.is( &assets.player_jetpack_move) {
+            player.anim = assets.player_walk.derive_anim();
+        }
+        if player.anim.is( &assets.player_jetpack_hit ) {
+            player.anim = assets.player_hit.derive_anim();
+        }
+    }
     }
 
     if player.anim.is( &assets.player_hit ) || player.anim.is( &assets.player_jetpack_hit ) {
