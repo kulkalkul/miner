@@ -289,6 +289,26 @@ pub fn draw_ui(position: Vec2, scale: Vec2, sprite: &Sprite) {
     });
 }
 
+pub fn draw_ui_rotated(position: Vec2, scale: Vec2, rotation: f32, sprite: &Sprite) {
+    draw_texture_ex(&sprite.texture, position.x, position.y, WHITE, DrawTextureParams {
+        dest_size: Some(sprite.texture_frame.size()*scale),
+        source: Some(sprite.texture_frame),
+        rotation,
+        ..Default::default()
+    });
+}
+
+pub fn draw_ui_rotated_flip(position: Vec2, scale: Vec2, rotation: f32, flip_x: bool, flip_y: bool, sprite: &Sprite) {
+    draw_texture_ex(&sprite.texture, position.x, position.y, WHITE, DrawTextureParams {
+        dest_size: Some(sprite.texture_frame.size()*scale),
+        source: Some(sprite.texture_frame),
+        flip_x,
+        flip_y,
+        rotation,
+        ..Default::default()
+    });
+}
+
 pub fn draw_ui_partial(position: Vec2, scale: Vec2, partial: Vec2, sprite: &Sprite) {
     let mut source = sprite.texture_frame;
     let offset_x = source.w * scale.x * (1.0-partial.x);

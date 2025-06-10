@@ -3,6 +3,8 @@ use crate::prelude::*;
 use crate::apply_debug_commands;
 use crate::sprite::draw_sprite_rotated;
 use crate::sprite::draw_ui_partial;
+use crate::sprite::draw_ui_rotated;
+use crate::sprite::draw_ui_rotated_flip;
 use crate::sprite::{ draw_sprite, draw_sprite_scaled, draw_sprite_offset, draw_ui };
 use crate::ui::*;
 
@@ -123,16 +125,25 @@ pub fn render(game: &mut Game) {
         set_camera(&camera);
     }
 
-    
     if game.elevator_spawned && derived.player_can_use_jetpack {
         let elevator_pos = elevator_platform.trans.pos + elevator_platform.trans.size/2.0;
         if elevator_pos.distance(player.trans.pos) >= 128.0 {
-            let dir = (elevator_pos-player.trans.pos).normalize();
+            let dir = (elevator_pos-player.trans.pos).normalize();            
+
+            let sprite;
+            if dir.x <= 0.0 {
+                sprite = assets.ui_elevator_arrow[1].derive_sprite();
+            } else {
+                sprite = assets.ui_elevator_arrow[0].derive_sprite();
+            }
+            
             let mut pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/2.0);
-            pos += dir*vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/2.0)*0.9*vec2(1.0, -1.0);
-            let measurement = measure_text("ELEVATOR", None, 16, 1.0);
-            pos -= vec2(measurement.width/2.0, measurement.height/2.0);
-            draw_text("ELEVATOR", pos.x, pos.y, 16.0, WHITE);
+            
+            pos += dir*vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/2.0)*0.75*vec2(1.0, -1.0);
+            // INFO: This is no-op, but it shows the intent, we need half of it, but scale is double.
+            pos.x -= sprite.texture_frame.w/2.0*2.0;
+        
+            draw_ui_rotated(pos, vec2(2.0, 2.0), -dir.to_angle(), &sprite);
         }
     }
 

@@ -21,6 +21,8 @@ pub struct Assets {
     pub ui_fuel_bar_frame: SpriteAsset,
     pub ui_fuel_bar_frame_empty: SpriteAsset,
     pub ui_fuel_bar_fill: SpriteAsset,
+    
+    pub ui_elevator_arrow: Box<[SpriteAsset]>,
 
     pub cracking: Box<[SpriteAsset]>,
     pub coin: SpriteAsset,    
@@ -62,8 +64,9 @@ pub async fn init_assets() -> Assets {
     let ui_button_tex = load_asset_texture("ui_button").await;
     let ui_inventory_bar_tex = load_asset_texture("inventory_bar").await;
     let ui_fuel_bar_tex = load_asset_texture("fuel_bar").await;
+    let ui_elevator_arrow = load_asset_texture("ui_elevator_arrow").await;
+
     let cracking_tex = load_asset_texture("cracking").await;
-    
     let coin_tex = load_asset_texture("coin").await;
     let coins_tex = load_asset_texture("coins").await;
 
@@ -96,10 +99,11 @@ pub async fn init_assets() -> Assets {
         ui_fuel_bar_frame: load_sheet_cell(&mut state, &ui_fuel_bar_tex, RowCol(1, 0), Size(16, 58)),
         ui_fuel_bar_frame_empty: load_anim(&mut state, &ui_fuel_bar_tex, RowCol(2, 0), 3, Size(16, 58), 150.0),
         ui_fuel_bar_fill: load_sheet_cell(&mut state, &ui_fuel_bar_tex, RowCol(5, 0), Size(16, 58)),
+
+        ui_elevator_arrow: load_sheet_cells(&mut state, &ui_elevator_arrow, RowCol(0, 0), 2, Size(39, 9)),
         
         cracking: load_sheet_cells(&mut state, &cracking_tex, RowCol(0, 0), 4, Size(16, 16)),
         coin: load_sprite(&mut state, &coin_tex, Offset(0, 0), Size(16, 16)),
-        
         coins: load_sheet_cells(&mut state, &coins_tex, RowCol(0, 0), 5, Size(32, 32)),
 
         player_idle: load_anim(&mut state, &player_tex, RowCol(0, 0), 2, Size(16, 16), 400.0),
