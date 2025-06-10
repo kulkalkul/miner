@@ -24,6 +24,8 @@ pub async fn init(assets: Assets) -> Game {
         mining_fatigue: 0.0,
         climb_momentum: 0.0,
         jetpack_velocity: vec2(0.0, 0.0),
+        jetpack_fuel: 0.0,
+        jetpack_out_of_fuel_tick: 0.0,
     };
 
     player.last_positions[0] = player.trans.pos;
@@ -95,6 +97,11 @@ pub async fn init(assets: Assets) -> Game {
         sprite: assets.ui_inventory_bar_frame.derive_sprite(),
         anim: assets.ui_inventory_bar_frame.derive_anim(),
     };
+    
+    let ui_fuel_bar_frame = UIEntity {
+        sprite: assets.ui_fuel_bar_frame.derive_sprite(),
+        anim: assets.ui_fuel_bar_frame.derive_anim(),
+    };
         
     let world = World::new(&assets.tile_set, &bump);
 
@@ -125,6 +132,7 @@ pub async fn init(assets: Assets) -> Game {
         elevator_spawned: false,
 
         ui_inventory_bar_frame,
+        ui_fuel_bar_frame,
         ui_show_statue: false,
         
         tile_durability_map: HashMap::with_capacity(32),

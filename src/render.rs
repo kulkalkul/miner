@@ -11,6 +11,7 @@ pub fn render(game: &mut Game) {
     let statue = &game.statue;
     let minecart = &game.minecart;
     let ui_inventory_bar_frame = &game.ui_inventory_bar_frame;
+    let ui_fuel_bar_frame = &game.ui_fuel_bar_frame;
     let player = &game.player;
     let crusher = &game.crusher;
     let elevator_cage = &game.elevator_cage;
@@ -151,11 +152,19 @@ pub fn render(game: &mut Game) {
     }
 
     {
-        let cursor = vec2(4.0, 4.0);
+        let mut cursor = vec2(4.0, 4.0);
+        
+        if derived.player_has_jetpack {
+            let ratio = player.jetpack_fuel as f32 / derived.player_jetpack_fuel_capacity as f32;
+            draw_ui(cursor, vec2(2.0, 2.0), &assets.ui_fuel_bar_background.derive_sprite());
+            draw_ui_partial(cursor, vec2(2.0, 2.0), vec2(1.0, ratio), &assets.ui_fuel_bar_fill.derive_sprite());
+            draw_ui(cursor, vec2(2.0, 2.0), &ui_fuel_bar_frame.sprite);
+            cursor += vec2(ui_fuel_bar_frame.sprite.texture_frame.w*2.0, 0.0);
+        }
         let ratio = player.carrying.length as f32 / derived.player_bag_carry_capacity as f32;
         draw_ui(cursor, vec2(2.0, 2.0), &assets.ui_inventory_bar_background.derive_sprite());
         draw_ui_partial(cursor, vec2(2.0, 2.0), vec2(1.0, ratio), &assets.ui_inventory_bar_fill.derive_sprite());
-        draw_ui(cursor, vec2(2.0, 2.0), &ui_inventory_bar_frame.sprite);
+        draw_ui(cursor, vec2(2.0, 2.0), &ui_inventory_bar_frame.sprite);        
     }
     
     // INFO: Don't forget some textures are scaled 4x

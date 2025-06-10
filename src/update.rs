@@ -27,6 +27,7 @@ pub fn update(game: &mut Game) {
     let elevator_cage = &mut game.elevator_cage;
     let elevator_platform = &mut game.elevator_platform;
     let ui_inventory_bar_frame = &mut game.ui_inventory_bar_frame;
+    let ui_fuel_bar_frame = &mut game.ui_fuel_bar_frame;
     
     let world = &mut game.world;
     let visible_chunks = &mut game.visible_chunks;
@@ -56,6 +57,8 @@ pub fn update(game: &mut Game) {
     upgrades.jetpack_boost.derived_unlocked = upgrades.jetpack.derived_unlocked;
     upgrades.jetpack_fuel.derived_unlocked = upgrades.jetpack.derived_unlocked;
     upgrades.jetpack_storage.derived_unlocked = upgrades.jetpack.derived_unlocked;
+
+    derived.player_at_overworld = player.trans.pos.y >= WORLD_SPAWN_F32.y*TILE_SIDE_F32-0.5;
 
     derived.player_mining_speed = match upgrades.mining.kind {
         MiningUpgradeKind::DefaultPickaxe => 1.0,
@@ -89,6 +92,23 @@ pub fn update(game: &mut Game) {
     derived.player_has_jetpack = match upgrades.jetpack.kind {
         JetpackUpgradeKind::NoJetpack => false,
         JetpackUpgradeKind::Jetpack => true,
+    };
+
+    if derived.player_has_jetpack {
+        derived.player_bag_carry_capacity = match upgrades.jetpack_storage.kind {
+            JetpackStorageUpgradeKind::DefaultStorage => 12,
+            JetpackStorageUpgradeKind::XLStorage => 24,
+            JetpackStorageUpgradeKind::XXLStorage => 48,
+            JetpackStorageUpgradeKind::XXXLStorage => 96,
+        };
+    }
+    
+
+    derived.player_jetpack_fuel_capacity = match upgrades.jetpack_fuel.kind {
+        JetpackFuelUpgradeKind::DefaultFuel => 10.0,
+        JetpackFuelUpgradeKind::QuickTanks => 25.0,
+        JetpackFuelUpgradeKind::DoubleTanks => 40.0,
+        JetpackFuelUpgradeKind::LongHaulTanks => 80.0,
     };
 
     derived.player_can_place_ladder = !derived.player_has_jetpack;
@@ -416,6 +436,43 @@ pub fn update(game: &mut Game) {
             player.anim = assets.player_hit.derive_anim();
         }
     }
+
+    
+    // jetpack out of fuel :::
+    if derived.player_can_use_jetpack && derived.player_moving && player.jetpack_fuel <= 0.0 {
+        player.jetpack_out_of_fuel_tick += dt;
+        if player.jetpack_out_of_fuel_tick >= 1.0 {
+            if let Some(item) = player.carrying.pop() {
+            }
+            player.jetpack_out_of_fuel_tick = 0.0;
+        }
+    }
+
+    // overworld refill :::
+    if derived.player_at_overworld && derived.player_has_jetpack {
+        player.jetpack_fuel = f32::min(player.jetpack_fuel+dt*4.0, derived.player_jetpack_fuel_capacity);
+    }
+
+    // jetpack fuel use :::
+    if derived.player_can_use_jetpack && derived.player_moving {
+        player.jetpack_fuel = f32::max(player.jetpack_fuel-dt, 0.0);
+    }
+
+    // jetpack fuel blink :::
+    if derived.player_has_jetpack {
+        let blink_threshold = derived.player_jetpack_fuel_capacity*0.5;
+        let modifier = (1.0 - player.jetpack_fuel/blink_threshold)*1.0;
+
+        if player.jetpack_fuel <= blink_threshold {
+            if ui_fuel_bar_frame.anim.is_not(&assets.ui_fuel_bar_frame_empty) {
+                ui_fuel_bar_frame.anim = assets.ui_fuel_bar_frame_empty.derive_anim();
+            }
+            ui_fuel_bar_frame.anim.modifier = modifier;
+        } else {
+            if ui_fuel_bar_frame.anim.is_not(&assets.ui_fuel_bar_frame) {
+                ui_fuel_bar_frame.anim = assets.ui_fuel_bar_frame.derive_anim();
+            }
+        }        
     }
 
     if player.anim.is( &assets.player_hit ) || player.anim.is( &assets.player_jetpack_hit ) {
@@ -666,6 +723,7 @@ pub fn update(game: &mut Game) {
     tick_animation(&mut crusher.sprite, &mut crusher.anim, dt);
     tick_animation(&mut player.sprite, &mut player.anim, dt);
     tick_animation(&mut ui_inventory_bar_frame.sprite, &mut ui_inventory_bar_frame.anim, dt);
+    tick_animation(&mut ui_fuel_bar_frame.sprite, &mut ui_fuel_bar_frame.anim, dt);
     
     // update visible chunks :::
     {

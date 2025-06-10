@@ -14,6 +14,7 @@ pub struct DerivedState {
     pub player_touching_bottom: bool,
     pub player_mining: bool,
 
+    pub player_at_overworld: bool,
     pub player_mining_speed: f32,
     pub player_ladder_speed: f32,
     pub player_bag_carry_capacity: usize,
@@ -22,6 +23,7 @@ pub struct DerivedState {
     pub player_has_jetpack: bool,
     pub player_can_place_ladder: bool,
     pub player_can_use_jetpack: bool,
+    pub player_jetpack_fuel_capacity: f32,
 
     pub ui_show_statue_key: bool,
 }

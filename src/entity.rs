@@ -12,6 +12,8 @@ pub struct Player {
     pub mining_fatigue: f32,
     pub climb_momentum: f32,
     pub jetpack_velocity: Vec2,
+    pub jetpack_fuel: f32,
+    pub jetpack_out_of_fuel_tick: f32,
 }
 
 #[derive(Debug)]
