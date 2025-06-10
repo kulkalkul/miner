@@ -55,7 +55,7 @@ pub mod consts {
         RAIL_DIAGONAL_END.y as f32*TILE_SIDE_F32-1.0,
     );
     pub const ELEVATOR_CAGE: IVec2 = ivec2(
-        STATUE.x-3,
+        STATUE.x-6,
         STATUE.y
     );
     pub const ELEVATOR_PLATFORM_START: Vec2 = vec2(
