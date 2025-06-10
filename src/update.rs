@@ -567,6 +567,7 @@ pub fn update(game: &mut Game) {
         
         if new_pos.x <= MINECART_STRAIGHT_END.x {
             new_pos = minecart.trans.pos - vec2(minecart.speed, 0.0) * dt;
+            new_pos.y = MINECART_STRAIGHT_END.y;
             new_rotation = 0.0;
         }
         minecart.trans.pos = new_pos;
