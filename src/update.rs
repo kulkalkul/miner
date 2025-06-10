@@ -75,10 +75,10 @@ pub fn update(game: &mut Game) {
 
     derived.player_bag_carry_capacity = match upgrades.bag.kind {
         BagUpgradeKind::DefaultBag => 6,
-        BagUpgradeKind::SmallPouch => 8,
-        BagUpgradeKind::BiggerPouch => 12,
-        BagUpgradeKind::Backpack => 16,
-        BagUpgradeKind::Sack => 24,
+        BagUpgradeKind::SmallPouch => 10,
+        BagUpgradeKind::BiggerPouch => 24,
+        BagUpgradeKind::Backpack => 40,
+        BagUpgradeKind::Sack => 64,
     };
 
     derived.player_climb_momentum_max = match upgrades.climb_momentum.kind {

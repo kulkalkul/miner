@@ -414,7 +414,7 @@ impl Tile {
             
             Tile::Stone => 1.2,
             Tile::StoneDig => 0.5,
-            Tile::HardStone => 15.0,
+            Tile::HardStone => 60.0,
             Tile::Barrier => NOT_SO_VERY_BIG_NUMBER,
 
             Tile::StoneCopperOre => 1.4,

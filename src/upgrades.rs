@@ -97,26 +97,26 @@ create_seq! {struct MiningUpgrade; enum MiningUpgradeKind {
     DefaultPickaxe => ("Default Pickaxe", 0),
     IronPickaxe => ("Iron Pickaxe", 100),
     HardenedPickaxe => ("Hardened Pickaxe", 500),
-    AlloyPickaxe => ("Alloy Pickaxe", 1000),
+    AlloyPickaxe => ("Alloy Pickaxe", 2500),
 }}
 create_seq! {struct LadderUpgrade; enum LadderUpgradeKind {
     DefaultClimb => ("Default Climb", 0),
-    FastClimb => ("Fast Climb", 250),
+    FastClimb => ("Fast Climb", 500),
 }}
 create_seq! {struct BagUpgrade; enum BagUpgradeKind {
     DefaultBag => ("Default Bag", 0),
     SmallPouch => ("Small Pouch", 150),
-    BiggerPouch => ("Bigger Pouch", 250),
-    Backpack => ("Backpack", 750),
-    Sack => ("Sack", 1500),
+    BiggerPouch => ("Bigger Pouch", 500),
+    Backpack => ("Backpack", 1500),
+    Sack => ("Sack", 3500),
 }}
 create_seq! {struct ClimbMomentumUpgrade; enum ClimbMomentumUpgradeKind {
     NoClimbMomentum => ("No Climb Momentum", 0),
-    ClimbMomentum => ("Climb Momentum", 1000),
+    ClimbMomentum => ("Climb Momentum", 1500),
 }}
 create_seq! {struct JetpackUpgrade; enum JetpackUpgradeKind {
     NoJetpack => ("No Jetpack", 0),
-    Jetpack => ("Jetpack", 2500),
+    Jetpack => ("Jetpack", 5000),
 }}
 create_seq! {struct JetpackBoostUpgrade; enum JetpackBoostUpgradeKind {
     NoDwarfcopterBoost => ("No Boost", 0),

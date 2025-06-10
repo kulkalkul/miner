@@ -367,28 +367,33 @@ impl World {
         let mut ores_map = BTreeMap::new();
 
         let ores = [
-            ( 2 , Tile::StoneCopperOre, Min(4 ), Max(8 ) ),
-            ( 2 , Tile::StoneIronOre  , Min(3 ), Max(6 ) ),
+            ( 2 , Tile::StoneCopperOre, Min(10), Max(16) ),
+            ( 2 , Tile::StoneIronOre  , Min(2 ), Max(6 ) ),
             
             ( 3 , Tile::StoneCopperOre, Min(6 ), Max(10) ),
-            ( 3 , Tile::StoneIronOre  , Min(5 ), Max(10) ),
+            ( 3 , Tile::StoneIronOre  , Min(12), Max(16) ),
             
-            ( 4 , Tile::StoneCopperOre, Min(10), Max(14) ),
-            ( 4 , Tile::StoneIronOre  , Min(8 ), Max(14) ),
+            ( 4 , Tile::StoneCopperOre, Min(4 ), Max(8) ),
+            ( 4 , Tile::StoneIronOre  , Min(12), Max(20) ),
+            ( 4 , Tile::StoneGoldOre  , Min(1 ), Max(2 ) ),
             
-            ( 5 , Tile::StoneGoldOre  , Min(0 ), Max(1 ) ),
+            ( 5 , Tile::StoneGoldOre  , Min(4 ), Max(8 ) ),
             ( 5 , Tile::StoneCopperOre, Min(8 ), Max(12) ),
             ( 5 , Tile::StoneIronOre  , Min(14), Max(14) ),
+            
+            ( 6 , Tile::StoneGoldOre  , Min(6 ), Max(10) ),
 
-            ( 7 , Tile::StoneGoldOre  , Min(1 ), Max(2 ) ),
+            ( 7 , Tile::StoneGoldOre  , Min(8 ), Max(12 ) ),
             
             ( 8 , Tile::StoneCopperOre, Min(5 ), Max(8 ) ),
             ( 8 , Tile::StoneIronOre  , Min(18), Max(18) ),
+            ( 7 , Tile::StoneGoldOre  , Min(10), Max(14) ),
             ( 8 , Tile::StoneEmerald  , Min(-7), Max(1 ) ),
             
-            ( 9 , Tile::StoneGoldOre  , Min(1 ), Max(7 ) ),
-            ( 9 , Tile::StoneIronOre  , Min(14), Max(10) ),
-            ( 12, Tile::StoneGoldOre  , Min(4 ), Max(8 ) ),            
+            ( 9 , Tile::StoneEmerald  , Min(-4), Max(1 ) ),
+            ( 10, Tile::StoneEmerald  , Min(0 ), Max(1 ) ),
+            ( 11, Tile::StoneEmerald  , Min(0 ), Max(2 ) ),
+            ( 12, Tile::StoneEmerald  , Min(1 ), Max(3 ) ),
         ];
 
         let mut ores_i = 0;
@@ -426,17 +431,11 @@ impl World {
         struct Width(usize);
 
         let hard_stone_pass = [
-            (4 , HMin(8 ), HMax(24), Width(3 )),
-            (5 , HMin(8 ), HMax(24), Width(3 )),
-            (6 , HMin(10), HMax(48), Width(4 )),
-            (7 , HMin(10), HMax(48), Width(4 )),
-            (8 , HMin(12), HMax(80), Width(6 )),
-            (10, HMin(48), HMax(80), Width(10)),
-            // (12, HMin(48), HMax(80), Width(10)),
-            // (14, HMin(48), HMax(80), Width(10)),
-            // (16, HMin(48), HMax(80), Width(10)),
-            // (18, HMin(30), HMax(50), Width(4 )),
-            // (20, HMin(10), HMax(20), Width(4 )),
+            (5 , HMin(12), HMax(24), Width(3 )),
+            (6 , HMin(16), HMax(24), Width(4 )),
+            (7 , HMin(24), HMax(24), Width(4 )),
+            (10, HMin(24), HMax(24), Width(6 )),
+            (12, HMin(24), HMax(24), Width(6 )),
         ];
 
         for (chunk_y, HMin(min), HMax(max), Width(width)) in hard_stone_pass {

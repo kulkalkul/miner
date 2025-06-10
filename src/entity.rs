@@ -7,7 +7,7 @@ pub struct Player {
     pub sprite: Sprite,
     pub anim: Animation,
     pub bag_mesh: GameMesh,
-    pub carrying: Array<ItemKind, 24>,
+    pub carrying: Array<ItemKind, 64>,
     pub last_positions: Box<[Vec2; 24]>,
     pub mining_fatigue: f32,
     pub climb_momentum: f32,
@@ -50,7 +50,7 @@ pub struct Minecart {
     pub speed: f32,
     pub sprite: Sprite,
     pub anim: Animation,
-    pub carrying: Array<Item, 48>,
+    pub carrying: Array<Item, 128>,
     pub cooldown: f32,
     pub movement: MinecartMovement,
 }
@@ -109,11 +109,11 @@ impl ItemKind {
         match self {
             ItemKind::Air => 0,
             ItemKind::CopperOre => 5,
-            ItemKind::IronOre => 15,
-            ItemKind::GoldOre => 50,
-            ItemKind::RawEmerald => 500,
-            ItemKind::RawRuby => 750,
-            ItemKind::RawSapphire => 1_000,
+            ItemKind::IronOre => 35,
+            ItemKind::GoldOre => 110,
+            ItemKind::RawEmerald => 350,
+            ItemKind::RawRuby => 1500,
+            ItemKind::RawSapphire => 2500,
         }
     }
 }
