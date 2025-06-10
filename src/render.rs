@@ -171,6 +171,7 @@ pub fn render(game: &mut Game) {
             draw_ui_partial(cursor, vec2(2.0, 2.0), vec2(1.0, ratio), &assets.ui_fuel_bar_fill.derive_sprite());
             draw_ui(cursor, vec2(2.0, 2.0), &ui_fuel_bar_frame.sprite);
             cursor += vec2(ui_fuel_bar_frame.sprite.texture_frame.w*2.0, 0.0);
+            cursor += vec2(8.0, 0.0);
         }
         let ratio = player.carrying.length as f32 / derived.player_bag_carry_capacity as f32;
         draw_ui(cursor, vec2(2.0, 2.0), &assets.ui_inventory_bar_background.derive_sprite());
