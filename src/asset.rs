@@ -62,8 +62,8 @@ pub async fn init_assets() -> Assets {
     let ui_bg_tex = load_asset_texture("ui_bg").await;
     let ui_keys_tex = load_asset_texture("ui_keys").await;
     let ui_button_tex = load_asset_texture("ui_button").await;
-    let ui_inventory_bar_tex = load_asset_texture("inventory_bar").await;
-    let ui_fuel_bar_tex = load_asset_texture("fuel_bar").await;
+    let ui_inventory_bar_tex = load_asset_texture("ui_inventory_bar").await;
+    let ui_fuel_bar_tex = load_asset_texture("ui_fuel_bar").await;
     let ui_elevator_arrow = load_asset_texture("ui_elevator_arrow").await;
 
     let cracking_tex = load_asset_texture("cracking").await;
