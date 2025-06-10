@@ -197,7 +197,8 @@ pub fn render(game: &mut Game) {
 
         cursor += bg_padding;
     
-        let button_width = (bg_size.x - bg_padding.x*2.0)/2.0 - button_spacing.x;
+        let bg_inner_width = bg_size.x - bg_padding.x*2.0;
+        let button_width = bg_inner_width/2.0 - button_spacing.x;
         let button_height = assets.ui_button[0][0].frames[0].h;
         let mut lcursor = cursor;
         let mut rcursor = cursor;
@@ -251,6 +252,19 @@ pub fn render(game: &mut Game) {
                 draw_text(&state.cost.to_string(), coin_pos.x, coin_pos.y, 16.0, color);
             }
         };
+        
+        lcursor.y += 4.0;
+        rcursor.y += 4.0;
+        
+        draw_text("Phase I", lcursor.x, lcursor.y, 16.0, Color::from_hex(0xc7cfcc));
+        
+        lcursor.y += 2.0;
+        rcursor.y += 2.0;
+
+        draw_rectangle(lcursor.x, lcursor.y, bg_inner_width, 1.0, Color::from_hex(0xc7cfcc));
+        
+        lcursor.y += 6.0;
+        rcursor.y += 6.0;
 
         ui_seq_upgrade_button(lcursor, upgrades.mining.to_seq());
         ui_seq_upgrade_button(rcursor, upgrades.ladder.to_seq());
@@ -262,6 +276,20 @@ pub fn render(game: &mut Game) {
         
         lcursor.y += button_spacing.y + button_height;
         rcursor.y += button_spacing.y + button_height;
+        
+        lcursor.y += 8.0;
+        rcursor.y += 8.0;
+        
+        draw_text("Phase II", lcursor.x, lcursor.y, 16.0, Color::from_hex(0xc7cfcc));
+        
+        lcursor.y += 2.0;
+        rcursor.y += 2.0;
+
+        draw_rectangle(lcursor.x, lcursor.y, bg_inner_width, 1.0, Color::from_hex(0xc7cfcc));
+        
+        lcursor.y += 6.0;
+        rcursor.y += 6.0;
+        
         ui_seq_upgrade_button(lcursor, upgrades.jetpack.to_seq());
         ui_seq_upgrade_button(rcursor, upgrades.jetpack_fuel.to_seq());
         
@@ -269,6 +297,22 @@ pub fn render(game: &mut Game) {
         rcursor.y += button_spacing.y + button_height;
         ui_seq_upgrade_button(lcursor, upgrades.jetpack_boost.to_seq());
         ui_seq_upgrade_button(rcursor, upgrades.jetpack_storage.to_seq());
+        
+        lcursor.y += button_spacing.y + button_height;
+        rcursor.y += button_spacing.y + button_height;
+        
+        lcursor.y += 8.0;
+        rcursor.y += 8.0;
+        
+        draw_text("Phase III", lcursor.x, lcursor.y, 16.0, Color::from_hex(0xc7cfcc));
+        
+        lcursor.y += 2.0;
+        rcursor.y += 2.0;
+
+        draw_rectangle(lcursor.x, lcursor.y, bg_inner_width, 1.0, Color::from_hex(0xc7cfcc));
+        
+        lcursor.y += 6.0;
+        rcursor.y += 6.0;
 
         game.ui_state.mouse_div = prev_mouse_div;
     }
