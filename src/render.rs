@@ -95,6 +95,12 @@ pub fn render(game: &mut Game) {
     if game.elevator_spawned {
         draw_sprite(elevator_platform.trans.pos, &elevator_platform.sprite);
     }
+
+    // draw dropped items
+    for item in &game.dropped_items {
+        draw_sprite_scaled(item.trans.pos, vec2(1.0, 1.0), &assets.items[item.kind as usize].derive_sprite());
+    }
+    
     
     // draw player :::
     draw_sprite_offset(player.trans.pos, player.trans.offset, &player.sprite);

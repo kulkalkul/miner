@@ -81,6 +81,13 @@ pub struct Item {
     pub kind: ItemKind,
 }
 
+#[derive(Debug, Copy, Clone, Default)]
+pub struct DroppedItem {
+    pub trans: Transform,
+    pub kind: ItemKind,
+    pub accumulated_tick: f32,
+}
+
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Default)]
 pub enum ItemKind {
     #[default]

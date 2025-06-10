@@ -452,7 +452,16 @@ pub fn update(game: &mut Game) {
     if derived.player_can_use_jetpack && derived.player_moving && player.jetpack_fuel <= 0.0 {
         player.jetpack_out_of_fuel_tick += dt;
         if player.jetpack_out_of_fuel_tick >= 1.0 {
-            if let Some(item) = player.carrying.pop() {
+            if let Some(item_kind) = player.carrying.pop() {
+                game.dropped_items.push(DroppedItem {
+                    trans: Transform {
+                        pos: player.trans.pos,
+                        size: vec2(0.0, 0.0),
+                        offset: vec2(0.0, 0.0),
+                    },
+                    kind: item_kind,
+                    accumulated_tick: 0.0,
+                });
             }
             player.jetpack_out_of_fuel_tick = 0.0;
         }
@@ -730,6 +739,21 @@ pub fn update(game: &mut Game) {
     for i in coins_to_remove {
         // INFO: not using swap_remove because draw order changes and it looks glitchy
         game.coins.remove(i);
+    }
+
+    // tick dropped items :::
+    let mut dropped_items_to_remove = Vec::new_in(&game.bump);
+    
+    for (i, item) in &mut game.dropped_items.iter_mut().enumerate().rev() {
+        item.trans.pos.y += -9.8 * TILE_SIDE_F32 * dt;
+        if item.accumulated_tick >= 10.0 {
+            dropped_items_to_remove.push(i);
+        }
+        item.accumulated_tick += dt;
+    }
+
+    for i in dropped_items_to_remove {
+        game.dropped_items.swap_remove(i);
     }
 
 

@@ -50,7 +50,7 @@ pub struct Assets {
     pub rail: SpriteAsset,
     pub rail_diagonal: SpriteAsset,
 
-    pub items: TileSetAsset,
+    pub items: Box<[SpriteAsset]>,
     pub tile_set: TileSetAsset,
 }
 
@@ -135,7 +135,7 @@ pub async fn init_assets() -> Assets {
         rail:            load_sheet_cell(&mut state, &rail_tex, RowCol(1, 0), Size(16 , 9)),
         rail_diagonal:   load_sheet_cell(&mut state, &rail_tex, RowCol(2, 0), Size(16 , 9)),
 
-        items:    load_tile_set(&mut state, &items_tex   , ivec2(16, 16)),
+        items:    load_sheet_cells(&mut state, &items_tex, RowCol(0, 0), 7, Size(16, 16)),
         tile_set: load_tile_set(&mut state, &tile_set_tex, ivec2(16, 16)),
     }
 }

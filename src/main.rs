@@ -120,6 +120,7 @@ pub struct Game {
     pub elevator_spawned: bool,
 
     pub coins: Vec<CoinBundle>,
+    pub dropped_items: Vec<DroppedItem>,
 
     pub ui_inventory_bar_frame: UIEntity,
     pub ui_fuel_bar_frame: UIEntity,
