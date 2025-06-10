@@ -1,11 +1,15 @@
 use crate::prelude::*;
 
 pub fn update(game: &mut Game) {
+    // pre update :::
     game.window_to_draw_size = vec2(screen_width(), screen_height()) / vec2(GAME_WIDTH_F32, GAME_HEIGHT_F32);
     game.ui_state.mouse_div = game.window_to_draw_size;
+
+    // reset per-frame :::
     game.derived = DerivedState::default();
     game.action.reset();
     
+    // input map :::
     game.input_actions = InputActions {
         move_left      : is_key_down(KeyCode::A) || is_key_down(KeyCode::Left),
         move_right     : is_key_down(KeyCode::D) || is_key_down(KeyCode::Right),
@@ -17,6 +21,7 @@ pub fn update(game: &mut Game) {
         toggle_dev_mode: is_key_pressed(KeyCode::Tab),
     };
 
+    // frame borrows :::
     let dt = get_frame_time();
     let assets = &game.assets;
 
@@ -36,13 +41,13 @@ pub fn update(game: &mut Game) {
     let input_actions = &game.input_actions;
     let upgrades = &mut game.upgrades;
     
+    // reset late derived:::
     let late_derived = &game.late_derived;
     let mut next_late_derived = LateDerivedState::default();
 
     let tiles = world.tiles();
 
     // upgrades :::
-
     upgrades.mining.derived_unlocked = true;
     upgrades.ladder.derived_unlocked = true;
     upgrades.bag.derived_unlocked = true;
@@ -58,6 +63,7 @@ pub fn update(game: &mut Game) {
     upgrades.jetpack_fuel.derived_unlocked = upgrades.jetpack.derived_unlocked;
     upgrades.jetpack_storage.derived_unlocked = upgrades.jetpack.derived_unlocked;
 
+    // frame start derived :::
     derived.player_at_overworld = player.trans.pos.y >= WORLD_SPAWN_F32.y*TILE_SIDE_F32-0.5;
 
     derived.player_mining_speed = match upgrades.mining.kind {
@@ -135,12 +141,12 @@ pub fn update(game: &mut Game) {
     
     derived.player_anim_finished = player.anim.repeated > 0;
 
-    // actions :::
+    // player movement :::
+
     let mut player_movement = IVec2::ZERO;
     #[allow(unused_assignments)]
     let mut player_movement_f32 = Vec2::ZERO;
 
-    // player movement :::
     'player_movement: {
         if late_derived.ui_is_active { break 'player_movement; }
 
@@ -276,9 +282,11 @@ pub fn update(game: &mut Game) {
     // player.climb_momentum.signum()
     player.climb_momentum = f32::max(player.climb_momentum.abs() - dt*2.0, 0.0) * player.climb_momentum.signum();
     player.mining_fatigue = f32::max(player.mining_fatigue-dt, 0.0);
-    
+
+    // hit str :::
     derived.player_hit_str = 1.0 / f32::max(player_movement.x.abs() as f32 + player_movement.y.abs() as f32, 1.0);
     
+    // block mine :::
     let player_tile = tiles.at_world_pos(player.trans.pos);
     let mut world_commands = world.commands(&game.bump);
 
@@ -346,6 +354,8 @@ pub fn update(game: &mut Game) {
     }
 
     world.apply_commands(world_commands);
+
+    // lay ladder :::
     let mut world_commands = world.commands(&game.bump);
     let tiles = world.tiles();
     let player_tile = tiles.at_world_pos(player.trans.pos);
@@ -475,6 +485,7 @@ pub fn update(game: &mut Game) {
         }        
     }
 
+    // hit str -> mining speed :::
     if player.anim.is( &assets.player_hit ) || player.anim.is( &assets.player_jetpack_hit ) {
         player.anim.modifier = derived.player_hit_str;
     }
@@ -486,6 +497,7 @@ pub fn update(game: &mut Game) {
         player.carrying.push(item_kind);        
     }
 
+    // inside elevator :::
     if  game.elevator_spawned &&
         player.trans.collider().contains(elevator_platform.trans.collider())
     {
@@ -498,6 +510,7 @@ pub fn update(game: &mut Game) {
         }
     }
     
+    // riding elevator :::
     if  game.elevator_spawned &&
         elevator_platform.player_inside_for >= 5.0
     {
@@ -536,6 +549,7 @@ pub fn update(game: &mut Game) {
         next_late_derived.travelling_in_elevator = true;
     }
     
+    // outside elevator :::
     if  game.elevator_spawned &&
         !player.trans.collider().contains(elevator_platform.trans.collider())
     {
@@ -545,6 +559,7 @@ pub fn update(game: &mut Game) {
         }
     }
 
+    // minecart collect items :::
     if  minecart.movement == MinecartMovement::Idle &&
         player.trans.collider().intersects(minecart.trans.collider()) &&
         player.carrying.length > 0
@@ -564,34 +579,7 @@ pub fn update(game: &mut Game) {
         }
     }
 
-    if player.trans.collider().intersects(statue.trans.collider()) {
-        derived.ui_show_statue_key = true;
-
-        if input_actions.interact {
-            game.ui_show_statue = !game.ui_show_statue;
-        }
-    }
-
-    let mut coins_to_remove = Vec::new_in(&game.bump);
-
-    for (i, coin) in &mut game.coins.iter_mut().enumerate().rev() {
-        if player.trans.pos.distance_squared(coin.trans.pos) <= 16.0 {
-            game.money += coin.amount;
-            coins_to_remove.push(i);
-        }
-        if coin.trans.pos.y <= WORLD_SPAWN_F32.y * TILE_SIDE as f32 {
-            coin.trans.pos.y = WORLD_SPAWN_F32.y * TILE_SIDE as f32;
-            coin.velocity = vec2(0.0, 0.0);
-        } else {
-            coin.trans.pos += coin.velocity * dt;
-            coin.velocity.y -= 80.0 * dt;
-        }
-    }
-    for i in coins_to_remove {
-        // INFO: not using swap_remove because draw order changes and it looks glitchy
-        game.coins.remove(i);
-    }
-
+    // minecart start move :::
     if minecart.movement == MinecartMovement::Idle && minecart.cooldown <= 0.1 && minecart.carrying.length > 0 {
         minecart.movement = MinecartMovement::Forwards;
         minecart.anim = assets.minecart_moving.derive_anim();
@@ -599,6 +587,7 @@ pub fn update(game: &mut Game) {
 
     minecart.cooldown = f32::max(minecart.cooldown-dt, 0.0);
 
+    // minecart moving forwards :::
     if minecart.movement == MinecartMovement::Forwards {
         let mut new_pos = minecart.trans.pos + vec2(minecart.speed, 0.0) * dt;
         let mut new_rotation = 0.0;
@@ -616,7 +605,8 @@ pub fn update(game: &mut Game) {
             minecart.movement = MinecartMovement::Backwards;
         }
     }
-
+    
+    // minecart moving backwards :::
     if minecart.movement == MinecartMovement::Backwards {
         let mut new_pos = minecart.trans.pos + (MINECART_STRAIGHT_END-MINECART_DIAGONAL_END).normalize()
             * minecart.speed * dt;
@@ -711,7 +701,39 @@ pub fn update(game: &mut Game) {
             }
         }
     }
+    
+    // statue interact :::
+    if player.trans.collider().intersects(statue.trans.collider()) {
+        derived.ui_show_statue_key = true;
 
+        if input_actions.interact {
+            game.ui_show_statue = !game.ui_show_statue;
+        }
+    }
+
+    // collect coins :::
+    let mut coins_to_remove = Vec::new_in(&game.bump);
+
+    for (i, coin) in &mut game.coins.iter_mut().enumerate().rev() {
+        if player.trans.pos.distance_squared(coin.trans.pos) <= 16.0 {
+            game.money += coin.amount;
+            coins_to_remove.push(i);
+        }
+        if coin.trans.pos.y <= WORLD_SPAWN_F32.y * TILE_SIDE as f32 {
+            coin.trans.pos.y = WORLD_SPAWN_F32.y * TILE_SIDE as f32;
+            coin.velocity = vec2(0.0, 0.0);
+        } else {
+            coin.trans.pos += coin.velocity * dt;
+            coin.velocity.y -= 80.0 * dt;
+        }
+    }
+    for i in coins_to_remove {
+        // INFO: not using swap_remove because draw order changes and it looks glitchy
+        game.coins.remove(i);
+    }
+
+
+    // reset inventory full anim after one repeat :::
     if ui_inventory_bar_frame.anim.is(&assets.ui_inventory_bar_frame_full) && ui_inventory_bar_frame.anim.repeated > 0 {
         ui_inventory_bar_frame.anim = assets.ui_inventory_bar_frame.derive_anim();
     }
@@ -748,6 +770,7 @@ pub fn update(game: &mut Game) {
         
     }
 
+    // handle escape key :::
     'escape: {
         if input_actions.escape {
             if game.ui_show_statue {
@@ -757,6 +780,7 @@ pub fn update(game: &mut Game) {
         }
     }
     
+    // spawn elevator :::
     if derived.player_has_jetpack && !game.elevator_spawned {
         game.elevator_spawned = true;   
         world_commands.set_tile_area(
@@ -781,8 +805,10 @@ pub fn update(game: &mut Game) {
     world.apply_commands(world_commands);
     world.apply_updates(&assets.tile_set);
     
+    // move late derived :::
     next_late_derived.ui_is_active = game.ui_show_statue;
     game.late_derived = next_late_derived;
-    
+
+    // post update :::
     game.bump.reset();
 }
