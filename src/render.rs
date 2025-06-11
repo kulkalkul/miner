@@ -41,7 +41,6 @@ pub fn render(game: &mut Game) {
         mesh_camera_origin.y += player.trans.pos.y - world_pos.y;
 
         let mut camera = Camera2D::from_display_rect(mesh_camera_origin);
-        camera.render_target = Some(game.game_render_target.clone());
         set_camera(&camera);
         
         let mesh = world.mesh_at(chunk_pos);
@@ -54,7 +53,6 @@ pub fn render(game: &mut Game) {
     
     {
         let mut camera = Camera2D::from_display_rect(camera_origin);
-        camera.render_target = Some(game.game_render_target.clone());
         set_camera(&camera);
     }
 
@@ -116,18 +114,8 @@ pub fn render(game: &mut Game) {
     if game.elevator_spawned {
         draw_sprite(elevator_cage.trans.pos, &elevator_cage.sprite);
     }
-    
-    // shader
-    set_default_camera();    
-    gl_use_material(&game.shadow_material);
-    draw_texture_ex(&game.game_render_target.texture, 0., 0., WHITE, DrawTextureParams {
-        dest_size: Some(vec2(screen_width(), screen_height())),
-        ..Default::default()
-    });
-    
-    // ui
-    gl_use_default_material();
-    
+        
+    // ui    
     {    
         set_camera(&Camera2D::from_display_rect(camera_origin));
     }

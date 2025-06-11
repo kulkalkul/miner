@@ -102,8 +102,6 @@ pub struct Game {
     pub total_time: f32,
     pub window_to_draw_size: Vec2,
     pub ui_state: UIState,
-    pub game_render_target: RenderTarget,
-    pub shadow_material: Material,
     pub dev_mode: bool,
     pub bump: Bump,
     pub assets: Assets,

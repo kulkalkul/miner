@@ -104,12 +104,6 @@ pub async fn init(assets: Assets) -> Game {
         
     let world = World::new(&assets.tile_set, &bump);
     
-    let game_render_target = render_target(screen_width() as u32, screen_height() as u32);
-    let shadow_material = load_material(
-        ShaderSource::Glsl { vertex: SHADOW_VERTEX_SHADER, fragment: SHADOW_FRAGMENT_SHADER },
-        Default::default()
-    ).expect("load shader");
-
     Game {
         total_time: 0.0,
         window_to_draw_size: vec2(1.0, 1.0),
@@ -117,8 +111,6 @@ pub async fn init(assets: Assets) -> Game {
             mouse_div: vec2(1.0, 1.0),
             last_clicked_button_hash: None,
         },
-        game_render_target,
-        shadow_material,
         dev_mode: false,
         bump,
         assets,
@@ -152,35 +144,3 @@ pub async fn init(assets: Assets) -> Game {
         upgrades: Default::default(),
     }
 }
-
-const SHADOW_VERTEX_SHADER: &'static str = r#"#version 100
-attribute vec3 position;
-attribute vec2 texcoord;
-attribute vec4 color0;
-
-varying lowp vec2 uv;
-varying lowp vec4 color;
-
-uniform mat4 Model;
-uniform mat4 Projection;
-
-void main() {
-    gl_Position = Projection * Model * vec4(position, 1);
-    color = color0;
-    uv = texcoord;
-}
-"#;
-
-const SHADOW_FRAGMENT_SHADER: &'static str = r#"#version 100
-precision mediump float;
-
-varying vec4 color;
-varying vec2 uv;
-
-uniform sampler2D Texture;
-
-void main() {
-    vec3 res = texture2D(Texture, uv).rgb;
-    gl_FragColor = vec4(res, 1.0);
-}
-"#;
