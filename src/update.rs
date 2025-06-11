@@ -102,19 +102,24 @@ pub fn update(game: &mut Game) {
 
     if derived.player_has_jetpack {
         derived.player_bag_carry_capacity = match upgrades.jetpack_storage.kind {
-            JetpackStorageUpgradeKind::DefaultStorage => 12,
-            JetpackStorageUpgradeKind::XLStorage => 24,
-            JetpackStorageUpgradeKind::XXLStorage => 48,
-            JetpackStorageUpgradeKind::XXXLStorage => 96,
+            JetpackStorageUpgradeKind::DefaultStorage => 6,
+            JetpackStorageUpgradeKind::XLStorage => 12,
+            JetpackStorageUpgradeKind::XXLStorage => 24,
         };
     }
     
 
     derived.player_jetpack_fuel_capacity = match upgrades.jetpack_fuel.kind {
-        JetpackFuelUpgradeKind::DefaultFuel => 10.0,
-        JetpackFuelUpgradeKind::QuickTanks => 25.0,
-        JetpackFuelUpgradeKind::DoubleTanks => 40.0,
-        JetpackFuelUpgradeKind::LongHaulTanks => 80.0,
+        JetpackFuelUpgradeKind::DefaultFuel => 30.0,
+        JetpackFuelUpgradeKind::MediumTanks => 50.0,
+        JetpackFuelUpgradeKind::DoubleTanks => 75.0,
+        JetpackFuelUpgradeKind::LongHaulTanks => 120.0,
+    };
+
+    derived.player_jetpack_speed = match upgrades.jetpack_boost.kind {
+        JetpackBoostUpgradeKind::NoBoost => 75.0,
+        JetpackBoostUpgradeKind::SmallBoost => 115.0,
+        JetpackBoostUpgradeKind::BigBoost => 150.0,
     };
 
     derived.player_can_place_ladder = !derived.player_has_jetpack;

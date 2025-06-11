@@ -120,8 +120,8 @@ impl ItemKind {
             ItemKind::IronOre => 35,
             ItemKind::GoldOre => 110,
             ItemKind::RawEmerald => 350,
-            ItemKind::RawRuby => 1500,
-            ItemKind::RawSapphire => 2500,
+            ItemKind::RawRuby => 850,
+            ItemKind::RawSapphire => 1400,
         }
     }
 }

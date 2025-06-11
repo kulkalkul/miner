@@ -119,18 +119,19 @@ create_seq! {struct JetpackUpgrade; enum JetpackUpgradeKind {
     Jetpack => ("Jetpack", 5000),
 }}
 create_seq! {struct JetpackBoostUpgrade; enum JetpackBoostUpgradeKind {
-    NoDwarfcopterBoost => ("No Boost", 0),
+    NoBoost => ("No Boost", 0),
     SmallBoost => ("Small Boost", 6000),
+    BigBoost => ("Big Boost", 11000),
 }}
 create_seq! {struct JetpackFuelUpgrade; enum JetpackFuelUpgradeKind {
     DefaultFuel => ("Default Fuel", 0),
-    QuickTanks => ("Quick Tanks", 3500),
-    DoubleTanks => ("Long Double Tanks", 6000),
-    LongHaulTanks => ("Long Haul Tanks", 12000),
+    MediumTanks => ("Medium Tanks", 5500),
+    DoubleTanks => ("Long Double Tanks", 9000),
+    LongHaulTanks => ("Long Haul Tanks", 13000),
 }}
 create_seq! {struct JetpackStorageUpgrade; enum JetpackStorageUpgradeKind {
     DefaultStorage => ("Default Storage", 0),
-    XLStorage => ("XL Storage", 4000),
-    XXLStorage => ("XXL Storage", 7000),
-    XXXLStorage => ("XXXL Storage", 13000),
+    XLStorage => ("XL Storage", 7500),
+    XXLStorage => ("XXL Storage", 10500),
+}}
 }}
