@@ -23,7 +23,6 @@ pub async fn init(assets: Assets) -> Game {
         bag_mesh: GameMesh::new(),
         mining_fatigue: 0.0,
         climb_momentum: 0.0,
-        jetpack_velocity: vec2(0.0, 0.0),
         jetpack_fuel: 0.0,
         jetpack_out_of_fuel_tick: 0.0,
     };

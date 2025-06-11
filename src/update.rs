@@ -120,8 +120,6 @@ pub fn update(game: &mut Game) {
     derived.player_can_place_ladder = !derived.player_has_jetpack;
     derived.player_can_use_jetpack = derived.player_has_jetpack &&
         player.trans.pos.y <= ELEVATOR_PLATFORM_END.y;
-    derived.player_jetpack_speed = 1.0;
-    derived.player_jetpack_max_speed = 100.0;
     
     game.total_time += dt;
     
@@ -153,7 +151,6 @@ pub fn update(game: &mut Game) {
         if late_derived.ui_is_active { break 'player_movement; }
 
         let pos = player.trans.pos;
-        let mut jetpack_velocity = player.jetpack_velocity;
         let mut new_pos = player.trans.pos;
         let size = player.trans.size;
         let tsize = player.tile_size;
@@ -182,7 +179,7 @@ pub fn update(game: &mut Game) {
         #[allow(unused_assignments)]
         let mut movement_dir = Vec2::ZERO;
         if derived.player_can_use_jetpack {
-            jetpack_velocity += player_movement_f32 * derived.player_jetpack_speed;
+            movement_dir = player_movement_f32 * dt * derived.player_jetpack_speed;
         } else {
             movement_dir = player_movement_f32 * dt * 50.0;
         }
@@ -226,21 +223,9 @@ pub fn update(game: &mut Game) {
             movement_dir.y *= derived.player_ladder_speed + player.climb_momentum.abs();
  
         }
-
-        if derived.player_can_use_jetpack {
-            jetpack_velocity = jetpack_velocity.normalize_or_zero() *
-                (f32::min(jetpack_velocity.length(), derived.player_jetpack_max_speed));
-            movement_dir += jetpack_velocity*dt;
-        }
         
         if player_movement != IVec2::ZERO {
             derived.player_moving = true;
-        }
-        if player_movement == IVec2::ZERO {
-            jetpack_velocity -= jetpack_velocity.normalize_or_zero()*dt*derived.player_jetpack_speed*80.0;
-            if jetpack_velocity.length() <= 0.05 {
-                jetpack_velocity = Vec2::ZERO;
-            }
         }
 
         new_pos += movement_dir;
@@ -262,25 +247,21 @@ pub fn update(game: &mut Game) {
         for tile_pos in bottom_intersection {
             if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
             new_pos.y = player.trans.pos.y;
-            jetpack_velocity.y *= 0.5;
             derived.player_touching_bottom = true;
         }
         for tile_pos in left_intersection {
             if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
             new_pos.x = player.trans.pos.x;
-            jetpack_velocity.x *= 0.5;
             derived.player_touching_left = true;
         }
         for tile_pos in right_intersection {
             if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
             new_pos.x = player.trans.pos.x;
-            jetpack_velocity.x *= 0.5;
             derived.player_touching_right = true;
         }
         for tile_pos in top_intersection {
             if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
             new_pos.y = player.trans.pos.y;
-            jetpack_velocity.y *= 0.5;
             derived.player_touching_top = true;
         }
 
@@ -297,7 +278,6 @@ pub fn update(game: &mut Game) {
         }
         
         player.trans.pos = trans.pos;
-        player.jetpack_velocity = jetpack_velocity;
     }
     
     // INFO: This allows it to slow down from both directions. It compounds when direction changes due to
@@ -491,14 +471,12 @@ pub fn update(game: &mut Game) {
 
     // overworld refill :::
     if derived.player_at_overworld && derived.player_has_jetpack {
-        player.jetpack_fuel = f32::min(player.jetpack_fuel+dt*4.0, derived.player_jetpack_fuel_capacity);
+        player.jetpack_fuel = f32::min(player.jetpack_fuel+dt*10.0, derived.player_jetpack_fuel_capacity);
     }
 
     // jetpack fuel use :::
     if derived.player_can_use_jetpack && derived.player_moving {
-        if !(derived.player_touching_right || derived.player_touching_left || derived.player_touching_bottom) {
-            player.jetpack_fuel = f32::max(player.jetpack_fuel-dt, 0.0);
-        }
+        player.jetpack_fuel = f32::max(player.jetpack_fuel-dt, 0.0);
     }
 
     // jetpack fuel blink :::
@@ -576,7 +554,6 @@ pub fn update(game: &mut Game) {
         }
         
         player.trans.pos.y = elevator_platform.trans.pos.y+elevator_platform.trans.offset.y+5.0;
-        player.jetpack_velocity = vec2(0.0, 0.0);
         
         derived.player_can_use_jetpack = false;
         next_late_derived.travelling_in_elevator = true;

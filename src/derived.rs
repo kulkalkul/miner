@@ -25,7 +25,6 @@ pub struct DerivedState {
     pub player_can_use_jetpack: bool,
     pub player_jetpack_fuel_capacity: f32,
     pub player_jetpack_speed: f32,
-    pub player_jetpack_max_speed: f32,
 
     pub ui_show_statue_key: bool,
 }
