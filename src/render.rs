@@ -1,11 +1,10 @@
 use crate::prelude::*;
 
 use crate::apply_debug_commands;
-use crate::sprite::draw_sprite_rotated;
-use crate::sprite::draw_ui_partial;
-use crate::sprite::draw_ui_rotated;
-use crate::sprite::draw_ui_rotated_flip;
-use crate::sprite::{ draw_sprite, draw_sprite_scaled, draw_sprite_offset, draw_ui };
+use crate::sprite::{
+    draw_sprite, draw_sprite_scaled, draw_sprite_rotated, draw_sprite_offset,
+    draw_ui_partial, draw_ui_rotated, draw_ui,
+};
 use crate::ui::*;
 
 
