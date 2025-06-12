@@ -112,7 +112,6 @@ pub struct Game {
 
     pub player: Player,
     pub statue: SimpleEntity,
-    pub crusher: Crusher,
     pub minecart: Minecart,
 
     pub elevator_cage: SimpleEntity,

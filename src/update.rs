@@ -27,7 +27,6 @@ pub fn update(game: &mut Game) {
 
     let player = &mut game.player;
     let minecart = &mut game.minecart;
-    let crusher = &mut game.crusher;
     let statue = &mut game.statue;
     let elevator_cage = &mut game.elevator_cage;
     let elevator_platform = &mut game.elevator_platform;
@@ -829,7 +828,6 @@ pub fn update(game: &mut Game) {
     tick_animation(&mut elevator_cage.sprite, &mut elevator_cage.anim, dt);
     tick_animation(&mut elevator_platform.sprite, &mut elevator_platform.anim, dt);
     tick_animation(&mut minecart.sprite, &mut minecart.anim, dt);
-    tick_animation(&mut crusher.sprite, &mut crusher.anim, dt);
     tick_animation(&mut player.sprite, &mut player.anim, dt);
     tick_animation(&mut ui_inventory_bar_frame.sprite, &mut ui_inventory_bar_frame.anim, dt);
     tick_animation(&mut ui_fuel_bar_frame.sprite, &mut ui_fuel_bar_frame.anim, dt);

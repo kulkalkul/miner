@@ -41,16 +41,6 @@ pub async fn init(assets: Assets) -> Game {
         anim: assets.statue.derive_anim(),
     };
 
-    let crusher = Crusher {
-        trans: Transform {
-            pos: player.trans.pos,
-            size: vec2(256.0, 128.0),
-            offset: vec2(0.0, 0.0),
-        },
-        sprite: assets.crusher_working.derive_sprite(),
-        anim: assets.crusher_working.derive_anim(),
-    };
-
     let minecart = Minecart {
         trans: Transform {
             pos: MINECART_START,
@@ -138,7 +128,6 @@ pub async fn init(assets: Assets) -> Game {
         
         player,
         statue,
-        crusher,
         minecart,
 
         elevator_cage,

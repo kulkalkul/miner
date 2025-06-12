@@ -43,9 +43,9 @@ pub struct Assets {
     pub elevator_platform_countdown: Box<[SpriteAsset]>,
     pub elevator_platform_moving: SpriteAsset,
 
-    pub crusher_working: SpriteAsset,
     pub minecart_idle: SpriteAsset,
     pub minecart_moving: SpriteAsset,
+
     pub demolisher_idle: SpriteAsset,
     pub demolisher_working_0: SpriteAsset,
     pub demolisher_working_1: SpriteAsset,
@@ -84,7 +84,6 @@ pub async fn init_assets() -> Assets {
 
     let player_tex = load_asset_texture("player").await;
     let statue_tex = load_asset_texture("statue").await;
-    let crusher_tex = load_asset_texture("crusher").await;
     
     let minecart_tex = load_asset_texture("minecart").await;
     let rail_tex = load_asset_texture("rail").await;
@@ -136,11 +135,10 @@ pub async fn init_assets() -> Assets {
         elevator_platform_moving: load_anim(
             &mut state, &elevator_platform_tex , RowCol(6, 0), 4, Size(48, 41), 100.0
         ),
-
-        crusher_working: load_anim(&mut state, &crusher_tex , RowCol(0, 0), 3, Size(256, 128), 200.0),
         
         minecart_idle:   load_anim(&mut state, &minecart_tex, RowCol(0, 0), 1, Size(15 , 16)  , 400.0),
         minecart_moving: load_anim(&mut state, &minecart_tex, RowCol(1, 0), 4, Size(15 , 16)  , 150.0),
+
         demolisher_idle: load_anim(&mut state, &demolisher_tex, RowCol(0, 0), 1, Size(52, 10), 400.0),
         demolisher_working_0: load_anim(&mut state, &demolisher_tex, RowCol(1 , 0), 5, Size(52, 10), 150.0),
         demolisher_working_1: load_anim(&mut state, &demolisher_tex, RowCol(6 , 0), 5, Size(52, 10), 150.0),

@@ -38,13 +38,6 @@ pub struct SimpleEntity {
 }
 
 #[derive(Debug)]
-pub struct Crusher {
-    pub trans: Transform,
-    pub sprite: Sprite,
-    pub anim: Animation,
-}
-
-#[derive(Debug)]
 pub struct Minecart {
     pub trans: Transform,
     pub rotation: f32,

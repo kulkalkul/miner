@@ -14,7 +14,6 @@ pub fn render(game: &mut Game) {
     let ui_inventory_bar_frame = &game.ui_inventory_bar_frame;
     let ui_fuel_bar_frame = &game.ui_fuel_bar_frame;
     let player = &game.player;
-    let crusher = &game.crusher;
     let elevator_cage = &game.elevator_cage;
     let elevator_platform = &game.elevator_platform;
     let demolisher = &game.demolisher;
@@ -127,7 +126,6 @@ pub fn render(game: &mut Game) {
     }
 
     // overlay ui
-
     if derived.ui_show_statue_key {
         let pos = statue.trans.pos + statue.trans.size/2.0 - assets.ui_keys.texture.size()/2.0 * vec2(0.5, 0.5);
         draw_sprite_scaled(pos, vec2(0.5, 0.5), &assets.ui_keys.derive_sprite());
