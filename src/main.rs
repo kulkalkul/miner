@@ -119,6 +119,10 @@ pub struct Game {
     pub elevator_platform: ElevatorPlatform,
     pub elevator_spawned: bool,
 
+    pub demolisher: Demolisher,
+    pub demolisher_spawned: bool,
+    pub demolisher_started: bool,
+
     pub coins: Vec<CoinBundle>,
     pub dropped_items: Vec<DroppedItem>,
 

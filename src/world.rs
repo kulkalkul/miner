@@ -70,6 +70,10 @@ pub mod consts {
         ELEVATOR_PLATFORM_START.x,
         (BARRIER_POS.y - 2) as f32*TILE_SIDE_F32-21.0,
     );
+    pub const DEMOLISHER: Vec2 = vec2(
+        ROOM_START_I32.x as f32 * TILE_SIDE_F32,
+        ROOM_START_I32.y as f32 * TILE_SIDE_F32,
+    );
 }
 
 use consts::*;

@@ -92,6 +92,20 @@ pub async fn init(assets: Assets) -> Game {
         walk_collider: vec2(44.0, -5.0),
     };
 
+    let demolisher = Demolisher {
+        trans: Transform {
+            pos: DEMOLISHER,
+            size: vec2(52.0, 10.0),
+            offset: vec2(0.0, 0.0),
+        },
+        prev_pos: DEMOLISHER,
+        sprite: assets.demolisher_idle.derive_sprite(),
+        anim: assets.demolisher_idle.derive_anim(),
+        stage: 0,
+        stage_tick: 0.0,
+        momentum: 40.0,
+    };
+
     let ui_inventory_bar_frame = UIEntity {
         sprite: assets.ui_inventory_bar_frame.derive_sprite(),
         anim: assets.ui_inventory_bar_frame.derive_anim(),
@@ -130,6 +144,10 @@ pub async fn init(assets: Assets) -> Game {
         elevator_cage,
         elevator_platform,
         elevator_spawned: false,
+
+        demolisher,
+        demolisher_spawned: false,
+        demolisher_started: false,
 
         ui_inventory_bar_frame,
         ui_fuel_bar_frame,

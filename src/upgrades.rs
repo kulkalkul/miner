@@ -10,6 +10,8 @@ pub struct Upgrades {
     pub jetpack_boost: JetpackBoostUpgrade,
     pub jetpack_fuel: JetpackFuelUpgrade,
     pub jetpack_storage: JetpackStorageUpgrade,
+
+    pub demolisher: DemolisherUpgrade,
 }
 
 pub struct SeqUpgrade<'a> {
@@ -134,4 +136,8 @@ create_seq! {struct JetpackStorageUpgrade; enum JetpackStorageUpgradeKind {
     XLStorage => ("XL Storage", 7500),
     XXLStorage => ("XXL Storage", 10500),
 }}
+
+create_seq! {struct DemolisherUpgrade; enum DemolisherUpgradeKind {
+    NoDemolisher => ("No Demolisher", 0),
+    Demolisher => ("Demolisher", 32000),
 }}

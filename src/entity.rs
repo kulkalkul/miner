@@ -67,6 +67,17 @@ pub struct ElevatorPlatform {
     pub walk_collider: Vec2,
 }
 
+#[derive(Debug)]
+pub struct Demolisher {
+    pub trans: Transform,
+    pub prev_pos: Vec2,
+    pub sprite: Sprite,
+    pub anim: Animation,
+    pub stage: usize,
+    pub stage_tick: f32,
+    pub momentum: f32,
+}
+
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum MinecartMovement {
     Idle,

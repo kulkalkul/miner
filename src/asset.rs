@@ -23,6 +23,7 @@ pub struct Assets {
     pub ui_fuel_bar_fill: SpriteAsset,
     
     pub ui_elevator_arrow: Box<[SpriteAsset]>,
+    pub ui_demolisher_arrow: SpriteAsset,
 
     pub cracking: Box<[SpriteAsset]>,
     pub coin: SpriteAsset,    
@@ -45,6 +46,13 @@ pub struct Assets {
     pub crusher_working: SpriteAsset,
     pub minecart_idle: SpriteAsset,
     pub minecart_moving: SpriteAsset,
+    pub demolisher_idle: SpriteAsset,
+    pub demolisher_working_0: SpriteAsset,
+    pub demolisher_working_1: SpriteAsset,
+    pub demolisher_working_2: SpriteAsset,
+    pub demolisher_working_3: SpriteAsset,
+    pub demolisher_working_4: SpriteAsset,
+    pub demolisher_working_5: SpriteAsset,
     
     pub rail_start: SpriteAsset,
     pub rail: SpriteAsset,
@@ -65,6 +73,7 @@ pub async fn init_assets() -> Assets {
     let ui_inventory_bar_tex = load_asset_texture("ui_inventory_bar").await;
     let ui_fuel_bar_tex = load_asset_texture("ui_fuel_bar").await;
     let ui_elevator_arrow = load_asset_texture("ui_elevator_arrow").await;
+    let ui_demolisher_arrow = load_asset_texture("ui_demolisher_arrow").await;
 
     let cracking_tex = load_asset_texture("cracking").await;
     let coin_tex = load_asset_texture("coin").await;
@@ -79,6 +88,7 @@ pub async fn init_assets() -> Assets {
     
     let minecart_tex = load_asset_texture("minecart").await;
     let rail_tex = load_asset_texture("rail").await;
+    let demolisher_tex = load_asset_texture("demolisher").await;
     
     let items_tex = load_asset_texture("items").await;
     let tile_set_tex = load_asset_texture("tile_set").await;
@@ -101,6 +111,7 @@ pub async fn init_assets() -> Assets {
         ui_fuel_bar_fill: load_sheet_cell(&mut state, &ui_fuel_bar_tex, RowCol(5, 0), Size(16, 58)),
 
         ui_elevator_arrow: load_sheet_cells(&mut state, &ui_elevator_arrow, RowCol(0, 0), 2, Size(39, 9)),
+        ui_demolisher_arrow: load_sheet_cell(&mut state, &ui_demolisher_arrow, RowCol(0, 0), Size(47, 9)),
         
         cracking: load_sheet_cells(&mut state, &cracking_tex, RowCol(0, 0), 4, Size(16, 16)),
         coin: load_sprite(&mut state, &coin_tex, Offset(0, 0), Size(16, 16)),
@@ -130,6 +141,13 @@ pub async fn init_assets() -> Assets {
         
         minecart_idle:   load_anim(&mut state, &minecart_tex, RowCol(0, 0), 1, Size(15 , 16)  , 400.0),
         minecart_moving: load_anim(&mut state, &minecart_tex, RowCol(1, 0), 4, Size(15 , 16)  , 150.0),
+        demolisher_idle: load_anim(&mut state, &demolisher_tex, RowCol(0, 0), 1, Size(52, 10), 400.0),
+        demolisher_working_0: load_anim(&mut state, &demolisher_tex, RowCol(1 , 0), 5, Size(52, 10), 150.0),
+        demolisher_working_1: load_anim(&mut state, &demolisher_tex, RowCol(6 , 0), 5, Size(52, 10), 150.0),
+        demolisher_working_2: load_anim(&mut state, &demolisher_tex, RowCol(11, 0), 5, Size(52, 10), 150.0),
+        demolisher_working_3: load_anim(&mut state, &demolisher_tex, RowCol(16, 0), 5, Size(52, 10), 150.0),
+        demolisher_working_4: load_anim(&mut state, &demolisher_tex, RowCol(21, 0), 5, Size(52, 10), 150.0),
+        demolisher_working_5: load_anim(&mut state, &demolisher_tex, RowCol(26, 0), 5, Size(52, 10), 150.0),
         
         rail_start:      load_sheet_cell(&mut state, &rail_tex, RowCol(0, 0), Size(16 , 9)),
         rail:            load_sheet_cell(&mut state, &rail_tex, RowCol(1, 0), Size(16 , 9)),

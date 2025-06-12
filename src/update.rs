@@ -33,6 +33,7 @@ pub fn update(game: &mut Game) {
     let elevator_platform = &mut game.elevator_platform;
     let ui_inventory_bar_frame = &mut game.ui_inventory_bar_frame;
     let ui_fuel_bar_frame = &mut game.ui_fuel_bar_frame;
+    let demolisher = &mut game.demolisher;
     
     let world = &mut game.world;
     let visible_chunks = &mut game.visible_chunks;
@@ -62,6 +63,12 @@ pub fn update(game: &mut Game) {
     upgrades.jetpack_boost.derived_unlocked = upgrades.jetpack.derived_unlocked;
     upgrades.jetpack_fuel.derived_unlocked = upgrades.jetpack.derived_unlocked;
     upgrades.jetpack_storage.derived_unlocked = upgrades.jetpack.derived_unlocked;
+
+    upgrades.demolisher.derived_unlocked =
+        upgrades.jetpack_boost.reached(JetpackBoostUpgradeKind::BigBoost) &&
+        upgrades.jetpack_fuel.reached(JetpackFuelUpgradeKind::LongHaulTanks) &&
+        upgrades.jetpack_storage.reached(JetpackStorageUpgradeKind::XXLStorage);
+        
 
     // frame start derived :::
     derived.player_at_overworld = player.trans.pos.y >= WORLD_SPAWN_F32.y*TILE_SIDE_F32-0.5;
@@ -121,6 +128,11 @@ pub fn update(game: &mut Game) {
         JetpackBoostUpgradeKind::SmallBoost => 115.0,
         JetpackBoostUpgradeKind::BigBoost => 150.0,
     };
+    
+    derived.bought_demolisher = match upgrades.demolisher.kind {
+        DemolisherUpgradeKind::NoDemolisher => false,
+        DemolisherUpgradeKind::Demolisher => true,
+    };
 
     derived.player_can_place_ladder = !derived.player_has_jetpack;
     derived.player_can_use_jetpack = derived.player_has_jetpack &&
@@ -153,6 +165,7 @@ pub fn update(game: &mut Game) {
     let mut player_movement_f32 = Vec2::ZERO;
 
     'player_movement: {
+        if game.demolisher_started { break 'player_movement; }
         if late_derived.ui_is_active { break 'player_movement; }
 
         let pos = player.trans.pos;
@@ -300,6 +313,7 @@ pub fn update(game: &mut Game) {
     let mut player_added_to_bags = Vec::with_capacity_in(4, &game.bump);
 
     'block_mine: {
+        if game.demolisher_started { break 'block_mine; }
         if late_derived.travelling_in_elevator { break 'block_mine; }
 
         let touch_vec = if derived.player_touching_left && player_movement.x < 0 {
@@ -368,6 +382,7 @@ pub fn update(game: &mut Game) {
     let player_tile = tiles.at_world_pos(player.trans.pos);
 
     'lay_ladder: {
+        if game.demolisher_started { break 'lay_ladder; }
         if derived.player_can_use_jetpack { break 'lay_ladder; }
         if !derived.player_can_place_ladder { break 'lay_ladder; }
         if late_derived.travelling_in_elevator { break 'lay_ladder; }
@@ -726,6 +741,48 @@ pub fn update(game: &mut Game) {
         }
     }
 
+    // demolisher interact :::
+    if !game.demolisher_started && player.trans.collider().intersects(demolisher.trans.collider()) {
+        derived.ui_show_demolisher_key = true;
+
+        if input_actions.interact {
+            game.demolisher_started = true;
+            demolisher.anim = assets.demolisher_working_0.derive_anim();
+        }
+    }
+
+    // demolisher heat :::
+    if game.demolisher_started && demolisher.stage < 5 {
+        demolisher.stage_tick += dt;
+        demolisher.anim.modifier += dt/4.0;
+        if demolisher.stage_tick >= 2.0 {
+            demolisher.stage_tick = 0.0;
+            demolisher.stage += 1;
+            let anims = [
+                &assets.demolisher_working_0,
+                &assets.demolisher_working_1,
+                &assets.demolisher_working_2,
+                &assets.demolisher_working_3,
+                &assets.demolisher_working_4,
+                &assets.demolisher_working_5,
+            ];
+            let modifier = demolisher.anim.modifier;
+            demolisher.anim = anims[demolisher.stage].derive_anim();
+            demolisher.anim.modifier = modifier;
+        }
+    }
+
+    if game.demolisher_started && demolisher.stage == 5 {
+        demolisher.momentum += 100.0*dt;
+        demolisher.trans.pos.x -= demolisher.momentum*dt;
+        let tile_start = tiles.at_world_pos(demolisher.trans.pos);
+        let tile_end = tiles.at_world_pos(demolisher.prev_pos);        
+        
+        world_commands.set_tile_area(tile_start.pos, tile_end.pos-tile_start.pos+ivec2(1, 1), Tile::BackgroundStone);
+        demolisher.prev_pos = demolisher.trans.pos;
+        player.trans.pos.x = demolisher.trans.pos.x;
+    }
+
     // collect coins :::
     let mut coins_to_remove = Vec::new_in(&game.bump);
 
@@ -776,6 +833,8 @@ pub fn update(game: &mut Game) {
     tick_animation(&mut player.sprite, &mut player.anim, dt);
     tick_animation(&mut ui_inventory_bar_frame.sprite, &mut ui_inventory_bar_frame.anim, dt);
     tick_animation(&mut ui_fuel_bar_frame.sprite, &mut ui_fuel_bar_frame.anim, dt);
+    tick_animation(&mut ui_fuel_bar_frame.sprite, &mut ui_fuel_bar_frame.anim, dt);
+    tick_animation(&mut demolisher.sprite, &mut demolisher.anim, dt);
     
     // update visible chunks :::
     {
@@ -830,6 +889,10 @@ pub fn update(game: &mut Game) {
         );
     }
 
+    // spawn demolisher :::
+    if derived.bought_demolisher && !game.demolisher_spawned {
+        game.demolisher_spawned = true;
+    }
 
     // apply commands & updates :::
     world.apply_commands(world_commands);

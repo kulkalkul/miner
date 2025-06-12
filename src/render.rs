@@ -17,6 +17,7 @@ pub fn render(game: &mut Game) {
     let crusher = &game.crusher;
     let elevator_cage = &game.elevator_cage;
     let elevator_platform = &game.elevator_platform;
+    let demolisher = &game.demolisher;
     
     let derived = &game.derived;
     let assets = &game.assets;
@@ -101,6 +102,10 @@ pub fn render(game: &mut Game) {
         draw_sprite(elevator_platform.trans.pos, &elevator_platform.sprite);
     }
 
+    if game.demolisher_spawned {
+        draw_sprite(demolisher.trans.pos, &demolisher.sprite);
+    }
+
     // draw dropped items
     for item in &game.dropped_items {
         draw_sprite_scaled(item.trans.pos, vec2(1.0, 1.0), &assets.items[item.kind as usize].derive_sprite());
@@ -108,7 +113,9 @@ pub fn render(game: &mut Game) {
     
     
     // draw player :::
-    draw_sprite_offset(player.trans.pos, player.trans.offset, &player.sprite);
+    if !game.demolisher_started {
+        draw_sprite_offset(player.trans.pos, player.trans.offset, &player.sprite);
+    }
     
     if game.elevator_spawned {
         draw_sprite(elevator_cage.trans.pos, &elevator_cage.sprite);
@@ -123,6 +130,14 @@ pub fn render(game: &mut Game) {
 
     if derived.ui_show_statue_key {
         let pos = statue.trans.pos + statue.trans.size/2.0 - assets.ui_keys.texture.size()/2.0 * vec2(0.5, 0.5);
+        draw_sprite_scaled(pos, vec2(0.5, 0.5), &assets.ui_keys.derive_sprite());
+    }
+    if derived.ui_show_demolisher_key {
+        let mut pos = demolisher.trans.pos
+            + vec2(demolisher.trans.size.x/2.0, 0.0)
+            - vec2(assets.ui_keys.texture.size().x/2.0, 0.0) * vec2(0.5, 0.5);
+        pos.y += assets.ui_keys.texture.size().y/2.0;
+        pos.y += demolisher.trans.size.y;
         draw_sprite_scaled(pos, vec2(0.5, 0.5), &assets.ui_keys.derive_sprite());
     }
         
@@ -159,6 +174,14 @@ pub fn render(game: &mut Game) {
             pos.x -= sprite.texture_frame.w/2.0*2.0;
         
             draw_ui_rotated(pos, vec2(2.0, 2.0), -dir.to_angle(), &sprite);
+        }
+    }
+
+    if game.demolisher_spawned && derived.player_at_overworld {
+        let demolisher_pos = demolisher.trans.pos;
+        if demolisher_pos.distance(player.trans.pos) >= 128.0 {
+            let pos = vec2(UI_WIDTH_F32/2.0-128.0, 32.0);
+            draw_ui(pos, vec2(2.0, 2.0), &assets.ui_demolisher_arrow.derive_sprite());
         }
     }
 
@@ -328,6 +351,7 @@ pub fn render(game: &mut Game) {
         
         lcursor.y += 6.0;
         rcursor.y += 6.0;
+        ui_seq_upgrade_button(lcursor, upgrades.demolisher.to_seq());
 
         game.ui_state.mouse_div = prev_mouse_div;
     }
