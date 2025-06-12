@@ -774,6 +774,7 @@ pub fn update(game: &mut Game) {
         }
     }
 
+    // demolisher moving :::
     if game.demolisher_started && demolisher.stage == 5 {
         demolisher.momentum += 100.0*dt;
         demolisher.trans.pos.x -= demolisher.momentum*dt;
