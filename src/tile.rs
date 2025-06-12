@@ -37,6 +37,7 @@ pub enum Tile {
     StoneDig,
     HardStone,
     Barrier,
+    WorldBoundary,
 
     StoneCopperOre,
     StoneIronOre,
@@ -153,6 +154,7 @@ impl Tile {
             Tile::StoneDig => false,
             Tile::HardStone => false,
             Tile::Barrier => false,
+            Tile::WorldBoundary => false,
             
             Tile::StoneCopperOre => false,
             Tile::StoneIronOre => false,
@@ -197,6 +199,7 @@ impl Tile {
             Tile::StoneDig => true,
             Tile::HardStone => true,
             Tile::Barrier => false,
+            Tile::WorldBoundary => false,
             
             Tile::StoneCopperOre => true,
             Tile::StoneIronOre => true,
@@ -241,6 +244,7 @@ impl Tile {
             Tile::StoneDig => false,
             Tile::HardStone => false,
             Tile::Barrier => false,
+            Tile::WorldBoundary => false,
             
             Tile::StoneCopperOre => false,
             Tile::StoneIronOre => false,
@@ -284,6 +288,7 @@ impl Tile {
             Tile::StoneDig => false,
             Tile::HardStone => false,
             Tile::Barrier => false,
+            Tile::WorldBoundary => false,
             
             Tile::StoneCopperOre => false,
             Tile::StoneIronOre => false,
@@ -328,6 +333,7 @@ impl Tile {
             Tile::StoneDig => Tile::BackgroundStone,
             Tile::HardStone => Tile::BackgroundStone,
             Tile::Barrier => Tile::ERR,
+            Tile::WorldBoundary => Tile::ERR,
             
             Tile::StoneCopperOre => Tile::BackgroundStone,
             Tile::StoneIronOre => Tile::BackgroundStone,
@@ -372,6 +378,7 @@ impl Tile {
             Tile::StoneDig => ItemKind::Air,
             Tile::HardStone => ItemKind::Air,
             Tile::Barrier => ItemKind::Air,
+            Tile::WorldBoundary => ItemKind::Air,
 
             Tile::StoneCopperOre => ItemKind::CopperOre,
             Tile::StoneIronOre => ItemKind::IronOre,
@@ -416,6 +423,7 @@ impl Tile {
             Tile::StoneDig => 0.5,
             Tile::HardStone => 60.0,
             Tile::Barrier => NOT_SO_VERY_BIG_NUMBER,
+            Tile::WorldBoundary => NOT_SO_VERY_BIG_NUMBER,
 
             Tile::StoneCopperOre => 1.4,
             Tile::StoneIronOre => 1.8,

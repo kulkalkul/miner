@@ -313,11 +313,11 @@ impl World {
             WorldCommand::SetTileArea {
                 tile: Tile::Stone,
                 x: BARRIER_POS.x, y: BARRIER_POS.y,
-                // BUG: When presented with x=0 and w=160, it should be able to query tiles *between* [0 and 160).
+                // BUG: When presented with x=0 and w=Y, it should be able to query tiles *between* [0 and Y).
                 // But due to the chunk_pos calculation resulting chunk at the end is not a valid chunk. While
                 // SetTileArea is guarded from that with min/max checks, chunk index calculation is not, hence
                 // for that reason this is doing -1 in both dimensions, painting 1 tile less. It isn't noticeable
-                // by player, but must be fixed at some point.
+                // by player unless they are at world boundary, but must be fixed at some point.
                 width: WORLD_WIDTH_I32*CHUNK_SIDE_I32-1, height: BARRIER_HEIGHT*CHUNK_SIDE_I32-1,
             },
             WorldCommand::SetTileArea {
@@ -609,6 +609,25 @@ impl World {
             ivec2(WORLD_WIDTH_I32*CHUNK_SIDE_I32, 1),
             Tile::Barrier,
         );
+
+        commands.push_commands(&[
+            WorldCommand::SetTileArea {
+                tile: Tile::WorldBoundary,
+                x: 0, y: 0, width: WORLD_WIDTH_I32*CHUNK_SIDE_I32-1, height: 1,
+            },
+            WorldCommand::SetTileArea {
+                tile: Tile::WorldBoundary,
+                x: 0, y: WORLD_HEIGHT_I32*CHUNK_SIDE_I32-2, width: WORLD_WIDTH_I32*CHUNK_SIDE_I32-1, height: 1,
+            },
+            WorldCommand::SetTileArea {
+                tile: Tile::WorldBoundary,
+                x: 0, y: 0, width: 1, height: WORLD_HEIGHT_I32*CHUNK_SIDE_I32-1,
+            },
+            WorldCommand::SetTileArea {
+                tile: Tile::WorldBoundary,
+                x: WORLD_WIDTH_I32*CHUNK_SIDE_I32-2, y: 0, width: 1, height: WORLD_HEIGHT_I32*CHUNK_SIDE_I32-1,
+            },
+        ]);
         
         commands.push_commands(&[ WorldCommand::RecalculateAllMeshes ]);
         world.apply_commands(commands);
