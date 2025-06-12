@@ -86,6 +86,22 @@ pub fn render(game: &mut Game) {
 
     draw_sprite_rotated(minecart.trans.pos, minecart.rotation, &minecart.sprite);
     draw_sprite(statue.trans.pos, &statue.sprite);
+    
+    draw_sprite_scaled(
+        // INFO: *0.5 and /2.0 because as two separate operations because 0.5 is for scaling, 2.0 is for offsetting
+        // by half. This makes the intent clear.
+        statue.trans.pos+vec2(statue.trans.size.x-assets.sign_sell.derive_sprite().texture_frame.w*0.5/2.0, 0.0)-vec2(0.5, 0.0),
+        vec2(0.5, 0.5),
+        &assets.sign_sell.derive_sprite(),
+    );
+    
+    if game.elevator_spawned {
+        draw_sprite_scaled(
+            statue.trans.pos-vec2(assets.sign_ascend.derive_sprite().texture_frame.w*0.5/2.0, 0.0)-vec2(0.5, 0.0),
+            vec2(0.5, 0.5),
+            &assets.sign_ascend.derive_sprite(),
+        );
+    }
 
     for coin in &game.coins {
         draw_sprite_scaled(

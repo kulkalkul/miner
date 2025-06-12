@@ -29,6 +29,9 @@ pub struct Assets {
     pub coin: SpriteAsset,    
     pub coins: Box<[SpriteAsset]>,
 
+    pub sign_sell: SpriteAsset,
+    pub sign_ascend: SpriteAsset,
+
     pub player_idle: SpriteAsset,
     pub player_walk: SpriteAsset,
     pub player_hit: SpriteAsset,
@@ -84,6 +87,7 @@ pub async fn init_assets() -> Assets {
 
     let player_tex = load_asset_texture("player").await;
     let statue_tex = load_asset_texture("statue").await;
+    let signs_tex = load_asset_texture("signs").await;
     
     let minecart_tex = load_asset_texture("minecart").await;
     let rail_tex = load_asset_texture("rail").await;
@@ -115,6 +119,9 @@ pub async fn init_assets() -> Assets {
         cracking: load_sheet_cells(&mut state, &cracking_tex, RowCol(0, 0), 4, Size(16, 16)),
         coin: load_sprite(&mut state, &coin_tex, Offset(0, 0), Size(16, 16)),
         coins: load_sheet_cells(&mut state, &coins_tex, RowCol(0, 0), 5, Size(32, 32)),
+
+        sign_sell: load_sheet_cell(&mut state, &signs_tex, RowCol(0, 0), Size(32, 15)),
+        sign_ascend: load_sheet_cell(&mut state, &signs_tex, RowCol(1, 0), Size(32, 15)),
 
         player_idle: load_anim(&mut state, &player_tex, RowCol(0, 0), 2, Size(16, 16), 400.0),
         player_walk: load_anim(&mut state, &player_tex, RowCol(2, 0), 2, Size(16, 16), 150.0),
