@@ -97,9 +97,9 @@ pub fn render(game: &mut Game) {
     
     if game.elevator_spawned {
         draw_sprite_scaled(
-            statue.trans.pos-vec2(assets.sign_ascend.derive_sprite().texture_frame.w*0.5/2.0, 0.0)-vec2(0.5, 0.0),
+            statue.trans.pos-vec2(assets.sign_descend.derive_sprite().texture_frame.w*0.5/2.0, 0.0)-vec2(0.5, 0.0),
             vec2(0.5, 0.5),
-            &assets.sign_ascend.derive_sprite(),
+            &assets.sign_descend.derive_sprite(),
         );
     }
 

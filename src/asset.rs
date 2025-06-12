@@ -30,7 +30,7 @@ pub struct Assets {
     pub coins: Box<[SpriteAsset]>,
 
     pub sign_sell: SpriteAsset,
-    pub sign_ascend: SpriteAsset,
+    pub sign_descend: SpriteAsset,
 
     pub player_idle: SpriteAsset,
     pub player_walk: SpriteAsset,
@@ -120,8 +120,8 @@ pub async fn init_assets() -> Assets {
         coin: load_sprite(&mut state, &coin_tex, Offset(0, 0), Size(16, 16)),
         coins: load_sheet_cells(&mut state, &coins_tex, RowCol(0, 0), 5, Size(32, 32)),
 
-        sign_sell: load_sheet_cell(&mut state, &signs_tex, RowCol(0, 0), Size(32, 15)),
-        sign_ascend: load_sheet_cell(&mut state, &signs_tex, RowCol(1, 0), Size(32, 15)),
+        sign_sell: load_sheet_cell(&mut state, &signs_tex, RowCol(0, 0), Size(36, 15)),
+        sign_descend: load_sheet_cell(&mut state, &signs_tex, RowCol(1, 0), Size(36, 15)),
 
         player_idle: load_anim(&mut state, &player_tex, RowCol(0, 0), 2, Size(16, 16), 400.0),
         player_walk: load_anim(&mut state, &player_tex, RowCol(2, 0), 2, Size(16, 16), 150.0),
