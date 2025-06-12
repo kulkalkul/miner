@@ -125,6 +125,7 @@ pub struct Game {
     pub coins: Vec<CoinBundle>,
     pub dropped_items: Vec<DroppedItem>,
 
+    pub ui_main_menu: bool,
     pub ui_inventory_bar_frame: UIEntity,
     pub ui_fuel_bar_frame: UIEntity,
     pub ui_show_statue: bool,

@@ -169,6 +169,19 @@ pub fn render(game: &mut Game) {
         set_camera(&camera);
     }
 
+    if game.ui_main_menu {
+        let prev_mouse_div = game.ui_state.mouse_div;
+        game.ui_state.mouse_div /= 4.0;
+
+        let pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/4.0)-vec2(240.0/2.0, 0.0);
+
+        if ui_button(&mut game.ui_state, "Start Game", pos, 240.0, false, None, &assets.ui_button) {
+            game.ui_main_menu = false;
+        }
+
+        game.ui_state.mouse_div = prev_mouse_div;
+    }
+
     if game.elevator_spawned && derived.player_can_use_jetpack {
         let elevator_pos = elevator_platform.trans.pos + elevator_platform.trans.size/2.0;
         if elevator_pos.distance(player.trans.pos) >= 128.0 {

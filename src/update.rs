@@ -164,6 +164,7 @@ pub fn update(game: &mut Game) {
     let mut player_movement_f32 = Vec2::ZERO;
 
     'player_movement: {
+        if game.ui_main_menu { break 'player_movement; }
         if game.demolisher_started { break 'player_movement; }
         if late_derived.ui_is_active { break 'player_movement; }
 
@@ -312,6 +313,7 @@ pub fn update(game: &mut Game) {
     let mut player_added_to_bags = Vec::with_capacity_in(4, &game.bump);
 
     'block_mine: {
+        if game.ui_main_menu { break 'block_mine; }
         if game.demolisher_started { break 'block_mine; }
         if late_derived.travelling_in_elevator { break 'block_mine; }
 
@@ -381,6 +383,7 @@ pub fn update(game: &mut Game) {
     let player_tile = tiles.at_world_pos(player.trans.pos);
 
     'lay_ladder: {
+        if game.ui_main_menu { break 'lay_ladder; }
         if game.demolisher_started { break 'lay_ladder; }
         if derived.player_can_use_jetpack { break 'lay_ladder; }
         if !derived.player_can_place_ladder { break 'lay_ladder; }
@@ -825,14 +828,16 @@ pub fn update(game: &mut Game) {
     }
 
     // tick animations :::
-    tick_animation(&mut elevator_cage.sprite, &mut elevator_cage.anim, dt);
-    tick_animation(&mut elevator_platform.sprite, &mut elevator_platform.anim, dt);
-    tick_animation(&mut minecart.sprite, &mut minecart.anim, dt);
-    tick_animation(&mut player.sprite, &mut player.anim, dt);
-    tick_animation(&mut ui_inventory_bar_frame.sprite, &mut ui_inventory_bar_frame.anim, dt);
-    tick_animation(&mut ui_fuel_bar_frame.sprite, &mut ui_fuel_bar_frame.anim, dt);
-    tick_animation(&mut ui_fuel_bar_frame.sprite, &mut ui_fuel_bar_frame.anim, dt);
-    tick_animation(&mut demolisher.sprite, &mut demolisher.anim, dt);
+    if !game.ui_main_menu {
+        tick_animation(&mut elevator_cage.sprite, &mut elevator_cage.anim, dt);
+        tick_animation(&mut elevator_platform.sprite, &mut elevator_platform.anim, dt);
+        tick_animation(&mut minecart.sprite, &mut minecart.anim, dt);
+        tick_animation(&mut player.sprite, &mut player.anim, dt);
+        tick_animation(&mut ui_inventory_bar_frame.sprite, &mut ui_inventory_bar_frame.anim, dt);
+        tick_animation(&mut ui_fuel_bar_frame.sprite, &mut ui_fuel_bar_frame.anim, dt);
+        tick_animation(&mut ui_fuel_bar_frame.sprite, &mut ui_fuel_bar_frame.anim, dt);
+        tick_animation(&mut demolisher.sprite, &mut demolisher.anim, dt);
+    }
     
     // update visible chunks :::
     {
