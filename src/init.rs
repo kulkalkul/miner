@@ -108,6 +108,9 @@ pub async fn init(assets: Assets) -> Game {
         
     let world = World::new(&assets.tile_set, &bump);
     
+    get_default_font().populate_font_cache(&Font::latin_character_list(), 16);    
+    get_default_font().populate_font_cache(&Font::latin_character_list(), 32);
+
     Game {
         total_time: 0.0,
         window_to_draw_size: vec2(1.0, 1.0),
