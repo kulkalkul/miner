@@ -169,14 +169,52 @@ pub fn render(game: &mut Game) {
         set_camera(&camera);
     }
 
-    if game.ui_main_menu {
+    if game.main_ui_state == MainUIState::MainMenu {
         let prev_mouse_div = game.ui_state.mouse_div;
         game.ui_state.mouse_div /= 4.0;
 
-        let pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/4.0)-vec2(240.0/2.0, 0.0);
+        let mut pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/4.0)-vec2(240.0/2.0, 0.0);
 
         if ui_button(&mut game.ui_state, "Start Game", pos, 240.0, false, None, &assets.ui_button) {
-            game.ui_main_menu = false;
+            game.main_ui_state = MainUIState::InGame;
+        }
+        
+        pos += vec2(0.0, 32.0);
+
+        if ui_button(&mut game.ui_state, "Show Credits", pos, 240.0, false, None, &assets.ui_button) {
+            game.main_ui_state = MainUIState::MainMenuCredits;
+        }
+
+        game.ui_state.mouse_div = prev_mouse_div;
+    }
+    
+    if game.main_ui_state == MainUIState::MainMenuCredits {
+        let prev_mouse_div = game.ui_state.mouse_div;
+        game.ui_state.mouse_div /= 4.0;
+
+        draw_rectangle(0.0, 0.0, UI_WIDTH_F32, UI_HEIGHT_F32, Color::from_rgba(0, 0, 0, 125));
+
+        let mut pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/4.0)-vec2(240.0/2.0, 0.0);
+
+        draw_text("A Game by kulkalkul.", pos.x, pos.y, 16.0, WHITE);
+        pos += vec2(0.0, 32.0);
+        
+        draw_text("Special thanks to;", pos.x, pos.y, 16.0, WHITE);
+        pos += vec2(0.0, 24.0);
+        draw_text("Artem Arbatsky for helping with sound", pos.x, pos.y, 16.0, WHITE);
+        pos += vec2(0.0, 16.0);
+        
+        draw_text("design and providing sound assets.", pos.x, pos.y, 16.0, WHITE);
+        pos += vec2(0.0, 24.0);
+        
+        draw_text("FilmCow for CC0 sound assets.", pos.x, pos.y, 16.0, WHITE);
+        pos += vec2(0.0, 24.0);
+        
+        draw_text("dustyroomgames for CC0 sound assets.", pos.x, pos.y, 16.0, WHITE);
+        pos += vec2(0.0, 24.0);
+
+        if ui_button(&mut game.ui_state, "Back", pos, 240.0, false, None, &assets.ui_button) {
+            game.main_ui_state = MainUIState::MainMenu;
         }
 
         game.ui_state.mouse_div = prev_mouse_div;

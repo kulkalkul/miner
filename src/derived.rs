@@ -28,6 +28,7 @@ pub struct DerivedState {
     
     pub bought_demolisher: bool,
 
+    pub ui_main_menu: bool,
     pub ui_show_statue_key: bool,
     pub ui_show_demolisher_key: bool,
 }

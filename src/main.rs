@@ -45,7 +45,7 @@ pub mod prelude {
     pub use super::consts::*;
 
     pub use super::{ debug_generic, debug_point, debug_rect };
-    pub use super::{ Game, InputActions, Config, GameMesh, Array };
+    pub use super::{ Game, MainUIState, InputActions, Config, GameMesh, Array };
 
     pub use crate::asset::{ Assets };
 
@@ -125,7 +125,7 @@ pub struct Game {
     pub coins: Vec<CoinBundle>,
     pub dropped_items: Vec<DroppedItem>,
 
-    pub ui_main_menu: bool,
+    pub main_ui_state: MainUIState,
     pub ui_inventory_bar_frame: UIEntity,
     pub ui_fuel_bar_frame: UIEntity,
     pub ui_show_statue: bool,
@@ -137,6 +137,13 @@ pub struct Game {
     pub action: ActionState,
     pub input_actions: InputActions,
     pub upgrades: Upgrades,
+}
+
+#[derive(Eq, PartialEq)]
+pub enum MainUIState {
+    MainMenu,
+    MainMenuCredits,
+    InGame,
 }
 
 #[derive(Default)]
