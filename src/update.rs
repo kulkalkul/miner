@@ -448,9 +448,9 @@ pub fn update(game: &mut Game) {
         }
     }
     if derived.player_mining {
-        if player.anim.is_not( &assets.player_hit ) {
+        if !derived.player_can_use_jetpack && player.anim.is_not( &assets.player_hit ) {
             player.anim = assets.player_hit.derive_anim();
-        } else if player.anim.is_not( &assets.player_hit ) {
+        } else if derived.player_can_use_jetpack && player.anim.is_not( &assets.player_jetpack_hit ) {
             player.anim = assets.player_jetpack_hit.derive_anim();
         }
     }
