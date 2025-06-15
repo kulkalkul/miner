@@ -20,7 +20,7 @@ pub fn update(game: &mut Game) {
 
         interact       : is_key_pressed(KeyCode::E),
         escape         : is_key_pressed(KeyCode::Escape),
-        toggle_dev_mode: is_key_pressed(KeyCode::Tab),
+        toggle_dev_mode: is_key_pressed(KeyCode::Tab) && false,
     };
 
     // frame borrows :::
@@ -222,7 +222,7 @@ pub fn update(game: &mut Game) {
         }
 
         if game.dev_mode {
-            player.trans.pos += movement_dir * 10.0;
+            player.trans.pos += movement_dir * 25.0;
             break 'player_movement;
         }
 
@@ -503,7 +503,6 @@ pub fn update(game: &mut Game) {
             player.anim = assets.player_hit.derive_anim();
         }
     }
-
     
     // jetpack out of fuel :::
     if derived.player_can_use_jetpack && derived.player_moving && player.jetpack_fuel <= 0.0 {
