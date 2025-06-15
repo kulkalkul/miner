@@ -153,7 +153,6 @@ pub async fn init(assets: Assets) -> Game {
         
         derived: DerivedState::default(),
         late_derived: LateDerivedState::default(),
-        action: ActionState::default(),
         input_actions: InputActions::default(),
         upgrades: Default::default(),
     }

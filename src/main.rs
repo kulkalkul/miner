@@ -34,7 +34,6 @@ use update::  { update };
 use render::  { render };
 use world::   { World };
 use derived:: { DerivedState, LateDerivedState };
-use action::  { ActionState };
 
 use entity::*;
 
@@ -65,9 +64,6 @@ pub mod prelude {
     pub use crate::upgrades::*;
 
     pub use crate::derived::{ DerivedState, LateDerivedState };
-
-    pub use crate::action::{ ActionState };
-    pub use crate::action::actions::*;
 }
 
 mod consts {
@@ -137,7 +133,6 @@ pub struct Game {
 
     pub derived: DerivedState,
     pub late_derived: LateDerivedState,
-    pub action: ActionState,
     pub input_actions: InputActions,
     pub upgrades: Upgrades,
 }

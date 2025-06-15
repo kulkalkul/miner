@@ -9,7 +9,6 @@ pub fn update(game: &mut Game) {
 
     // reset per-frame :::
     game.derived = DerivedState::default();
-    game.action.reset();
     
     // input map :::
     game.input_actions = InputActions {
@@ -39,7 +38,6 @@ pub fn update(game: &mut Game) {
     let world = &mut game.world;
     let visible_chunks = &mut game.visible_chunks;
     let derived = &mut game.derived;
-    let action = &mut game.action;
     let input_actions = &game.input_actions;
     let upgrades = &mut game.upgrades;
     
