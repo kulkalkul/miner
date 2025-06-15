@@ -80,43 +80,71 @@ pub struct AssetState {
     pub asset_id: u64,
 }
 
+macro_rules! load_asset_texture {
+    ($path:literal) => {
+        if cfg!(not(target_family = "wasm")) {
+            let path = ["asset/", $path, ".png"].join("");
+            load_texture(&path).await.expect("Texture should exist")
+        } else if cfg!(target_family = "wasm") {
+            let bytes = include_bytes!(concat!("../asset/", $path, ".png"));
+            Texture2D::from_file_with_format(&bytes[..], None)
+        } else {
+            unimplemented!();
+        }
+    }
+}
+
+macro_rules! load_asset_sound {
+    ($path:literal) => {
+        if cfg!(not(target_family = "wasm")) {
+            let path = ["asset/", $path, ".wav"].join("");
+            audio::load_sound(&path).await.expect("Sound should exist")
+        } else if cfg!(target_family = "wasm") {
+            let bytes = include_bytes!(concat!("../asset/", $path, ".wav"));
+            audio::load_sound_from_bytes(&bytes[..]).await.expect("Sound should exist")
+        } else {
+            unimplemented!();
+        }
+    }
+}
+
 pub async fn init_assets() -> Assets {
-    let ui_bg_tex = load_asset_texture("ui_bg").await;
-    let ui_keys_tex = load_asset_texture("ui_keys").await;
-    let ui_button_tex = load_asset_texture("ui_button").await;
-    let ui_inventory_bar_tex = load_asset_texture("ui_inventory_bar").await;
-    let ui_fuel_bar_tex = load_asset_texture("ui_fuel_bar").await;
-    let ui_elevator_arrow = load_asset_texture("ui_elevator_arrow").await;
-    let ui_demolisher_arrow = load_asset_texture("ui_demolisher_arrow").await;
+    let ui_bg_tex = load_asset_texture!("ui_bg");
+    let ui_keys_tex = load_asset_texture!("ui_keys");
+    let ui_button_tex = load_asset_texture!("ui_button");
+    let ui_inventory_bar_tex = load_asset_texture!("ui_inventory_bar");
+    let ui_fuel_bar_tex = load_asset_texture!("ui_fuel_bar");
+    let ui_elevator_arrow = load_asset_texture!("ui_elevator_arrow");
+    let ui_demolisher_arrow = load_asset_texture!("ui_demolisher_arrow");
 
-    let cracking_tex = load_asset_texture("cracking").await;
-    let coin_tex = load_asset_texture("coin").await;
-    let coins_tex = load_asset_texture("coins").await;
+    let cracking_tex = load_asset_texture!("cracking");
+    let coin_tex = load_asset_texture!("coin");
+    let coins_tex = load_asset_texture!("coins");
 
-    let elevator_cage_tex = load_asset_texture("elevator_cage").await;
-    let elevator_platform_tex = load_asset_texture("elevator_platform").await;
+    let elevator_cage_tex = load_asset_texture!("elevator_cage");
+    let elevator_platform_tex = load_asset_texture!("elevator_platform");
 
-    let player_tex = load_asset_texture("player").await;
-    let statue_tex = load_asset_texture("statue").await;
-    let signs_tex = load_asset_texture("signs").await;
+    let player_tex = load_asset_texture!("player");
+    let statue_tex = load_asset_texture!("statue");
+    let signs_tex = load_asset_texture!("signs");
     
-    let minecart_tex = load_asset_texture("minecart").await;
-    let rail_tex = load_asset_texture("rail").await;
-    let demolisher_tex = load_asset_texture("demolisher").await;
+    let minecart_tex = load_asset_texture!("minecart");
+    let rail_tex = load_asset_texture!("rail");
+    let demolisher_tex = load_asset_texture!("demolisher");
     
-    let items_tex = load_asset_texture("items").await;
-    let tile_set_tex = load_asset_texture("tile_set").await;
+    let items_tex = load_asset_texture!("items");
+    let tile_set_tex = load_asset_texture!("tile_set");
 
-    let sfx_pickaxe = load_asset_sound("pickaxe").await;
-    let sfx_coin = load_asset_sound("coin").await;
-    let sfx_minecart_transfer = load_asset_sound("minecart_transfer").await;
-    let sfx_minecart_moving = load_asset_sound("minecart_moving").await;
-    let sfx_minecart_throw = load_asset_sound("minecart_throw").await;
-    let sfx_elevator = load_asset_sound("elevator").await;
-    let sfx_jetpack = load_asset_sound("jetpack").await;
-    let sfx_demolisher = load_asset_sound("demolisher").await;
-    let sfx_ui_positive = load_asset_sound("ui_positive").await;
-    let sfx_ui_negative = load_asset_sound("ui_negative").await;
+    let sfx_pickaxe = load_asset_sound!("pickaxe");
+    let sfx_coin = load_asset_sound!("coin");
+    let sfx_minecart_transfer = load_asset_sound!("minecart_transfer");
+    let sfx_minecart_moving = load_asset_sound!("minecart_moving");
+    let sfx_minecart_throw = load_asset_sound!("minecart_throw");
+    let sfx_elevator = load_asset_sound!("elevator");
+    let sfx_jetpack = load_asset_sound!("jetpack");
+    let sfx_demolisher = load_asset_sound!("demolisher");
+    let sfx_ui_positive = load_asset_sound!("ui_positive");
+    let sfx_ui_negative = load_asset_sound!("ui_negative");
 
     let mut state = AssetState { asset_id: 0 };
 
@@ -194,21 +222,4 @@ pub async fn init_assets() -> Assets {
         items:    load_sheet_cells(&mut state, &items_tex, RowCol(0, 0), 7, Size(16, 16)),
         tile_set: load_tile_set(&mut state, &tile_set_tex, ivec2(16, 16)),
     }
-}
-
-
-pub async fn load_asset_texture(path: &str) -> Texture2D {
-    #[cfg(not(target_family = "wasm"))]
-    let path = ["asset/", path, ".png"].join("");
-    #[cfg(target_family = "wasm")]
-    let path = ["./asset/", path, ".png"].join("");    
-    load_texture(&path).await.expect("Texture should exist")
-}
-
-pub async fn load_asset_sound(path: &str) -> audio::Sound {
-    #[cfg(not(target_family = "wasm"))]
-    let path = ["asset/", path, ".wav"].join("");
-    #[cfg(target_family = "wasm")]
-    let path = ["./asset/", path, ".wav"].join("");    
-    audio::load_sound(&path).await.expect("Sound should exist")
 }
