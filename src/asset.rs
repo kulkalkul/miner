@@ -1,4 +1,4 @@
-use macroquad::prelude::*;
+use macroquad::{audio, prelude::*};
 
 use crate::sprite::{ load_anim, load_sheet_cell, load_sheet_cells, load_sprite, load_three_patch };
 use crate::sprite::{ Offset, Size, RowCol };
@@ -8,6 +8,17 @@ use crate::tile::{ load_tile_set };
 use crate::tile::{ TileSetAsset };
 
 pub struct Assets {
+    pub sfx_pickaxe: audio::Sound,
+    pub sfx_coin: audio::Sound,
+    pub sfx_minecart_transfer: audio::Sound,
+    pub sfx_minecart_moving: audio::Sound,
+    pub sfx_minecart_throw: audio::Sound,
+    pub sfx_elevator: audio::Sound,
+    pub sfx_jetpack: audio::Sound,
+    pub sfx_demolisher: audio::Sound,
+    pub sfx_ui_positive: audio::Sound,
+    pub sfx_ui_negative: audio::Sound,
+
     pub ui_bg: SpriteAsset,
     pub ui_keys: SpriteAsset,
     pub ui_button: [[SpriteAsset; 3]; 3],
@@ -96,9 +107,31 @@ pub async fn init_assets() -> Assets {
     let items_tex = load_asset_texture("items").await;
     let tile_set_tex = load_asset_texture("tile_set").await;
 
+    let sfx_pickaxe = load_asset_sound("pickaxe").await;
+    let sfx_coin = load_asset_sound("coin").await;
+    let sfx_minecart_transfer = load_asset_sound("minecart_transfer").await;
+    let sfx_minecart_moving = load_asset_sound("minecart_moving").await;
+    let sfx_minecart_throw = load_asset_sound("minecart_throw").await;
+    let sfx_elevator = load_asset_sound("elevator").await;
+    let sfx_jetpack = load_asset_sound("jetpack").await;
+    let sfx_demolisher = load_asset_sound("demolisher").await;
+    let sfx_ui_positive = load_asset_sound("ui_positive").await;
+    let sfx_ui_negative = load_asset_sound("ui_negative").await;
+
     let mut state = AssetState { asset_id: 0 };
 
     Assets {
+        sfx_pickaxe,
+        sfx_coin,
+        sfx_minecart_transfer,
+        sfx_minecart_moving,
+        sfx_minecart_throw,
+        sfx_elevator,
+        sfx_jetpack,
+        sfx_demolisher,
+        sfx_ui_positive,
+        sfx_ui_negative,
+
         ui_bg: load_sprite(&mut state, &ui_bg_tex, Offset(0, 0), Size(270, 190)),
         ui_keys: load_sheet_cell(&mut state, &ui_keys_tex, RowCol(0, 0), Size(26, 23)),
         ui_button: load_three_patch(&mut state, &ui_button_tex),
@@ -170,4 +203,12 @@ pub async fn load_asset_texture(path: &str) -> Texture2D {
     #[cfg(target_family = "wasm")]
     let path = ["./asset/", path, ".png"].join("");    
     load_texture(&path).await.expect("Texture should exist")
+}
+
+pub async fn load_asset_sound(path: &str) -> audio::Sound {
+    #[cfg(not(target_family = "wasm"))]
+    let path = ["asset/", path, ".wav"].join("");
+    #[cfg(target_family = "wasm")]
+    let path = ["./asset/", path, ".wav"].join("");    
+    audio::load_sound(&path).await.expect("Sound should exist")
 }

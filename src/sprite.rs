@@ -19,6 +19,7 @@ pub struct Animation {
     pub index: usize,
     pub frame_timer: f32,
     pub accumulated: f32,
+    pub finished: bool,
     pub repeated: i32,
     pub modifier: f32,
 }
@@ -72,6 +73,7 @@ impl SpriteAsset {
             index: self.frames.len(),
             frame_timer: self.frame_timer,
             accumulated: self.frame_timer,
+            finished: false,
             repeated: -1,
             modifier: 1.0,
         }
@@ -242,9 +244,11 @@ pub fn tick_animation(sprite: &mut Sprite, anim: &mut Animation, dt: f32) {
         if anim.index >= anim.frames.len() {
             anim.index = 0;
             anim.repeated += 1;
+            anim.finished = true;
         }
     } else {
         sprite.texture_frame = anim.frames[anim.index];
+        anim.finished = false;
     }
 }
 

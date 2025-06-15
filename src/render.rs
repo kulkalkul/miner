@@ -1,3 +1,5 @@
+use macroquad::audio;
+
 use crate::prelude::*;
 
 use crate::apply_debug_commands;
@@ -177,12 +179,14 @@ pub fn render(game: &mut Game) {
 
         if ui_button(&mut game.ui_state, "Start Game", pos, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::InGame;
+            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.2 });
         }
         
         pos += vec2(0.0, 32.0);
 
         if ui_button(&mut game.ui_state, "Show Credits", pos, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::MainMenuCredits;
+            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.2 });
         }
 
         game.ui_state.mouse_div = prev_mouse_div;
@@ -215,6 +219,7 @@ pub fn render(game: &mut Game) {
 
         if ui_button(&mut game.ui_state, "Back", pos, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::MainMenu;
+            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.2 });
         }
 
         game.ui_state.mouse_div = prev_mouse_div;
@@ -332,9 +337,14 @@ pub fn render(game: &mut Game) {
                 disabled,
                 Some(&mut pressing),
                 &assets.ui_button,
-            ) && can_afford {
-                (state.upgrade)();
-                game.money -= state.cost;
+            ) {
+                if can_afford {
+                    (state.upgrade)();
+                    game.money -= state.cost;
+                    audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.2 });
+                } else {
+                    audio::play_sound(&assets.sfx_ui_negative, audio::PlaySoundParams { looped: false, volume: 0.2 });
+                }
             }
 
             if !disabled {

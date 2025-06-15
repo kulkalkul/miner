@@ -125,6 +125,9 @@ pub struct Game {
     pub coins: Vec<CoinBundle>,
     pub dropped_items: Vec<DroppedItem>,
 
+    pub sfx_pickaxe: i32,
+    pub sfx_pickaxe_played: i32,
+
     pub main_ui_state: MainUIState,
     pub ui_inventory_bar_frame: UIEntity,
     pub ui_fuel_bar_frame: UIEntity,

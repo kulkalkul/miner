@@ -1,3 +1,5 @@
+use macroquad::audio;
+
 use crate::prelude::*;
 
 pub fn update(game: &mut Game) {
@@ -161,7 +163,7 @@ pub fn update(game: &mut Game) {
         }
     }
     
-    derived.player_anim_finished = player.anim.repeated > 0;
+    derived.player_anim_finished = player.anim.repeated > 0 && player.anim.finished;
 
     // player movement :::
 
@@ -425,11 +427,33 @@ pub fn update(game: &mut Game) {
         
     }
     
+    // sound effects :::   
+    // NOTE: I hate this.
+            
+    if !derived.player_can_use_jetpack && player.anim.is( &assets.player_hit ) && game.sfx_pickaxe < player.anim.repeated {
+        game.sfx_pickaxe = player.anim.repeated;
+        audio::play_sound(&assets.sfx_pickaxe, audio::PlaySoundParams { looped: false, volume: 0.2 });
+    }
+    
+    if !derived.player_can_use_jetpack && player.anim.is_not( &assets.player_hit ) && game.sfx_pickaxe > 0 {
+        game.sfx_pickaxe = 0;
+    }
+    
+    if derived.player_can_use_jetpack && player.anim.is( &assets.player_jetpack_hit ) && game.sfx_pickaxe < player.anim.repeated {
+        game.sfx_pickaxe = player.anim.repeated;
+        audio::play_sound(&assets.sfx_pickaxe, audio::PlaySoundParams { looped: false, volume: 0.2 });
+    }
+    
+    if derived.player_can_use_jetpack && player.anim.is_not( &assets.player_jetpack_hit ) && game.sfx_pickaxe > 0 {
+        game.sfx_pickaxe = 0;
+    }
+    
     // player animations :::
     if !derived.player_mining && derived.player_moving {
         if player.anim.is( &assets.player_idle ) {
             player.anim = assets.player_walk.derive_anim();
         } else if player.anim.is( &assets.player_jetpack_idle ) {
+            audio::play_sound(&assets.sfx_jetpack, audio::PlaySoundParams { looped: true, volume: 0.1 });
             player.anim = assets.player_jetpack_move.derive_anim();
         }
     }
@@ -437,6 +461,7 @@ pub fn update(game: &mut Game) {
         if player.anim.is( &assets.player_walk ) {
             player.anim = assets.player_idle.derive_anim();
         } else if player.anim.is( &assets.player_jetpack_move ) {
+            audio::stop_sound(&assets.sfx_jetpack);
             player.anim = assets.player_jetpack_idle.derive_anim();
         }
     }
@@ -444,6 +469,7 @@ pub fn update(game: &mut Game) {
         if player.anim.is( &assets.player_hit) {
             player.anim = assets.player_idle.derive_anim();
         } else if player.anim.is( &assets.player_jetpack_hit) {
+            audio::stop_sound(&assets.sfx_jetpack);
             player.anim = assets.player_jetpack_idle.derive_anim();
         }
     }
@@ -455,6 +481,7 @@ pub fn update(game: &mut Game) {
         }
     }
 
+    // player animations elevator reset :::
     if derived.player_can_use_jetpack {
         if player.anim.is( &assets.player_idle ) {
             player.anim = assets.player_jetpack_idle.derive_anim();
@@ -553,7 +580,7 @@ pub fn update(game: &mut Game) {
     if  game.elevator_spawned &&
         elevator_platform.player_inside_for >= 5.0
     {
-        let direction = if elevator_platform.down_or_up { -800.0 } else { 800.0 };
+        let direction = if elevator_platform.down_or_up { -520.0 } else { 520.0 };
         elevator_platform.trans.pos.y -= direction*dt;
                 
         if elevator_platform.trans.pos.y <= ELEVATOR_PLATFORM_END_STOP.y {
@@ -570,7 +597,8 @@ pub fn update(game: &mut Game) {
             elevator_platform.down_or_up = !elevator_platform.down_or_up;
         }
 
-        if elevator_platform.anim.is_not(&assets.elevator_platform_moving) {
+        if elevator_platform.anim.is_not(&assets.elevator_platform_moving) && elevator_platform.player_inside_for > 0.0 {
+            audio::play_sound(&assets.sfx_elevator, audio::PlaySoundParams { looped: false, volume: 0.2 });
             elevator_platform.anim = assets.elevator_platform_moving.derive_anim();
         }
         
@@ -614,6 +642,7 @@ pub fn update(game: &mut Game) {
                 offset: vec2(0.0, 0.0),
             };
             minecart.carrying.push(Item { trans, kind });
+            audio::play_sound(&assets.sfx_minecart_transfer, audio::PlaySoundParams { looped: false, volume: 0.2 });
         }
     }
 
@@ -621,6 +650,7 @@ pub fn update(game: &mut Game) {
     if minecart.movement == MinecartMovement::Idle && minecart.cooldown <= 0.1 && minecart.carrying.length > 0 {
         minecart.movement = MinecartMovement::Forwards;
         minecart.anim = assets.minecart_moving.derive_anim();
+        audio::play_sound(&assets.sfx_minecart_moving, audio::PlaySoundParams { looped: true, volume: 0.2 });
     }
 
     minecart.cooldown = f32::max(minecart.cooldown-dt, 0.0);
@@ -661,6 +691,8 @@ pub fn update(game: &mut Game) {
         minecart.speed = f32::min(minecart.speed + dt*55.0, 250.0);
 
         if new_pos.x <= MINECART_START.x {
+            audio::stop_sound(&assets.sfx_minecart_moving);
+            audio::play_sound(&assets.sfx_minecart_throw, audio::PlaySoundParams { looped: false, volume: 0.2 });
             minecart.trans.pos.x = MINECART_START.x;
             minecart.movement = MinecartMovement::Idle;
             minecart.anim = assets.minecart_idle.derive_anim();
@@ -755,6 +787,7 @@ pub fn update(game: &mut Game) {
 
         if input_actions.interact {
             game.demolisher_started = true;
+            audio::play_sound(&assets.sfx_demolisher, audio::PlaySoundParams { looped: false, volume: 0.2 });
             demolisher.anim = assets.demolisher_working_0.derive_anim();
         }
     }
@@ -811,6 +844,7 @@ pub fn update(game: &mut Game) {
     for i in coins_to_remove {
         // INFO: not using swap_remove because draw order changes and it looks glitchy
         game.coins.remove(i);
+        audio::play_sound(&assets.sfx_coin, audio::PlaySoundParams { looped: false, volume: 0.15 });
     }
 
     // tick dropped items :::

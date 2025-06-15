@@ -141,6 +141,8 @@ pub async fn init(assets: Assets) -> Game {
         demolisher_spawned: false,
         demolisher_started: false,
 
+        sfx_pickaxe: 0,
+        sfx_pickaxe_played: 0,
 
         main_ui_state: MainUIState::MainMenu,
         ui_inventory_bar_frame,
