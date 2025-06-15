@@ -816,10 +816,19 @@ pub fn update(game: &mut Game) {
         demolisher.trans.pos.x -= demolisher.momentum*dt;
         let tile_start = tiles.at_world_pos(demolisher.trans.pos);
         let tile_end = tiles.at_world_pos(demolisher.prev_pos);        
-        
+                
         world_commands.set_tile_area(tile_start.pos, tile_end.pos-tile_start.pos+ivec2(1, 1), Tile::BackgroundStone);
         demolisher.prev_pos = demolisher.trans.pos;
         player.trans.pos.x = demolisher.trans.pos.x;
+        
+        demolisher.stage_tick += dt;
+        if demolisher.stage_tick >= 5.0 {
+            demolisher.stage = 6;
+        }
+    }
+
+    if game.demolisher_started && demolisher.stage == 6 {
+        audio::stop_sound(&assets.sfx_demolisher);
     }
 
     // collect coins :::

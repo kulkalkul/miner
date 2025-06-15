@@ -179,14 +179,14 @@ pub fn render(game: &mut Game) {
 
         if ui_button(&mut game.ui_state, "Start Game", pos, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::InGame;
-            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.2 });
+            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.1 });
         }
         
         pos += vec2(0.0, 32.0);
 
         if ui_button(&mut game.ui_state, "Show Credits", pos, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::MainMenuCredits;
-            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.2 });
+            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.1 });
         }
 
         game.ui_state.mouse_div = prev_mouse_div;
@@ -219,7 +219,7 @@ pub fn render(game: &mut Game) {
 
         if ui_button(&mut game.ui_state, "Back", pos, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::MainMenu;
-            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.2 });
+            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.1 });
         }
 
         game.ui_state.mouse_div = prev_mouse_div;
@@ -254,7 +254,7 @@ pub fn render(game: &mut Game) {
             draw_ui(pos, vec2(2.0, 2.0), &assets.ui_demolisher_arrow.derive_sprite());
         }
     }
-
+    
     let corner_padding = vec2(2.0, 2.0);
     {
         let mut cursor = vec2(UI_WIDTH_F32, 0.0);
@@ -341,9 +341,9 @@ pub fn render(game: &mut Game) {
                 if can_afford {
                     (state.upgrade)();
                     game.money -= state.cost;
-                    audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.2 });
+                    audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.1 });
                 } else {
-                    audio::play_sound(&assets.sfx_ui_negative, audio::PlaySoundParams { looped: false, volume: 0.2 });
+                    audio::play_sound(&assets.sfx_ui_negative, audio::PlaySoundParams { looped: false, volume: 0.1 });
                 }
             }
 
@@ -429,6 +429,31 @@ pub fn render(game: &mut Game) {
         ui_seq_upgrade_button(lcursor, upgrades.demolisher.to_seq());
 
         game.ui_state.mouse_div = prev_mouse_div;
+    }
+    
+    if game.demolisher_started && demolisher.stage == 5 {
+        let transparency = f32::min(demolisher.stage_tick / 5.0 * 255.0, 255.0);
+        draw_rectangle(0.0, 0.0, UI_WIDTH_F32, UI_HEIGHT_F32, Color::from_rgba(0, 0, 0, transparency as u8));
+    }
+    if game.demolisher_started && demolisher.stage == 6 {
+        draw_rectangle(0.0, 0.0, UI_WIDTH_F32, UI_HEIGHT_F32, Color::from_rgba(0, 0, 0, 255));
+        
+        let mut pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/3.0);
+
+        let mut draw_center = |text: &str, size: u16, offset: f32| {
+            let measurement = measure_text(text, None, size, 1.0);
+            pos.x -= measurement.width/2.0;
+            draw_text(text, pos.x, pos.y, size as f32, WHITE);
+            pos += vec2(measurement.width/2.0, offset);
+        };
+
+        draw_center("The End", 32, 32.0);
+        draw_center("A Game by kulkalkul.", 16, 32.0);
+        draw_center("Special thanks to;", 16, 24.0);
+        draw_center("Artem Arbatsky for helping with sound", 16, 16.0);
+        draw_center("design and providing sound assets.", 16, 24.0);
+        draw_center("FilmCow for CC0 sound assets.", 16, 24.0);
+        draw_center("dustyroomgames for CC0 sound assets.", 16, 24.0);    
     }
     
     // HACK: This shouldn't be inside render, but whatever
