@@ -779,7 +779,7 @@ pub fn update(game: &mut Game) {
     }
 
     // demolisher interact :::
-    if !game.demolisher_started && player.trans.collider().intersects(demolisher.trans.collider()) {
+    if !game.demolisher_started && game.demolisher_spawned && player.trans.collider().intersects(demolisher.trans.collider()) {
         derived.ui_show_demolisher_key = true;
 
         if input_actions.interact {

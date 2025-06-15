@@ -148,7 +148,7 @@ pub fn render(game: &mut Game) {
         let pos = statue.trans.pos + statue.trans.size/2.0 - assets.ui_keys.texture.size()/2.0 * vec2(0.5, 0.5);
         draw_sprite_scaled(pos, vec2(0.5, 0.5), &assets.ui_keys.derive_sprite());
     }
-    if derived.ui_show_demolisher_key {
+    if game.demolisher_spawned && derived.ui_show_demolisher_key {
         let mut pos = demolisher.trans.pos
             + vec2(demolisher.trans.size.x/2.0, 0.0)
             - vec2(assets.ui_keys.texture.size().x/2.0, 0.0) * vec2(0.5, 0.5);

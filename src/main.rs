@@ -17,11 +17,9 @@ mod sprite;
 mod render;
 mod update;
 mod tile;
-mod collision;
 mod world;
 mod entity;
 mod derived;
-mod action;
 mod ui;
 mod upgrades;
 
