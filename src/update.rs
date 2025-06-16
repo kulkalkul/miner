@@ -550,7 +550,7 @@ pub fn update(game: &mut Game) {
 
     // hit str -> mining speed :::
     if player.anim.is( &assets.player_hit ) || player.anim.is( &assets.player_jetpack_hit ) {
-        player.anim.modifier = derived.player_hit_str;
+        player.anim.modifier = derived.player_hit_str * 1.28;
     }
     
 
