@@ -198,9 +198,11 @@ pub fn render(game: &mut Game) {
 
         draw_rectangle(0.0, 0.0, UI_WIDTH_F32, UI_HEIGHT_F32, Color::from_rgba(0, 0, 0, 125));
 
-        let mut pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/4.0)-vec2(240.0/2.0, 0.0);
+        let mut pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/4.0)-vec2(300.0/2.0, 0.0);
 
         draw_text("A Game by kulkalkul.", pos.x, pos.y, 16.0, WHITE);
+        pos += vec2(0.0, 32.0);
+        draw_text("Programming, sprites, music by kulkalkul.", pos.x, pos.y, 16.0, WHITE);
         pos += vec2(0.0, 32.0);
         
         draw_text("Special thanks to;", pos.x, pos.y, 16.0, WHITE);
@@ -216,8 +218,10 @@ pub fn render(game: &mut Game) {
         
         draw_text("dustyroomgames for CC0 sound assets.", pos.x, pos.y, 16.0, WHITE);
         pos += vec2(0.0, 24.0);
+        draw_text("Built with macroquad & bumpalo using Rust.", pos.x, pos.y, 16.0, WHITE);
+        pos += vec2(0.0, 24.0);
 
-        if ui_button(&mut game.ui_state, "Back", pos, 240.0, false, None, &assets.ui_button) {
+        if ui_button(&mut game.ui_state, "Back", pos, 300.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::MainMenu;
             audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.1 });
         }
@@ -467,12 +471,15 @@ pub fn render(game: &mut Game) {
         };
 
         draw_center("The End", 32, 32.0);
+        
         draw_center("A Game by kulkalkul.", 16, 32.0);
+        draw_center("Programming, sprites, music by kulkalkul.", 16, 32.0);
         draw_center("Special thanks to;", 16, 24.0);
         draw_center("Artem Arbatsky for helping with sound", 16, 16.0);
         draw_center("design and providing sound assets.", 16, 24.0);
         draw_center("FilmCow for CC0 sound assets.", 16, 24.0);
-        draw_center("dustyroomgames for CC0 sound assets.", 16, 24.0);    
+        draw_center("dustyroomgames for CC0 sound assets.", 16, 24.0);
+        draw_center("Built with macroquad & bumpalo using Rust.", 16, 24.0);
     }
     
     // HACK: This shouldn't be inside render, but whatever
