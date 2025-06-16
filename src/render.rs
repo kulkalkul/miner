@@ -261,15 +261,18 @@ pub fn render(game: &mut Game) {
     
     let corner_padding = vec2(2.0, 2.0);
     {
+        let coin_sprite = assets.coin.derive_sprite();
+        let coin_size = coin_sprite.texture.size();
+
         let mut cursor = vec2(UI_WIDTH_F32, 0.0);
     
-        cursor.x -= (assets.coin.texture.size()).x*2.0 + corner_padding.x;
+        cursor.x -= coin_size.x*2.0 + corner_padding.x;
         cursor.y += corner_padding.y;
-        draw_ui(cursor, vec2(2.0, 2.0), &assets.coin.derive_sprite());
+        draw_ui(cursor, vec2(2.0, 2.0), &coin_sprite);
 
         let text_size = measure_text(&game.money.to_string(), None, 16, 1.0);
         
-        cursor.y += assets.coin.texture.size().y*2.0 - 8.0;
+        cursor.y += coin_size.y*2.0 - 8.0;
         cursor.x -= text_size.width*2.0;
         draw_text(&game.money.to_string(), cursor.x, cursor.y, 32.0, WHITE);
 
@@ -285,10 +288,12 @@ pub fn render(game: &mut Game) {
             let sprite = &assets.items[variant as usize].derive_sprite();
             let value = variant.value();
             let size = sprite.texture_frame.size();
+            let coin_padding = 4.0;
             draw_ui(cursor - vec2(0.0, size.y)*2.5, vec2(4.0, 4.0), &sprite);
+            draw_ui(cursor - vec2(coin_padding, coin_size.y/2.0*2.0), vec2(1.0, 1.0), &coin_sprite);
             
             let text_size = measure_text(&value.to_string(), None, 16, 1.0);
-            draw_text(value.to_string(), cursor.x - text_size.width*2.0, cursor.y, 32.0, WHITE);
+            draw_text(value.to_string(), cursor.x - text_size.width*2.0 - coin_padding, cursor.y, 32.0, WHITE);
             cursor.y -= 32.0;
         }
     }
