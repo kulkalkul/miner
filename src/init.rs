@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use macroquad::audio;
+
 use crate::prelude::*;
 
 pub async fn init(assets: Assets) -> Game {
@@ -110,6 +112,8 @@ pub async fn init(assets: Assets) -> Game {
     
     get_default_font().populate_font_cache(&Font::latin_character_list(), 16);    
     get_default_font().populate_font_cache(&Font::latin_character_list(), 32);
+
+    audio::play_sound(&assets.sfx_soundtrack, audio::PlaySoundParams { looped: true, volume: 0.4 });
 
     Game {
         total_time: 0.0,

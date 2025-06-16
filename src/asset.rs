@@ -18,6 +18,7 @@ pub struct Assets {
     pub sfx_demolisher: audio::Sound,
     pub sfx_ui_positive: audio::Sound,
     pub sfx_ui_negative: audio::Sound,
+    pub sfx_soundtrack: audio::Sound,
 
     pub ui_bg: SpriteAsset,
     pub ui_keys: SpriteAsset,
@@ -145,6 +146,7 @@ pub async fn init_assets() -> Assets {
     let sfx_demolisher = load_asset_sound!("demolisher");
     let sfx_ui_positive = load_asset_sound!("ui_positive");
     let sfx_ui_negative = load_asset_sound!("ui_negative");
+    let sfx_soundtrack = load_asset_sound!("soundtrack");
 
     let mut state = AssetState { asset_id: 0 };
 
@@ -159,6 +161,7 @@ pub async fn init_assets() -> Assets {
         sfx_demolisher,
         sfx_ui_positive,
         sfx_ui_negative,
+        sfx_soundtrack,
 
         ui_bg: load_sprite(&mut state, &ui_bg_tex, Offset(0, 0), Size(270, 190)),
         ui_keys: load_sheet_cell(&mut state, &ui_keys_tex, RowCol(0, 0), Size(26, 23)),
