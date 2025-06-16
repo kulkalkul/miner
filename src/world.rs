@@ -35,7 +35,7 @@ pub mod consts {
     
     pub const STATUE: IVec2 = ivec2(WORLD_SPAWN_I32.x-MINE_AREA_WIDTH_I32/2-2, WORLD_SPAWN_I32.y);
 
-    pub const RAIL_START: IVec2 = ivec2(WORLD_SPAWN_I32.x+MINE_AREA_WIDTH_I32/2, WORLD_SPAWN_I32.y);
+    pub const RAIL_START: IVec2 = ivec2(WORLD_SPAWN_I32.x+MINE_AREA_WIDTH_I32/2+1, WORLD_SPAWN_I32.y);
     pub const RAIL_STRAIGHT_END: IVec2 = ivec2(RAIL_START.x+6, WORLD_SPAWN_I32.y);
     pub const RAIL_DIAGONAL_END: IVec2 = ivec2(RAIL_START.x+26, ROOM_END_I32.y+1);
     

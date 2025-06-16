@@ -97,6 +97,12 @@ pub fn render(game: &mut Game) {
         &assets.sign_sell.derive_sprite(),
     );
     
+    draw_sprite_scaled(
+        minecart.trans.pos-vec2(statue.trans.size.x-assets.sign_sell_here.derive_sprite().texture_frame.w*0.5/2.0, 0.0)-vec2(0.5, 0.0),
+        vec2(0.5, 0.5),
+        &assets.sign_sell_here.derive_sprite(),
+    );
+    
     if game.elevator_spawned {
         let descend_sprite = assets.sign_descend.derive_sprite();
         let jetpack_hint_sprite = assets.sign_jetpack_hint.derive_sprite();
