@@ -56,7 +56,7 @@ pub fn update(game: &mut Game) {
     upgrades.jetpack.derived_unlocked =
         upgrades.mining.reached(MiningUpgradeKind::AlloyPickaxe) &&
         upgrades.ladder.reached(LadderUpgradeKind::FastClimb) &&
-        upgrades.bag.reached(BagUpgradeKind::Sack) &&
+        upgrades.bag.reached(BagUpgradeKind::Backpack) &&
         upgrades.climb_momentum.reached(ClimbMomentumUpgradeKind::ClimbMomentum);
 
     upgrades.jetpack_boost.derived_unlocked = upgrades.jetpack.derived_unlocked;
@@ -93,7 +93,6 @@ pub fn update(game: &mut Game) {
         BagUpgradeKind::SmallPouch => 10,
         BagUpgradeKind::BiggerPouch => 24,
         BagUpgradeKind::Backpack => 40,
-        BagUpgradeKind::Sack => 64,
     };
 
     derived.player_climb_momentum_max = match upgrades.climb_momentum.kind {

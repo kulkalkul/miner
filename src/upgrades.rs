@@ -110,7 +110,6 @@ create_seq! {struct BagUpgrade; enum BagUpgradeKind {
     SmallPouch => ("Small Pouch", 150),
     BiggerPouch => ("Bigger Pouch", 500),
     Backpack => ("Backpack", 1500),
-    Sack => ("Sack", 3500),
 }}
 create_seq! {struct ClimbMomentumUpgrade; enum ClimbMomentumUpgradeKind {
     NoClimbMomentum => ("No Climb Momentum", 0),
