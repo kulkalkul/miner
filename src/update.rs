@@ -114,7 +114,6 @@ pub fn update(game: &mut Game) {
             JetpackStorageUpgradeKind::XXLStorage => 24,
         };
     }
-    
 
     derived.player_jetpack_fuel_capacity = match upgrades.jetpack_fuel.kind {
         JetpackFuelUpgradeKind::DefaultFuel => 30.0,
@@ -939,6 +938,25 @@ pub fn update(game: &mut Game) {
             world_pos_to_tile_pos(ELEVATOR_PLATFORM_START-ELEVATOR_PLATFORM_END)+ivec2(1, 0),
             Tile::BackgroundStoneElevatorRight,
         );
+        
+        let room_x = ROOM_START_I32.x;
+        let room_y = ROOM_START_I32.y;
+        let room_w = ROOM_END_I32.x - ROOM_START_I32.x;
+
+        let dig_area_x = room_x + room_w/2 - 4;
+        for i in 0..8 {
+            let tile = tiles.at_tile_pos(ivec2(dig_area_x+i, room_y-1));
+            let fill = if tile.kind.can_climb() {
+                Tile::BackgroundStoneLadderDontDig
+            } else if tile.kind.can_mine() {
+                Tile::StoneDontDig
+            } else if tile.kind.is_air() {
+                Tile::BackgroundStoneDontDig
+            } else {
+                Tile::StoneDontDig
+            };
+            world_commands.set_tile(ivec2(dig_area_x+i, room_y-1), fill);
+        }        
     }
 
     // spawn demolisher :::

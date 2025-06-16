@@ -35,6 +35,9 @@ pub enum Tile {
     
     Stone,
     StoneDig,
+    StoneDontDig,
+    BackgroundStoneDontDig,
+    BackgroundStoneLadderDontDig,
     HardStone,
     Barrier,
     WorldBoundary,
@@ -152,6 +155,9 @@ impl Tile {
             
             Tile::Stone => false,
             Tile::StoneDig => false,
+            Tile::StoneDontDig => false,
+            Tile::BackgroundStoneDontDig => false,
+            Tile::BackgroundStoneLadderDontDig => false,
             Tile::HardStone => false,
             Tile::Barrier => false,
             Tile::WorldBoundary => false,
@@ -197,6 +203,9 @@ impl Tile {
             
             Tile::Stone => true,
             Tile::StoneDig => true,
+            Tile::StoneDontDig => false,
+            Tile::BackgroundStoneDontDig => false,
+            Tile::BackgroundStoneLadderDontDig => false,
             Tile::HardStone => true,
             Tile::Barrier => false,
             Tile::WorldBoundary => false,
@@ -242,6 +251,9 @@ impl Tile {
             
             Tile::Stone => false,
             Tile::StoneDig => false,
+            Tile::StoneDontDig => false,
+            Tile::BackgroundStoneDontDig => false,
+            Tile::BackgroundStoneLadderDontDig => false,
             Tile::HardStone => false,
             Tile::Barrier => false,
             Tile::WorldBoundary => false,
@@ -286,6 +298,9 @@ impl Tile {
             
             Tile::Stone => false,
             Tile::StoneDig => false,
+            Tile::StoneDontDig => false,
+            Tile::BackgroundStoneDontDig => false,
+            Tile::BackgroundStoneLadderDontDig => false,
             Tile::HardStone => false,
             Tile::Barrier => false,
             Tile::WorldBoundary => false,
@@ -331,6 +346,9 @@ impl Tile {
             
             Tile::Stone => Tile::BackgroundStone,
             Tile::StoneDig => Tile::BackgroundStone,
+            Tile::StoneDontDig => Tile::ERR,
+            Tile::BackgroundStoneDontDig => Tile::ERR,
+            Tile::BackgroundStoneLadderDontDig => Tile::ERR,
             Tile::HardStone => Tile::BackgroundStone,
             Tile::Barrier => Tile::ERR,
             Tile::WorldBoundary => Tile::ERR,
@@ -376,6 +394,9 @@ impl Tile {
             
             Tile::Stone => ItemKind::Air,
             Tile::StoneDig => ItemKind::Air,
+            Tile::StoneDontDig => ItemKind::Air,
+            Tile::BackgroundStoneDontDig => ItemKind::Air,
+            Tile::BackgroundStoneLadderDontDig => ItemKind::Air,
             Tile::HardStone => ItemKind::Air,
             Tile::Barrier => ItemKind::Air,
             Tile::WorldBoundary => ItemKind::Air,
@@ -421,6 +442,9 @@ impl Tile {
             
             Tile::Stone => 1.2,
             Tile::StoneDig => 0.5,
+            Tile::StoneDontDig => NOT_SO_VERY_BIG_NUMBER,
+            Tile::BackgroundStoneDontDig => NOT_SO_VERY_BIG_NUMBER,
+            Tile::BackgroundStoneLadderDontDig => NOT_SO_VERY_BIG_NUMBER,
             Tile::HardStone => 60.0,
             Tile::Barrier => NOT_SO_VERY_BIG_NUMBER,
             Tile::WorldBoundary => NOT_SO_VERY_BIG_NUMBER,
