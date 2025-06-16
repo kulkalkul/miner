@@ -2,6 +2,8 @@ use macroquad::audio;
 
 use crate::prelude::*;
 
+const DEV_MODE: bool = true;
+
 pub fn update(game: &mut Game) {
     // pre update :::
     game.window_to_draw_size = vec2(screen_width(), screen_height()) / vec2(GAME_WIDTH_F32, GAME_HEIGHT_F32);
@@ -19,7 +21,7 @@ pub fn update(game: &mut Game) {
 
         interact       : is_key_pressed(KeyCode::E),
         escape         : is_key_pressed(KeyCode::Escape),
-        toggle_dev_mode: is_key_pressed(KeyCode::Tab) && false,
+        toggle_dev_mode: is_key_pressed(KeyCode::Tab) && DEV_MODE,
     };
 
     // frame borrows :::
