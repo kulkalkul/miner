@@ -557,6 +557,7 @@ pub fn update(game: &mut Game) {
     // bag handling
     for item_kind in player_added_to_bags {
         if player.carrying.length >= derived.player_bag_carry_capacity { break; }
+        game.unlocked_ores[item_kind as usize] = true;
         player.carrying.push(item_kind);        
     }
 

@@ -268,6 +268,25 @@ pub fn render(game: &mut Game) {
         cursor.y += assets.coin.texture.size().y*2.0 - 8.0;
         cursor.x -= text_size.width*2.0;
         draw_text(&game.money.to_string(), cursor.x, cursor.y, 32.0, WHITE);
+
+        cursor.y = UI_HEIGHT_F32 - 16.0;
+        cursor.x = UI_WIDTH_F32 - assets.items[0].derive_sprite().texture_frame.w*4.0 - corner_padding.x;
+
+        for variant in ItemKind::VARIANTS {
+            let unlocked = game.unlocked_ores[variant as usize];
+            
+            if !unlocked { continue; }
+            if variant  == ItemKind::Air { continue; }
+
+            let sprite = &assets.items[variant as usize].derive_sprite();
+            let value = variant.value();
+            let size = sprite.texture_frame.size();
+            draw_ui(cursor - vec2(0.0, size.y)*2.5, vec2(4.0, 4.0), &sprite);
+            
+            let text_size = measure_text(&value.to_string(), None, 16, 1.0);
+            draw_text(value.to_string(), cursor.x - text_size.width*2.0, cursor.y, 32.0, WHITE);
+            cursor.y -= 32.0;
+        }
     }
 
     {

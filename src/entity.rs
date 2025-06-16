@@ -117,6 +117,19 @@ pub struct BoxCollider {
 }
 
 impl ItemKind {
+    pub const LENGTH: usize = std::mem::variant_count::<Self>();
+    pub const VARIANTS: [ItemKind; Self::LENGTH] = const {
+        let mut variants = [ItemKind::Air; Self::LENGTH];
+
+        let mut i = 0;
+        while i < Self::LENGTH {
+            variants[i] = unsafe { std::mem::transmute(i as u8) };
+            i += 1;
+        }
+
+        variants
+    };
+
     pub fn value(&self) -> i32 {
         match self {
             ItemKind::Air => 0,

@@ -118,6 +118,7 @@ pub struct Game {
 
     pub coins: Vec<CoinBundle>,
     pub dropped_items: Vec<DroppedItem>,
+    pub unlocked_ores: [bool; ItemKind::LENGTH],
 
     pub sfx_pickaxe: i32,
     pub sfx_pickaxe_played: i32,

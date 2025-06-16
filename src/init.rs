@@ -132,6 +132,7 @@ pub async fn init(assets: Assets) -> Game {
 
         coins: Vec::with_capacity(240),
         dropped_items: Vec::with_capacity(16),
+        unlocked_ores: [false; ItemKind::LENGTH],
         
         player,
         statue,
