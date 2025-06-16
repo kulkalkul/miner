@@ -43,6 +43,7 @@ pub struct Assets {
 
     pub sign_sell: SpriteAsset,
     pub sign_descend: SpriteAsset,
+    pub sign_jetpack_hint: SpriteAsset,
 
     pub player_idle: SpriteAsset,
     pub player_walk: SpriteAsset,
@@ -186,6 +187,7 @@ pub async fn init_assets() -> Assets {
 
         sign_sell: load_sheet_cell(&mut state, &signs_tex, RowCol(0, 0), Size(36, 15)),
         sign_descend: load_sheet_cell(&mut state, &signs_tex, RowCol(1, 0), Size(36, 15)),
+        sign_jetpack_hint: load_sheet_cell(&mut state, &signs_tex, RowCol(2, 0), Size(36, 15)),
 
         player_idle: load_anim(&mut state, &player_tex, RowCol(0, 0), 2, Size(16, 16), 400.0),
         player_walk: load_anim(&mut state, &player_tex, RowCol(2, 0), 2, Size(16, 16), 150.0),

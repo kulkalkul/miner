@@ -98,10 +98,19 @@ pub fn render(game: &mut Game) {
     );
     
     if game.elevator_spawned {
+        let descend_sprite = assets.sign_descend.derive_sprite();
+        let jetpack_hint_sprite = assets.sign_jetpack_hint.derive_sprite();
         draw_sprite_scaled(
-            statue.trans.pos-vec2(assets.sign_descend.derive_sprite().texture_frame.w*0.5/2.0, 0.0)-vec2(0.5, 0.0),
+            statue.trans.pos-vec2(descend_sprite.texture_frame.w*0.5/2.0, 0.0)-vec2(0.5, 0.0),
             vec2(0.5, 0.5),
-            &assets.sign_descend.derive_sprite(),
+            &descend_sprite,
+        );
+        draw_sprite_scaled(
+            ELEVATOR_PLATFORM_END -
+                vec2(jetpack_hint_sprite.texture_frame.w*0.5/2.0, 0.0) +
+                vec2(4.5*TILE_SIDE_F32, jetpack_hint_sprite.texture_frame.h/2.0+1.0),
+            vec2(0.5, 0.5),
+            &jetpack_hint_sprite,
         );
     }
 
