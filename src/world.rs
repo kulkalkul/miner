@@ -529,7 +529,6 @@ impl World {
             for (i, y) in (barrier_point..barrier_point+height).enumerate() {
                 let local_x_offset = rand::gen_range(-2, 2);
                 let width = widths[i];
-                let x_offset = local_x_offset + x_offsets[i];
                 let x = local_x_offset + x_offsets[i] + stepping_stone_i;
                 let y = local_y_offset + y;
 

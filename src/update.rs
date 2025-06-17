@@ -313,7 +313,6 @@ pub fn update(game: &mut Game) {
     derived.player_hit_str = 1.0 / f32::max(player_movement.x.abs() as f32 + player_movement.y.abs() as f32, 1.0);
     
     // block mine :::
-    let player_tile = tiles.at_world_pos(player.trans.pos);
     let mut world_commands = world.commands(&game.bump);
 
     let mut player_added_to_bags = Vec::with_capacity_in(4, &game.bump);

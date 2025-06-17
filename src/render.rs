@@ -41,7 +41,7 @@ pub fn render(game: &mut Game) {
         mesh_camera_origin.x += player.trans.pos.x - world_pos.x;
         mesh_camera_origin.y += player.trans.pos.y - world_pos.y;
 
-        let mut camera = Camera2D::from_display_rect(mesh_camera_origin);
+        let camera = Camera2D::from_display_rect(mesh_camera_origin);
         set_camera(&camera);
         
         let mesh = world.mesh_at(chunk_pos);
@@ -53,7 +53,7 @@ pub fn render(game: &mut Game) {
     camera_origin.y += player.trans.pos.y;
     
     {
-        let mut camera = Camera2D::from_display_rect(camera_origin);
+        let camera = Camera2D::from_display_rect(camera_origin);
         set_camera(&camera);
     }
 
@@ -128,8 +128,6 @@ pub fn render(game: &mut Game) {
         );
     }
     
-    let sprite_dir = if player.sprite.flip_x { vec2(-1.0, 1.0) } else { vec2(1.0, 1.0) };
-
     if game.elevator_spawned {
         draw_sprite(elevator_platform.trans.pos, &elevator_platform.sprite);
     }
