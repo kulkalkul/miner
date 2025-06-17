@@ -42,7 +42,7 @@ pub mod prelude {
     pub use super::consts::*;
 
     pub use super::{ debug_generic, debug_point, debug_rect };
-    pub use super::{ Game, MainUIState, InputActions, Config, GameMesh, Array };
+    pub use super::{ Game, MainUIState, InputActions, GameMesh, Array };
 
     pub use crate::asset::{ Assets };
 
@@ -87,11 +87,6 @@ mod consts {
 
 use consts::*;
 
-#[derive(Clone)]
-pub struct Config {
-    pub LADDERS_TO_RESET: i32,
-}
-
 pub struct Game {
     pub total_time: f32,
     pub window_to_draw_size: Vec2,
@@ -99,7 +94,6 @@ pub struct Game {
     pub dev_mode: bool,
     pub bump: Bump,
     pub assets: Assets,
-    pub config: Config,
     pub world: World,
     pub visible_chunks: Vec<IVec2>,
     pub money: i32,

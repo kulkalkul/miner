@@ -6,10 +6,6 @@ use crate::prelude::*;
 
 pub async fn init(assets: Assets) -> Game {
     let bump = Bump::new();
-
-    let config = Config {
-        LADDERS_TO_RESET: 8,
-    };
     
     let mut player = Player {
         trans: Transform {
@@ -125,7 +121,6 @@ pub async fn init(assets: Assets) -> Game {
         dev_mode: false,
         bump,
         assets,
-        config: config.clone(),
         world,
         visible_chunks: Vec::with_capacity(16),
         money: 0,
