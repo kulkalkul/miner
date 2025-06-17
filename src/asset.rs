@@ -125,6 +125,12 @@ macro_rules! load_asset_sound_flac {
     }
 }
 
+pub async fn get_loading_screen_asset() -> SpriteAsset {
+    let tex = load_asset_texture!("loading_screen");
+    let mut state = AssetState { asset_id: 0 };
+    load_sprite(&mut state, &tex, Offset(0, 0), Size(160, 120))
+}
+
 pub async fn init_assets() -> Assets {
     let ui_bg_tex = load_asset_texture!("ui_bg");
     let ui_keys_tex = load_asset_texture!("ui_keys");

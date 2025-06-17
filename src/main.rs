@@ -173,6 +173,27 @@ fn window_conf() -> Conf {
 
 #[macroquad::main(window_conf)]
 async fn main() {
+    let loading_screen = asset::get_loading_screen_asset().await;
+    {
+        let mut ui_camera_origin = Rect {
+            x: -(GAME_WIDTH_F32 / 2.0),
+            y: -(GAME_HEIGHT_F32 / 2.0),
+            w: GAME_WIDTH_F32,
+            h: GAME_HEIGHT_F32,
+        };
+    
+        ui_camera_origin.x += ui_camera_origin.w/2.0;
+        ui_camera_origin.y += ui_camera_origin.h/2.0;
+        ui_camera_origin.w *= 4.0;
+        ui_camera_origin.h *= 4.0;
+        
+        let mut camera = Camera2D::from_display_rect(ui_camera_origin);
+        camera.zoom.y *= -1.0;
+        set_camera(&camera);
+    }
+    sprite::draw_ui(vec2(0.0, 0.0), vec2(4.0, 4.0), &loading_screen.derive_sprite());
+    next_frame().await;
+
     let assets = init_assets().await;
     let mut game = init(assets).await;
 
