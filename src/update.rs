@@ -804,11 +804,12 @@ pub fn update(game: &mut Game) {
     
     
     // sell excess ores if player has(bought) jetpack :::
-    if derived.player_has_jetpack && player.carrying.length > 0 {
+    if derived.player_has_jetpack && player.carrying.length > derived.player_bag_carry_capacity {
         audio::play_sound(&assets.sfx_minecart_transfer, audio::PlaySoundParams { looped: false, volume: 0.2 });
         minecart.cooldown = 1.0;
 
-        while let Some(kind) = player.carrying.pop() {
+        for _ in 0..(player.carrying.length-derived.player_bag_carry_capacity) {
+            let kind = player.carrying.pop().unwrap();
             let trans = Transform {
                 pos: minecart.trans.pos,
                 size: vec2(0.0, 0.0),
