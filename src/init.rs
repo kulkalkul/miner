@@ -155,6 +155,7 @@ pub async fn init(assets: Assets) -> Game {
         ui_show_statue: false,
         
         tile_durability_map: HashMap::with_capacity(32),
+        tile_cant_dig_map: HashMap::with_capacity(32),
         
         derived: DerivedState::default(),
         late_derived: LateDerivedState::default(),

@@ -38,6 +38,7 @@ pub struct Assets {
     pub ui_demolisher_arrow: SpriteAsset,
 
     pub cracking: Box<[SpriteAsset]>,
+    pub cant_dig: Box<[SpriteAsset]>,
     pub coin: SpriteAsset,    
     pub coins: Box<[SpriteAsset]>,
 
@@ -141,6 +142,7 @@ pub async fn init_assets() -> Assets {
     let ui_demolisher_arrow = load_asset_texture!("ui_demolisher_arrow");
 
     let cracking_tex = load_asset_texture!("cracking");
+    let cant_dig_tex = load_asset_texture!("cant_dig");
     let coin_tex = load_asset_texture!("coin");
     let coins_tex = load_asset_texture!("coins");
 
@@ -203,6 +205,7 @@ pub async fn init_assets() -> Assets {
         ui_demolisher_arrow: load_sheet_cell(&mut state, &ui_demolisher_arrow, RowCol(0, 0), Size(47, 9)),
         
         cracking: load_sheet_cells(&mut state, &cracking_tex, RowCol(0, 0), 4, Size(16, 16)),
+        cant_dig: load_sheet_cells(&mut state, &cant_dig_tex, RowCol(0, 0), 3, Size(16, 16)),
         coin: load_sprite(&mut state, &coin_tex, Offset(0, 0), Size(16, 16)),
         coins: load_sheet_cells(&mut state, &coins_tex, RowCol(0, 0), 5, Size(32, 32)),
 

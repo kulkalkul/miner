@@ -129,6 +129,7 @@ pub struct Game {
     pub ui_show_statue: bool,
 
     pub tile_durability_map: HashMap<IVec2, f32>,
+    pub tile_cant_dig_map: HashMap<IVec2, f32>,
 
     pub derived: DerivedState,
     pub late_derived: LateDerivedState,

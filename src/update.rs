@@ -341,14 +341,23 @@ pub fn update(game: &mut Game) {
         let tile_one_up = tile.up(1);
         let tile_one_down = tile.down(1);
 
-        if !tile.kind.can_mine() { break 'block_mine; }
+        if tile.kind.is_air() { break 'block_mine; }
+        if !tile.kind.can_mine() {
+            game.tile_cant_dig_map.entry(tile.pos).or_insert(0.0);
+            break 'block_mine;
+        }
 
-        if touch_vec.x != 0 && tile_one_up.kind.can_climb() { break 'block_mine; }            
+        if touch_vec.x != 0 && tile_one_up.kind.can_climb() {
+            game.tile_cant_dig_map.entry(tile_one_up.pos).or_insert(0.0);
+            game.tile_cant_dig_map.entry(tile.pos).or_insert(0.0);
+            break 'block_mine;
+        }            
                 
         if tile.kind.item_drop() != ItemKind::Air && player.carrying.length >= derived.player_bag_carry_capacity {
             if ui_inventory_bar_frame.anim.is_not(&assets.ui_inventory_bar_frame_full) {
                 ui_inventory_bar_frame.anim = assets.ui_inventory_bar_frame_full.derive_anim();
             }
+            game.tile_cant_dig_map.entry(tile.pos).or_insert(0.0);
             break 'block_mine;
         }
         
@@ -905,6 +914,23 @@ pub fn update(game: &mut Game) {
 
         for tile_pos in to_remove {
             game.tile_durability_map.remove(&tile_pos);
+        }
+        
+    }
+    
+    // update tile cant dig :::
+    {
+        let mut to_remove = Vec::with_capacity_in(32, &game.bump);
+
+        for (tile_pos, cant_dig) in &mut game.tile_cant_dig_map {
+            *cant_dig += dt;
+            if *cant_dig > 1.0 {
+                to_remove.push(*tile_pos);
+            }
+        }
+
+        for tile_pos in to_remove {
+            game.tile_cant_dig_map.remove(&tile_pos);
         }
         
     }

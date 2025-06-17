@@ -63,6 +63,12 @@ pub fn render(game: &mut Game) {
         let index = usize::clamp(((durability/tile.kind.durability())*4.0) as usize, 0, 3);
         draw_sprite(tile.world_pos(), &assets.cracking[index].derive_sprite());
     }
+    
+    for (&tile_pos, &cant_dig) in &game.tile_cant_dig_map {
+        let tile = tiles.at_tile_pos(tile_pos);
+        let index = usize::clamp((cant_dig*2.9) as usize, 0, 2);
+        draw_sprite(tile.world_pos(), &assets.cant_dig[index].derive_sprite());
+    }
     let _ = tiles;
     
     // draw_sprite_offset(crusher.trans.pos, crusher.trans.offset, &crusher.sprite);
