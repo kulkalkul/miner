@@ -9,6 +9,7 @@ use std::collections::HashMap;
 use std::sync::{LazyLock, Mutex};
 
 use bumpalo::Bump;
+use macroquad::prelude::coroutines::start_coroutine;
 use macroquad::{audio, prelude::*};
 
 mod init;
@@ -216,11 +217,27 @@ async fn main() {
         camera.zoom.y *= -1.0;
         set_camera(&camera);
     }
+
     sprite::draw_ui(vec2(0.0, 0.0), vec2(4.0, 4.0), &loading_screen.derive_sprite());
     next_frame().await;
 
-    let assets = init_assets().await;
-    let mut game = init(assets).await;
+    async fn load() -> Game {
+        let assets = init_assets().await;
+        let game = init(assets).await;
+        game
+    }
+
+    let loading = start_coroutine(load());
+
+    let mut game: Game;
+    loop {
+        if let Some(loaded) = loading.retrieve() {
+            game = loaded;
+            break;
+        }
+        sprite::draw_ui(vec2(0.0, 0.0), vec2(4.0, 4.0), &loading_screen.derive_sprite());
+        next_frame().await;
+    }
 
     loop {
         update(&mut game);
