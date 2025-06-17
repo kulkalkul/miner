@@ -573,7 +573,7 @@ pub fn update(game: &mut Game) {
     if  game.elevator_spawned &&
         player.trans.collider().contains(elevator_platform.trans.collider())
     {
-        if elevator_platform.player_inside_for < 5.0 {
+        if elevator_platform.player_inside_for < 3.0 {
             let anim = &assets.elevator_platform_countdown[elevator_platform.player_inside_for as usize];
             if elevator_platform.anim.is_not(anim) {
                 elevator_platform.anim = anim.derive_anim();
@@ -584,7 +584,7 @@ pub fn update(game: &mut Game) {
     
     // riding elevator :::
     if  game.elevator_spawned &&
-        elevator_platform.player_inside_for >= 5.0
+        elevator_platform.player_inside_for >= 3.0
     {
         let direction = if elevator_platform.down_or_up { -520.0 } else { 520.0 };
         elevator_platform.trans.pos.y -= direction*dt;

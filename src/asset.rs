@@ -228,10 +228,10 @@ pub async fn init_assets() -> Assets {
             &mut state, &elevator_platform_tex , RowCol(0, 0), 1, Size(48, 41), 400.0
         ),
         elevator_platform_countdown: load_sheet_cells(
-            &mut state, &elevator_platform_tex, RowCol(1, 0), 5, Size(48 , 41)
+            &mut state, &elevator_platform_tex, RowCol(1, 0), 3, Size(48 , 41)
         ),
         elevator_platform_moving: load_anim(
-            &mut state, &elevator_platform_tex , RowCol(6, 0), 4, Size(48, 41), 100.0
+            &mut state, &elevator_platform_tex , RowCol(4, 0), 4, Size(48, 41), 100.0
         ),
         
         minecart_idle:   load_anim(&mut state, &minecart_tex, RowCol(0, 0), 1, Size(15 , 16)  , 400.0),
