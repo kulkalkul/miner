@@ -82,7 +82,6 @@ pub struct TileSetAsset {
 
 #[derive(Copy, Clone)]
 pub struct TileChunk {
-    pub dirty: bool,
     pub tiles: [Tile; CHUNK_SIZE],
 }
 

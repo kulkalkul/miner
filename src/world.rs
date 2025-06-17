@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap};
+use std::collections::{BTreeMap, HashSet};
 
 use crate::prelude::*;
 
@@ -81,6 +81,7 @@ use consts::*;
 pub struct World {
     pub chunks: Vec<TileChunk>,
     pub meshes: Vec<GameMesh>,
+    pub dirty_chunks: HashSet<IVec2>,
     pub recalculate_all_meshes: bool,
 }
 
@@ -243,7 +244,6 @@ enum WorldCommand<'b> {
 impl World {
     pub fn new(tile_set: &TileSetAsset, bump: &Bump) -> Self {
         let tile_chunk = TileChunk {
-            dirty: true,
             tiles: [Tile::BackgroundStone; CHUNK_SIZE],
         };
 
@@ -304,6 +304,7 @@ impl World {
         let mut world = World {
             chunks: vec![tile_chunk; WORLD_SIZE],
             meshes: vec![GameMesh(tile_mesh); WORLD_SIZE],
+            dirty_chunks: HashSet::with_capacity(WORLD_SIZE),
             recalculate_all_meshes: false,
         };
 
@@ -644,7 +645,6 @@ impl World {
         WorldCommands { bump, commands }
     }
     pub fn apply_commands<'b>(&mut self, world_commands: WorldCommands<'b>) {
-        
         for command in world_commands.commands {
             match command {
             | WorldCommand::RecalculateAllMeshes => {
@@ -656,7 +656,7 @@ impl World {
                 
                 let chunk = &mut self.chunks[chunk_index_at(chunk_pos)];
                 chunk.tiles[tile_index] = tile;
-                chunk.dirty = true;
+                self.dirty_chunks.insert(chunk_pos);
             },
             | WorldCommand::SetTiles { tile_poses, tile } => {
                 let chunks = &mut self.chunks[..];
@@ -666,7 +666,7 @@ impl World {
                     
                     let chunk = &mut chunks[chunk_index_at(chunk_pos)];
                     chunk.tiles[tile_index] = tile;
-                    chunk.dirty = true;
+                    self.dirty_chunks.insert(chunk_pos);
                 }
             },
             | WorldCommand::SetTilesInChunk { chunk_pos, local_tile_poses, tile } => {
@@ -675,7 +675,7 @@ impl World {
                     let tile_index = local_tile_index_at(ivec2(tile_pos.x, tile_pos.y));
                     
                     chunk.tiles[tile_index] = tile;
-                    chunk.dirty = true;
+                    self.dirty_chunks.insert(chunk_pos);
                 }
             },
             | WorldCommand::SetTileArea { x, y, width, height, tile } => {
@@ -692,9 +692,8 @@ impl World {
                     let end_y = i32::min((chunk_pos.y+1) * CHUNK_SIDE_I32, y+height);
 
                     let chunk = &mut chunks[chunk_index_at(chunk_pos)];
-                    chunk.dirty = true;
+                    self.dirty_chunks.insert(chunk_pos);
                     let tiles = &mut chunk.tiles[..];
-
 
                     for local_y in begin_y..end_y {
                         for local_x in begin_x..end_x {
@@ -709,6 +708,9 @@ impl World {
     
     pub fn chunk_at(&self, chunk_pos: IVec2) -> &TileChunk {
         &self.chunks[chunk_index_at(chunk_pos)]
+    }
+    pub fn chunk_mut_at(&mut self, chunk_pos: IVec2) -> &mut TileChunk {
+        &mut self.chunks[chunk_index_at(chunk_pos)]
     }
     pub fn mesh_at(&self, chunk_pos: IVec2) -> &GameMesh {
         &self.meshes[chunk_index_at(chunk_pos)]
@@ -782,8 +784,7 @@ impl World {
     // mem::swap. So both draw and apply_updates would be sync in which tileset to use.
     pub fn apply_updates(&mut self, tile_set: &TileSetAsset) {
         if self.recalculate_all_meshes {
-            for (mesh, chunk) in self.meshes.iter_mut().zip(self.chunks.iter()) {
-                if !chunk.dirty { continue; };
+            for (mesh, chunk) in self.meshes.iter_mut().zip(self.chunks.iter_mut()) {
                 if mesh.0.texture.is_none() { continue; };
 
                 let vertices = &mut mesh.0.vertices[..];
@@ -799,6 +800,29 @@ impl World {
                     
                     i += 4;
                 }
+            }            
+            self.dirty_chunks.clear();
+            self.recalculate_all_meshes = false;
+        }
+
+        for chunk_pos in self.dirty_chunks.drain() {
+            let chunk = &mut self.chunks[chunk_index_at(chunk_pos)];
+            let mesh = &mut self.meshes[chunk_index_at(chunk_pos)];
+            
+            if mesh.0.texture.is_none() { continue; };
+
+            let vertices = &mut mesh.0.vertices[..];
+
+            let mut i = 0;
+            for tile in &chunk.tiles {
+                let bounds = tile_set.bounds[*tile as usize];
+                
+                vertices[i+0].uv = vec2(bounds.begin.x, bounds.end.y);
+                vertices[i+1].uv = vec2(bounds.end.x  , bounds.end.y);
+                vertices[i+2].uv = vec2(bounds.end.x  , bounds.begin.y);
+                vertices[i+3].uv = vec2(bounds.begin.x, bounds.begin.y);
+                
+                i += 4;
             }
         }
     }
