@@ -111,6 +111,20 @@ macro_rules! load_asset_sound {
     }
 }
 
+macro_rules! load_asset_sound_flac {
+    ($path:literal) => {
+        if cfg!(not(target_family = "wasm")) {
+            let path = ["asset/", $path, ".flac"].join("");
+            audio::load_sound(&path).await.expect("Sound should exist")
+        } else if cfg!(target_family = "wasm") {
+            let bytes = include_bytes!(concat!("../asset/", $path, ".flac"));
+            audio::load_sound_from_bytes(&bytes[..]).await.expect("Sound should exist")
+        } else {
+            unimplemented!();
+        }
+    }
+}
+
 pub async fn init_assets() -> Assets {
     let ui_bg_tex = load_asset_texture!("ui_bg");
     let ui_keys_tex = load_asset_texture!("ui_keys");
@@ -148,7 +162,7 @@ pub async fn init_assets() -> Assets {
     let sfx_demolisher = load_asset_sound!("demolisher");
     let sfx_ui_positive = load_asset_sound!("ui_positive");
     let sfx_ui_negative = load_asset_sound!("ui_negative");
-    let sfx_soundtrack = load_asset_sound!("soundtrack");
+    let sfx_soundtrack = load_asset_sound_flac!("soundtrack");
 
     let mut state = AssetState { asset_id: 0 };
 

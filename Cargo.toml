@@ -3,6 +3,16 @@ name = "miner"
 version = "0.1.0"
 edition = "2024"
 
-[dependencies]
-macroquad = { git ="https://github.com/not-fl3/macroquad.git" , rev= "b1e15fec9c0611b736a0f46f54925be190d017c0", features = ["audio"] }
-bumpalo = { version="3", features=["allocator_api"] }
+[dependencies.bumpalo]
+version = "3"
+features=[ "allocator_api" ]
+
+[dependencies.macroquad]
+git = "https://github.com/not-fl3/macroquad.git"
+rev = "b1e15fec9c0611b736a0f46f54925be190d017c0"
+features = [ "audio" ]
+
+[dependencies.audrey]
+version = "*"
+default-features = false
+features = ["wav", "ogg_vorbis", "flac"]
