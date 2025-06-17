@@ -513,7 +513,7 @@ pub fn update(game: &mut Game) {
     // jetpack out of fuel :::
     if derived.player_can_use_jetpack && derived.player_moving && player.jetpack_fuel <= 0.0 {
         player.jetpack_out_of_fuel_tick += dt;
-        if player.jetpack_out_of_fuel_tick >= 1.0 {
+        if player.jetpack_out_of_fuel_tick >= 2.0 {
             if let Some(item_kind) = player.carrying.pop() {
                 game.dropped_items.push(DroppedItem {
                     trans: Transform {
