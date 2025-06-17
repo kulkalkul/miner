@@ -801,7 +801,23 @@ pub fn update(game: &mut Game) {
             demolisher.anim = assets.demolisher_working_0.derive_anim();
         }
     }
+    
+    
+    // sell excess ores if player has(bought) jetpack :::
+    if derived.player_has_jetpack && player.carrying.length > 0 {
+        audio::play_sound(&assets.sfx_minecart_transfer, audio::PlaySoundParams { looped: false, volume: 0.2 });
+        minecart.cooldown = 1.0;
 
+        while let Some(kind) = player.carrying.pop() {
+            let trans = Transform {
+                pos: minecart.trans.pos,
+                size: vec2(0.0, 0.0),
+                offset: vec2(0.0, 0.0),
+            };
+            minecart.carrying.push(Item { trans, kind });
+        }
+    }
+    
     // demolisher heat :::
     if game.demolisher_started && demolisher.stage < 5 {
         demolisher.stage_tick += dt;
