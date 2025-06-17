@@ -15,4 +15,4 @@ features = [ "audio" ]
 [dependencies.audrey]
 version = "*"
 default-features = false
-features = ["wav", "ogg_vorbis", "flac"]
+features = ["ogg_vorbis", "flac"]

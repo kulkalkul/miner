@@ -100,10 +100,10 @@ macro_rules! load_asset_texture {
 macro_rules! load_asset_sound {
     ($path:literal) => {
         if cfg!(not(target_family = "wasm")) {
-            let path = ["asset/", $path, ".wav"].join("");
+            let path = ["asset/", $path, ".ogg"].join("");
             audio::load_sound(&path).await.expect("Sound should exist")
         } else if cfg!(target_family = "wasm") {
-            let bytes = include_bytes!(concat!("../asset/", $path, ".wav"));
+            let bytes = include_bytes!(concat!("../asset/", $path, ".ogg"));
             audio::load_sound_from_bytes(&bytes[..]).await.expect("Sound should exist")
         } else {
             unimplemented!();
