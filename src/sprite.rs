@@ -59,8 +59,7 @@ impl SpriteAsset {
     pub fn derive_sprite(&self) -> Sprite {
         Sprite {
             asset_id: self.asset_id,
-            // TODO: use weak
-            texture: Texture2D::clone(&self.texture),
+            texture: Texture2D::weak_clone(&self.texture),
             texture_frame: self.frames[0],
             flip_x: false,
         }
