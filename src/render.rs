@@ -175,6 +175,14 @@ pub fn render(game: &mut Game) {
         pos.y += demolisher.trans.size.y;
         draw_sprite_scaled(pos, vec2(0.5, 0.5), &assets.ui_keys.derive_sprite());
     }
+    if derived.ui_show_minecart_key {
+        let mut pos = minecart.trans.pos
+            + vec2(minecart.trans.size.x/2.0, 0.0)
+            - vec2(assets.ui_keys.texture.size().x/2.0, 0.0) * vec2(0.5, 0.5);
+        pos.y += assets.ui_keys.texture.size().y/2.0;
+        pos.y += minecart.trans.size.y;
+        draw_sprite_scaled(pos, vec2(0.5, 0.5), &assets.ui_keys.derive_sprite());
+    }
         
     // actual ui
     

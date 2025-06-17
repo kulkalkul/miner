@@ -31,6 +31,7 @@ pub struct DerivedState {
     pub ui_main_menu: bool,
     pub ui_show_statue_key: bool,
     pub ui_show_demolisher_key: bool,
+    pub ui_show_minecart_key: bool,
 }
 
 #[derive(Default)]

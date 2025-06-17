@@ -639,16 +639,20 @@ pub fn update(game: &mut Game) {
         if  minecart.cooldown <= 1.8 &&
             minecart.carrying.length < minecart.carrying.cap()
         {
-            minecart.cooldown = 2.0;
-            let kind = player.carrying.pop().unwrap();
+            derived.ui_show_minecart_key = true;
             
-            let trans = Transform {
-                pos: minecart.trans.pos,
-                size: vec2(0.0, 0.0),
-                offset: vec2(0.0, 0.0),
-            };
-            minecart.carrying.push(Item { trans, kind });
-            audio::play_sound(&assets.sfx_minecart_transfer, audio::PlaySoundParams { looped: false, volume: 0.2 });
+            if input_actions.interact {
+                let kind = player.carrying.pop().unwrap();
+            
+                let trans = Transform {
+                    pos: minecart.trans.pos,
+                    size: vec2(0.0, 0.0),
+                    offset: vec2(0.0, 0.0),
+                };
+                minecart.carrying.push(Item { trans, kind });
+                audio::play_sound(&assets.sfx_minecart_transfer, audio::PlaySoundParams { looped: false, volume: 0.2 });
+                minecart.cooldown = 2.0;
+            }
         }
     }
 
