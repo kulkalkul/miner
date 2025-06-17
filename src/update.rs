@@ -25,7 +25,7 @@ pub fn update(game: &mut Game) {
     };
 
     // frame borrows :::
-    let dt = get_frame_time();
+    let dt = f32::clamp(get_frame_time(), 1.0/1000.0, 1.0/5.0);
     let assets = &game.assets;
 
     let player = &mut game.player;
