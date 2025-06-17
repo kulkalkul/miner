@@ -20,6 +20,7 @@ pub struct Assets {
     pub sfx_ui_negative: audio::Sound,
     pub sfx_soundtrack: audio::Sound,
 
+    pub ui_title: Box<[SpriteAsset]>,
     pub ui_bg: SpriteAsset,
     pub ui_keys: SpriteAsset,
     pub ui_button: [[SpriteAsset; 3]; 3],
@@ -138,6 +139,7 @@ pub async fn get_loading_screen_asset() -> SpriteAsset {
 }
 
 pub async fn init_assets() -> Assets {
+    let ui_title_tex = load_asset_texture!("ui_title");
     let ui_bg_tex = load_asset_texture!("ui_bg");
     let ui_keys_tex = load_asset_texture!("ui_keys");
     let ui_button_tex = load_asset_texture!("ui_button");
@@ -193,6 +195,7 @@ pub async fn init_assets() -> Assets {
         sfx_ui_negative,
         sfx_soundtrack,
 
+        ui_title: load_sheet_cells(&mut state, &ui_title_tex, RowCol(0, 0), 4, Size(132, 32)),
         ui_bg: load_sprite(&mut state, &ui_bg_tex, Offset(0, 0), Size(270, 190)),
         ui_keys: load_sheet_cell(&mut state, &ui_keys_tex, RowCol(0, 0), Size(26, 23)),
         ui_button: load_three_patch(&mut state, &ui_button_tex),

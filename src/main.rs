@@ -183,7 +183,7 @@ impl SoundPlayer {
 fn window_conf() -> Conf {
     #[cfg(not(target_family = "wasm"))]
     return Conf {
-        window_title: "Miner".to_owned(),
+        window_title: "DIG DIG DIG".to_owned(),
         window_width: 1280,
         window_height: 960,
         ..Default::default()

@@ -201,16 +201,23 @@ pub fn render(game: &mut Game) {
         let prev_mouse_div = game.ui_state.mouse_div;
         game.ui_state.mouse_div /= 4.0;
 
-        let mut pos = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/4.0)-vec2(240.0/2.0, 0.0);
+        let mut cursor = vec2(UI_WIDTH_F32/2.0, UI_HEIGHT_F32/4.0)-vec2(240.0/2.0, 0.0);
+        let title_sprite = &assets.ui_title[f32::min(game.total_time, 3.0) as usize].derive_sprite();
 
-        if ui_button(&mut game.ui_state, "Start Game", pos, 240.0, false, None, &assets.ui_button) {
+        cursor.x -= (title_sprite.texture_frame.w*2.0 - 240.0) / 2.0;
+        draw_ui(cursor, vec2(2.0, 2.0), title_sprite);
+
+        cursor.x += (title_sprite.texture_frame.w*2.0 - 240.0) / 2.0;
+        cursor.y += title_sprite.texture_frame.h*2.0 + 8.0;
+
+        if ui_button(&mut game.ui_state, "Start Game", cursor, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::InGame;
             sound_player.play_sound(&assets.sfx_ui_positive, 0.1, false);
         }
         
-        pos += vec2(0.0, 32.0);
+        cursor += vec2(0.0, 32.0);
 
-        if ui_button(&mut game.ui_state, "Show Credits", pos, 240.0, false, None, &assets.ui_button) {
+        if ui_button(&mut game.ui_state, "Show Credits", cursor, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::MainMenuCredits;
             sound_player.play_sound(&assets.sfx_ui_positive, 0.1, false);
         }
