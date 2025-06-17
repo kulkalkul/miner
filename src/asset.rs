@@ -36,6 +36,11 @@ pub struct Assets {
     
     pub ui_elevator_arrow: Box<[SpriteAsset]>,
     pub ui_demolisher_arrow: SpriteAsset,
+    pub ui_music_playing: SpriteAsset,
+    pub ui_music_muted: SpriteAsset,
+    pub ui_sound_playing: SpriteAsset,
+    pub ui_sound_muted: SpriteAsset,
+    
 
     pub cracking: Box<[SpriteAsset]>,
     pub cant_dig: Box<[SpriteAsset]>,
@@ -140,6 +145,7 @@ pub async fn init_assets() -> Assets {
     let ui_fuel_bar_tex = load_asset_texture!("ui_fuel_bar");
     let ui_elevator_arrow = load_asset_texture!("ui_elevator_arrow");
     let ui_demolisher_arrow = load_asset_texture!("ui_demolisher_arrow");
+    let ui_sound_controls_tex = load_asset_texture!("ui_sound_controls");
 
     let cracking_tex = load_asset_texture!("cracking");
     let cant_dig_tex = load_asset_texture!("cant_dig");
@@ -203,6 +209,11 @@ pub async fn init_assets() -> Assets {
 
         ui_elevator_arrow: load_sheet_cells(&mut state, &ui_elevator_arrow, RowCol(0, 0), 2, Size(39, 9)),
         ui_demolisher_arrow: load_sheet_cell(&mut state, &ui_demolisher_arrow, RowCol(0, 0), Size(47, 9)),
+
+        ui_music_playing: load_sheet_cell(&mut state, &ui_sound_controls_tex, RowCol(0, 0), Size(16, 16)),
+        ui_music_muted: load_sheet_cell(&mut state, &ui_sound_controls_tex, RowCol(1, 0), Size(16, 16)),
+        ui_sound_playing: load_sheet_cell(&mut state, &ui_sound_controls_tex, RowCol(2, 0), Size(16, 16)),
+        ui_sound_muted: load_sheet_cell(&mut state, &ui_sound_controls_tex, RowCol(3, 0), Size(16, 16)),
         
         cracking: load_sheet_cells(&mut state, &cracking_tex, RowCol(0, 0), 4, Size(16, 16)),
         cant_dig: load_sheet_cells(&mut state, &cant_dig_tex, RowCol(0, 0), 3, Size(16, 16)),

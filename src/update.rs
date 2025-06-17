@@ -1,5 +1,3 @@
-use macroquad::audio;
-
 use crate::prelude::*;
 
 const DEV_MODE: bool = true;
@@ -42,6 +40,9 @@ pub fn update(game: &mut Game) {
     let derived = &mut game.derived;
     let input_actions = &game.input_actions;
     let upgrades = &mut game.upgrades;
+    let sound_player = &mut game.sound_player;
+
+    sound_player.tick_music();
     
     // reset late derived:::
     let late_derived = &game.late_derived;
@@ -438,7 +439,7 @@ pub fn update(game: &mut Game) {
             
     if !derived.player_can_use_jetpack && player.anim.is( &assets.player_hit ) && game.sfx_pickaxe < player.anim.repeated {
         game.sfx_pickaxe = player.anim.repeated;
-        audio::play_sound(&assets.sfx_pickaxe, audio::PlaySoundParams { looped: false, volume: 0.2 });
+        sound_player.play_sound(&assets.sfx_pickaxe, 0.2, false);
     }
     
     if !derived.player_can_use_jetpack && player.anim.is_not( &assets.player_hit ) && game.sfx_pickaxe > 0 {
@@ -447,7 +448,7 @@ pub fn update(game: &mut Game) {
     
     if derived.player_can_use_jetpack && player.anim.is( &assets.player_jetpack_hit ) && game.sfx_pickaxe < player.anim.repeated {
         game.sfx_pickaxe = player.anim.repeated;
-        audio::play_sound(&assets.sfx_pickaxe, audio::PlaySoundParams { looped: false, volume: 0.2 });
+        sound_player.play_sound(&assets.sfx_pickaxe, 0.2, false);
     }
     
     if derived.player_can_use_jetpack && player.anim.is_not( &assets.player_jetpack_hit ) && game.sfx_pickaxe > 0 {
@@ -459,7 +460,7 @@ pub fn update(game: &mut Game) {
         if player.anim.is( &assets.player_idle ) {
             player.anim = assets.player_walk.derive_anim();
         } else if player.anim.is( &assets.player_jetpack_idle ) {
-            audio::play_sound(&assets.sfx_jetpack, audio::PlaySoundParams { looped: true, volume: 0.1 });
+            sound_player.play_sound(&assets.sfx_jetpack, 0.1, true);
             player.anim = assets.player_jetpack_move.derive_anim();
         }
     }
@@ -467,7 +468,7 @@ pub fn update(game: &mut Game) {
         if player.anim.is( &assets.player_walk ) {
             player.anim = assets.player_idle.derive_anim();
         } else if player.anim.is( &assets.player_jetpack_move ) {
-            audio::stop_sound(&assets.sfx_jetpack);
+            sound_player.stop_sound(&assets.sfx_jetpack);
             player.anim = assets.player_jetpack_idle.derive_anim();
         }
     }
@@ -475,7 +476,7 @@ pub fn update(game: &mut Game) {
         if player.anim.is( &assets.player_hit) {
             player.anim = assets.player_idle.derive_anim();
         } else if player.anim.is( &assets.player_jetpack_hit) {
-            audio::stop_sound(&assets.sfx_jetpack);
+            sound_player.stop_sound(&assets.sfx_jetpack);
             player.anim = assets.player_jetpack_idle.derive_anim();
         }
     }
@@ -604,7 +605,7 @@ pub fn update(game: &mut Game) {
         }
 
         if elevator_platform.anim.is_not(&assets.elevator_platform_moving) && elevator_platform.player_inside_for > 0.0 {
-            audio::play_sound(&assets.sfx_elevator, audio::PlaySoundParams { looped: false, volume: 0.2 });
+            sound_player.play_sound(&assets.sfx_elevator, 0.2, false);
             elevator_platform.anim = assets.elevator_platform_moving.derive_anim();
         }
         
@@ -650,7 +651,7 @@ pub fn update(game: &mut Game) {
                     offset: vec2(0.0, 0.0),
                 };
                 minecart.carrying.push(Item { trans, kind });
-                audio::play_sound(&assets.sfx_minecart_transfer, audio::PlaySoundParams { looped: false, volume: 0.2 });
+                sound_player.play_sound(&assets.sfx_minecart_transfer, 0.2, false);
                 minecart.cooldown = 2.0;
             }
         }
@@ -660,7 +661,7 @@ pub fn update(game: &mut Game) {
     if minecart.movement == MinecartMovement::Idle && minecart.cooldown <= 0.1 && minecart.carrying.length > 0 {
         minecart.movement = MinecartMovement::Forwards;
         minecart.anim = assets.minecart_moving.derive_anim();
-        audio::play_sound(&assets.sfx_minecart_moving, audio::PlaySoundParams { looped: true, volume: 0.2 });
+        sound_player.play_sound(&assets.sfx_minecart_moving, 0.2, true);
     }
 
     minecart.cooldown = f32::max(minecart.cooldown-dt, 0.0);
@@ -701,8 +702,8 @@ pub fn update(game: &mut Game) {
         minecart.speed = f32::min(minecart.speed + dt*55.0, 250.0);
 
         if new_pos.x <= MINECART_START.x {
-            audio::stop_sound(&assets.sfx_minecart_moving);
-            audio::play_sound(&assets.sfx_minecart_throw, audio::PlaySoundParams { looped: false, volume: 0.2 });
+            sound_player.stop_sound(&assets.sfx_minecart_moving);
+            sound_player.play_sound(&assets.sfx_minecart_throw, 0.2, false);
             minecart.trans.pos.x = MINECART_START.x;
             minecart.movement = MinecartMovement::Idle;
             minecart.anim = assets.minecart_idle.derive_anim();
@@ -797,7 +798,7 @@ pub fn update(game: &mut Game) {
 
         if input_actions.interact {
             game.demolisher_started = true;
-            audio::play_sound(&assets.sfx_demolisher, audio::PlaySoundParams { looped: false, volume: 0.2 });
+            sound_player.play_sound(&assets.sfx_demolisher, 0.2, false);
             demolisher.anim = assets.demolisher_working_0.derive_anim();
         }
     }
@@ -805,7 +806,7 @@ pub fn update(game: &mut Game) {
     
     // sell excess ores if player has(bought) jetpack :::
     if derived.player_has_jetpack && player.carrying.length > derived.player_bag_carry_capacity {
-        audio::play_sound(&assets.sfx_minecart_transfer, audio::PlaySoundParams { looped: false, volume: 0.2 });
+        sound_player.play_sound(&assets.sfx_minecart_transfer, 0.2, false);
         minecart.cooldown = 1.0;
 
         for _ in 0..(player.carrying.length-derived.player_bag_carry_capacity) {
@@ -858,7 +859,7 @@ pub fn update(game: &mut Game) {
     }
 
     if game.demolisher_started && demolisher.stage == 6 {
-        audio::stop_sound(&assets.sfx_demolisher);
+        sound_player.stop_sound(&assets.sfx_demolisher);
     }
 
     // collect coins :::
@@ -880,7 +881,7 @@ pub fn update(game: &mut Game) {
     for i in coins_to_remove {
         // INFO: not using swap_remove because draw order changes and it looks glitchy
         game.coins.remove(i);
-        audio::play_sound(&assets.sfx_coin, audio::PlaySoundParams { looped: false, volume: 0.15 });
+        sound_player.play_sound(&assets.sfx_coin, 0.15, false);
     }
 
     // tick dropped items :::

@@ -9,7 +9,7 @@ use std::collections::HashMap;
 use std::sync::{LazyLock, Mutex};
 
 use bumpalo::Bump;
-use macroquad::prelude::*;
+use macroquad::{audio, prelude::*};
 
 mod init;
 mod asset;
@@ -42,7 +42,7 @@ pub mod prelude {
     pub use super::consts::*;
 
     pub use super::{ debug_generic, debug_point, debug_rect };
-    pub use super::{ Game, MainUIState, InputActions, GameMesh, Array };
+    pub use super::{ Game, MainUIState, InputActions, SoundPlayer, GameMesh, Array };
 
     pub use crate::asset::{ Assets };
 
@@ -122,6 +122,8 @@ pub struct Game {
     pub ui_fuel_bar_frame: UIEntity,
     pub ui_show_statue: bool,
 
+    pub sound_player: SoundPlayer,
+
     pub tile_durability_map: HashMap<IVec2, f32>,
     pub tile_cant_dig_map: HashMap<IVec2, f32>,
 
@@ -147,6 +149,34 @@ pub struct InputActions {
     pub interact: bool,
     pub escape: bool,
     pub toggle_dev_mode: bool,
+}
+
+pub struct SoundPlayer {
+    pub music: audio::Sound,
+    pub music_playing: bool,
+    pub sound_playing: bool,
+    pub current_music_playing: bool,
+}
+
+impl SoundPlayer {
+    pub fn tick_music(&mut self) {
+        if self.music_playing && self.music_playing != self.current_music_playing {
+            audio::play_sound(&self.music, audio::PlaySoundParams { looped: true, volume: 0.4 });
+            self.current_music_playing = self.music_playing;
+        }
+        if !self.music_playing && self.music_playing != self.current_music_playing {
+            audio::stop_sound(&self.music);
+            self.current_music_playing = self.music_playing;
+        }
+    }
+    pub fn play_sound(&self, sound: &audio::Sound, volume: f32, looped: bool) {
+        if self.sound_playing {
+            audio::play_sound(sound, audio::PlaySoundParams { looped, volume });
+        }
+    }
+    pub fn stop_sound(&self, sound: &audio::Sound) {
+        audio::stop_sound(sound);
+    }
 }
 
 fn window_conf() -> Conf {

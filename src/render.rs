@@ -1,5 +1,3 @@
-use macroquad::audio;
-
 use crate::prelude::*;
 
 use crate::apply_debug_commands;
@@ -25,6 +23,7 @@ pub fn render(game: &mut Game) {
     let world = &game.world;
     let visible_chunks = &game.visible_chunks;
     let upgrades = &mut game.upgrades;
+    let sound_player = &mut game.sound_player;
 
     let world_origin = Rect {
         x: -(GAME_WIDTH_F32 / 2.0),
@@ -206,14 +205,14 @@ pub fn render(game: &mut Game) {
 
         if ui_button(&mut game.ui_state, "Start Game", pos, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::InGame;
-            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.1 });
+            sound_player.play_sound(&assets.sfx_ui_positive, 0.1, false);
         }
         
         pos += vec2(0.0, 32.0);
 
         if ui_button(&mut game.ui_state, "Show Credits", pos, 240.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::MainMenuCredits;
-            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.1 });
+            sound_player.play_sound(&assets.sfx_ui_positive, 0.1, false);
         }
 
         game.ui_state.mouse_div = prev_mouse_div;
@@ -250,7 +249,7 @@ pub fn render(game: &mut Game) {
 
         if ui_button(&mut game.ui_state, "Back", pos, 300.0, false, None, &assets.ui_button) {
             game.main_ui_state = MainUIState::MainMenu;
-            audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.1 });
+            sound_player.play_sound(&assets.sfx_ui_positive, 0.1, false);
         }
 
         game.ui_state.mouse_div = prev_mouse_div;
@@ -324,6 +323,56 @@ pub fn render(game: &mut Game) {
             cursor.y -= 32.0;
         }
     }
+    
+    {
+        let prev_mouse_div = game.ui_state.mouse_div;
+        game.ui_state.mouse_div /= 4.0;
+
+        let mut cursor = vec2(4.0, UI_HEIGHT_F32);
+        let music_button = if sound_player.music_playing {
+            &assets.ui_music_playing
+        } else {
+            &assets.ui_music_muted
+        };
+        let sound_button = if sound_player.sound_playing {
+            &assets.ui_sound_playing
+        } else {
+            &assets.ui_sound_muted
+        };
+
+        let music_button = &music_button.derive_sprite();
+        let sound_button = &sound_button.derive_sprite();
+
+        cursor.y -= music_button.texture_frame.h*2.0+4.0;
+        let music_pos = cursor;
+        cursor.y -= sound_button.texture_frame.h*2.0+4.0;
+        let sound_pos = cursor;
+
+        let music_rect = Rect {
+            x: music_pos.x, y: music_pos.y,
+            w: music_button.texture_frame.w*2.0,
+            h: music_button.texture_frame.h*2.0,
+        };
+        
+        let sound_rect = Rect {
+            x: sound_pos.x, y: sound_pos.y,
+            w: sound_button.texture_frame.w*2.0,
+            h: sound_button.texture_frame.h*2.0,
+        };
+
+        if is_mouse_button_pressed(MouseButton::Left) && music_rect.contains(Vec2::from(mouse_position()) / game.ui_state.mouse_div) {
+            sound_player.music_playing = !sound_player.music_playing;
+        }
+        
+        if is_mouse_button_pressed(MouseButton::Left) && sound_rect.contains(Vec2::from(mouse_position()) / game.ui_state.mouse_div) {
+            sound_player.sound_playing = !sound_player.sound_playing;
+        }
+
+        draw_ui(music_pos, vec2(2.0, 2.0), music_button);
+        draw_ui(sound_pos, vec2(2.0, 2.0), sound_button);
+        
+        game.ui_state.mouse_div = prev_mouse_div;
+    }
 
     {
         let mut cursor = vec2(4.0, 4.0);
@@ -396,9 +445,9 @@ pub fn render(game: &mut Game) {
                 if can_afford {
                     (state.upgrade)();
                     game.money -= state.cost;
-                    audio::play_sound(&assets.sfx_ui_positive, audio::PlaySoundParams { looped: false, volume: 0.1 });
+                    sound_player.play_sound(&assets.sfx_ui_positive, 0.1, false);
                 } else {
-                    audio::play_sound(&assets.sfx_ui_negative, audio::PlaySoundParams { looped: false, volume: 0.1 });
+                    sound_player.play_sound(&assets.sfx_ui_negative, 0.1, false);
                 }
             }
 
