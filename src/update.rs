@@ -254,6 +254,10 @@ pub fn update(game: &mut Game) {
         }
 
         new_pos += movement_dir;
+        
+        if player_movement.y > 0 && tile_one_down.kind.can_climb() && tile.kind.is_air() && !tile.kind.can_climb() {
+            new_pos.y = tile.world_pos().y + 0.01;
+        }
 
         let right_intersection = World::query_intersected_tiles_y(&game.bump,
             new_pos.x+htsize.x, [pos.y, pos.y+tsize.y]
@@ -271,7 +275,7 @@ pub fn update(game: &mut Game) {
 
         for tile_pos in bottom_intersection {
             if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
-            new_pos.y = player.trans.pos.y;
+            new_pos.y = tiles.at_tile_pos(tile_pos).up(1).world_pos().y + 0.01;
             derived.player_touching_bottom = true;
         }
         for tile_pos in left_intersection {
