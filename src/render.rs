@@ -580,5 +580,6 @@ pub fn render(game: &mut Game) {
     }
 
     // debug
+
     apply_debug_commands();
 }

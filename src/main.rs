@@ -190,7 +190,7 @@ fn window_conf() -> Conf {
     };
     #[cfg(target_family = "wasm")]
     return Conf {
-        window_title: "Miner".to_owned(),
+        window_title: "DIG DIG DIG".to_owned(),
         window_width: 640,
         window_height: 480,
         ..Default::default()
