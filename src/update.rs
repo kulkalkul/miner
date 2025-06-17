@@ -637,7 +637,7 @@ pub fn update(game: &mut Game) {
         player.trans.collider().intersects(minecart.trans.collider()) &&
         player.carrying.length > 0
     {
-        if  minecart.cooldown <= 1.8 &&
+        if  minecart.cooldown <= 1.92 &&
             minecart.carrying.length < minecart.carrying.cap()
         {
             derived.ui_show_minecart_key = true;
