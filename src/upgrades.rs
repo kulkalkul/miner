@@ -99,7 +99,7 @@ create_seq! {struct MiningUpgrade; enum MiningUpgradeKind {
     DefaultPickaxe => ("Default Pickaxe", 0),
     IronPickaxe => ("Iron Pickaxe", 100),
     HardenedPickaxe => ("Hardened Pickaxe", 500),
-    AlloyPickaxe => ("Alloy Pickaxe", 2500),
+    AlloyPickaxe => ("Alloy Pickaxe", 2350),
 }}
 create_seq! {struct LadderUpgrade; enum LadderUpgradeKind {
     DefaultClimb => ("Default Climb", 0),
@@ -109,30 +109,30 @@ create_seq! {struct BagUpgrade; enum BagUpgradeKind {
     DefaultBag => ("Default Bag", 0),
     SmallPouch => ("Small Pouch", 150),
     BiggerPouch => ("Bigger Pouch", 500),
-    Backpack => ("Backpack", 1500),
+    Backpack => ("Backpack", 1600),
 }}
 create_seq! {struct ClimbMomentumUpgrade; enum ClimbMomentumUpgradeKind {
     NoClimbMomentum => ("No Climb Momentum", 0),
-    ClimbMomentum => ("Climb Momentum", 1500),
+    ClimbMomentum => ("Climb Momentum", 1350),
 }}
 create_seq! {struct JetpackUpgrade; enum JetpackUpgradeKind {
     NoJetpack => ("No Jetpack", 0),
-    Jetpack => ("Jetpack", 5000),
+    Jetpack => ("Jetpack", 4500),
 }}
 create_seq! {struct JetpackBoostUpgrade; enum JetpackBoostUpgradeKind {
     NoBoost => ("No Boost", 0),
-    SmallBoost => ("Small Boost", 6000),
+    SmallBoost => ("Small Boost", 5500),
     BigBoost => ("Big Boost", 11000),
 }}
 create_seq! {struct JetpackFuelUpgrade; enum JetpackFuelUpgradeKind {
     DefaultFuel => ("Default Fuel", 0),
-    MediumTanks => ("Medium Tanks", 5500),
+    MediumTanks => ("Medium Tanks", 5000),
     DoubleTanks => ("Long Double Tanks", 9000),
     LongHaulTanks => ("Long Haul Tanks", 13000),
 }}
 create_seq! {struct JetpackStorageUpgrade; enum JetpackStorageUpgradeKind {
     DefaultStorage => ("Default Storage", 0),
-    XLStorage => ("XL Storage", 7500),
+    XLStorage => ("XL Storage", 7000),
     XXLStorage => ("XXL Storage", 10500),
 }}
 

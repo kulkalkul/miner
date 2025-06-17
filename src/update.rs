@@ -93,8 +93,8 @@ pub fn update(game: &mut Game) {
     derived.player_bag_carry_capacity = match upgrades.bag.kind {
         BagUpgradeKind::DefaultBag => 6,
         BagUpgradeKind::SmallPouch => 10,
-        BagUpgradeKind::BiggerPouch => 24,
-        BagUpgradeKind::Backpack => 40,
+        BagUpgradeKind::BiggerPouch => 20,
+        BagUpgradeKind::Backpack => 32,
     };
 
     derived.player_climb_momentum_max = match upgrades.climb_momentum.kind {
@@ -109,8 +109,8 @@ pub fn update(game: &mut Game) {
 
     if derived.player_has_jetpack {
         derived.player_bag_carry_capacity = match upgrades.jetpack_storage.kind {
-            JetpackStorageUpgradeKind::DefaultStorage => 6,
-            JetpackStorageUpgradeKind::XLStorage => 12,
+            JetpackStorageUpgradeKind::DefaultStorage => 8,
+            JetpackStorageUpgradeKind::XLStorage => 14,
             JetpackStorageUpgradeKind::XXLStorage => 24,
         };
     }
