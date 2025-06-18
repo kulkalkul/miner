@@ -236,7 +236,7 @@ pub fn load_anim(
 }
 
 pub fn tick_animation(sprite: &mut Sprite, anim: &mut Animation, dt: f32) {
-    anim.accumulated += dt*anim.modifier;
+    anim.accumulated += dt*f32::max(anim.modifier, 0.001);
     if anim.accumulated > anim.frame_timer {
         anim.accumulated = anim.accumulated - anim.frame_timer;
         anim.index += 1;

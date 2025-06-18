@@ -547,7 +547,7 @@ pub fn update(game: &mut Game) {
     // jetpack fuel blink :::
     if derived.player_has_jetpack {
         let blink_threshold = derived.player_jetpack_fuel_capacity*0.5;
-        let modifier = (1.0 - player.jetpack_fuel/blink_threshold)*1.0;
+        let modifier = f32::max((1.0 - player.jetpack_fuel/blink_threshold)*1.0, 0.001);
 
         if player.jetpack_fuel <= blink_threshold {
             if ui_fuel_bar_frame.anim.is_not(&assets.ui_fuel_bar_frame_empty) {
