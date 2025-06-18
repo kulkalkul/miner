@@ -255,7 +255,12 @@ pub fn update(game: &mut Game) {
 
         new_pos += movement_dir;
         
-        if player_movement.y > 0 && tile_one_down.kind.can_climb() && tile.kind.is_air() && !tile.kind.can_climb() {
+        if  player_movement.y > 0 &&
+            tile_one_down.kind.can_climb() &&
+            tile.kind.is_air() &&
+            !tile.kind.can_climb() && 
+            f32::abs(tile.world_pos().y - new_pos.y) <= 1.0
+        {
             new_pos.y = tile.world_pos().y + 0.01;
         }
 
