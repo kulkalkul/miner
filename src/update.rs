@@ -755,7 +755,7 @@ pub fn update(game: &mut Game) {
 
             let new_bundle = |amount: i32, asset: &SpriteAsset| {
                 // INFO: magic values
-                let x = rand::gen_range(-75.0, -90.0);
+                let x = rand::gen_range(-85.0, -100.0);
                 let y = rand::gen_range(68.0, 90.0);
 
                 let sine_index = rand::gen_range(0, 16);
