@@ -222,6 +222,7 @@ async fn main() {
     next_frame().await;
 
     async fn load() -> Game {
+        rand::srand(miniquad::date::now() as u64);
         let assets = init_assets().await;
         let game = init(assets).await;
         game
