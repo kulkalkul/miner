@@ -117,7 +117,7 @@ pub fn update(game: &mut Game) {
     }
 
     derived.player_jetpack_fuel_capacity = match upgrades.jetpack_fuel.kind {
-        JetpackFuelUpgradeKind::DefaultFuel => 30.0,
+        JetpackFuelUpgradeKind::DefaultFuel => 35.0,
         JetpackFuelUpgradeKind::MediumTanks => 50.0,
         JetpackFuelUpgradeKind::DoubleTanks => 75.0,
         JetpackFuelUpgradeKind::LongHaulTanks => 120.0,
