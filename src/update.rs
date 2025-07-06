@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-const DEV_MODE: bool = true;
+const DEV_MODE: bool = false;
 
 pub fn update(game: &mut Game) {
     // pre update :::
