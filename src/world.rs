@@ -392,7 +392,7 @@ impl World {
             
             ( 8 , Tile::StoneCopperOre, Min(5 ), Max(8 ) ),
             ( 8 , Tile::StoneIronOre  , Min(18), Max(18) ),
-            ( 7 , Tile::StoneGoldOre  , Min(10), Max(14) ),
+            ( 8 , Tile::StoneGoldOre  , Min(10), Max(14) ),
             ( 8 , Tile::StoneEmerald  , Min(-7), Max(1 ) ),
             
             ( 9 , Tile::StoneEmerald  , Min(-4), Max(1 ) ),
