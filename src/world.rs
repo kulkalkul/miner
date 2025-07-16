@@ -779,6 +779,28 @@ impl World {
         tiles
     }
     
+    pub fn query_intersected_tiles(bump: &Bump, x_range: [f32; 2], y_range: [f32; 2]) -> Vec<IVec2, &Bump> {
+        // Just reusing world_pos_to_tile_pos because lazy
+        let begin_tile = world_pos_to_tile_pos(vec2(x_range[0], y_range[0]));
+        let end_tile = world_pos_to_tile_pos(vec2(x_range[1], y_range[1]));
+
+        let mut tiles = Vec::with_capacity_in((x_range[1] - x_range[0]) as usize, bump);
+
+        let y_start = i32::min(begin_tile.y, end_tile.y);
+        let y_end = i32::max(begin_tile.y, end_tile.y);
+        
+        let x_start = i32::min(begin_tile.x, end_tile.x);
+        let x_end = i32::max(begin_tile.x, end_tile.x);
+        
+        for y in y_start..=y_end {
+            for x in x_start..=x_end {
+                tiles.push(ivec2(x, y));
+            }
+        }
+
+        tiles
+    }
+    
     // INFO: I should probably embed tile_set either as Arc or some sort of reverse asset_id lookup
     // or I could add texture and bounds predraw. Use that texture without cloning in Mesh via
     // mem::swap. So both draw and apply_updates would be sync in which tileset to use.

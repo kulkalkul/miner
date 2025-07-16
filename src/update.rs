@@ -264,19 +264,20 @@ pub fn update(game: &mut Game) {
             new_pos.y = tile.world_pos().y + 0.01;
         }
 
-        let right_intersection = World::query_intersected_tiles_y(&game.bump,
-            new_pos.x+htsize.x, [pos.y, pos.y+tsize.y]
+        let right_intersection = World::query_intersected_tiles(&game.bump,
+            [pos.x, new_pos.x+htsize.x], [pos.y, pos.y+tsize.y],
         );
-        let left_intersection = World::query_intersected_tiles_y(&game.bump,
-            new_pos.x-htsize.x+1.0, [pos.y, pos.y+tsize.y]
+        let left_intersection = World::query_intersected_tiles(&game.bump,
+            [pos.x, new_pos.x-htsize.x+1.0], [pos.y, pos.y+tsize.y],
         );
 
-        let top_intersection = World::query_intersected_tiles_x(&game.bump,
-            [pos.x-htsize.x+1.0, pos.x+htsize.x], new_pos.y+tsize.y
+        let top_intersection = World::query_intersected_tiles(&game.bump,
+            [pos.x-htsize.x+1.0, pos.x+htsize.x], [pos.y, new_pos.y+tsize.y],
         );
-        let bottom_intersection = World::query_intersected_tiles_x(&game.bump,
-            [pos.x-htsize.x+1.0, pos.x+htsize.x], new_pos.y
+        let bottom_intersection = World::query_intersected_tiles(&game.bump,
+            [pos.x-htsize.x+1.0, pos.x+htsize.x], [pos.y, new_pos.y],
         );
+
 
         for tile_pos in bottom_intersection {
             if tiles.at_tile_pos(tile_pos).kind.can_walk_through() { continue; };
