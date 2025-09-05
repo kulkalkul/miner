@@ -1,6 +1,5 @@
 #![feature(variant_count)]
 #![feature(allocator_api)]
-#![feature(one_sided_range)]
 
 #![allow(non_snake_case)]
 #![allow(unused_labels)]
